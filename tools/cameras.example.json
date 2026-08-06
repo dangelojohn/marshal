@@ -1,0 +1,15 @@
+{
+  "_comment": "Copy to cameras.json and fill in. cameras.json is gitignored - it holds passwords.",
+  "cameras": [
+    {
+      "name": "dock4",
+      "label": "Dock 4",
+      "ip": "192.168.68.50",
+      "user": "admin",
+      "password": "REPLACE_ME",
+      "port": 80,
+      "scheme": "http",
+      "channels": [0]
+    }
+  ]
+}

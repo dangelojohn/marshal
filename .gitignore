@@ -1,2 +1,5 @@
 .DS_Store
 *.tmp
+tools/cameras.json
+tools/motion_log/
+__pycache__/
