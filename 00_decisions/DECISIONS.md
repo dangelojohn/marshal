@@ -6,6 +6,95 @@ drift.
 
 ---
 
+## D-016 · Financial model · plan rev 2
+**2026-08-06 · SETTLED (model) · PROPOSED (rates, pending Q-53/55/58)**
+
+Full math: `01_product/17_financial_model.md`. Plan rewritten: `PROJECT_PLAN.md`.
+
+### 🔴 The CFO finding: breakeven spans 4–37 venues
+```
+Contribution/venue = (bookings × D × 0.05) − (bookings × $0.15) − $6,700
+Breakeven venues   = $400,000 company fixed ÷ contribution
+```
+| Case | Bookings | Fee | Contribution | **Breakeven** |
+|---|---|---|---|---|
+| Low | 3,000 | $120 | $10,850 | **37 venues** |
+| Mid | 6,000 | $150 | $37,400 | **11 venues** |
+| High | 10,000 | $200 | $91,800 | **4.4 venues** |
+
+**A 9× spread driven by two numbers nobody has asked for.** You cannot commit
+capital against it. **The first dollar goes to narrowing the range, not to
+building** — three phone calls move the decision more than six months of
+engineering.
+
+**Sensitivity is the clarifying result: fee and volume dominate everything else
+combined.** Cost discipline barely moves breakeven; revenue assumptions move it
+threefold. **The risk here is commercial, not operational.**
+
+### The pass-through is the single most important line
+5% absorbed → Stripe takes $4.65 of $7.50 → **net 1.9%, breakeven ~28 venues.**
+5% **passed through** → net 5.0%, breakeven ~11. Same headline rate, different
+business. Exhibitors already know this structure from ticketing.
+
+### ⭐ Venue qualification rule — one line for sales
+> **A venue must generate ≈ $800K+ annual dock-fee volume to be worth serving.**
+≈5,300 bookings/yr at $150. Below it a venue consumes support without funding it.
+*Implication: small hotels may not qualify alone → sell hotel groups as
+multi-property (Q-59).*
+
+### 🔴 Q-58 is the question the whole model rests on
+**Who absorbs the cost of a truck waiting TODAY?**
+- Carrier bills detention through to the exhibitor → they already bear it, will
+  pay to avoid it, **model works**
+- Absorbed invisibly → Marshal is a **new fee for something previously free**,
+  and **adoption fails regardless of software quality**
+**Binary, and one call to a carrier answers it.** As important as Q-53.
+
+### Getting show services companies to adopt
+> **Marshal prices dock TIME. Contractors price HANDLING. Zero overlap.**
+This is why the dock fee is contractually clean where a handling fee wouldn't be
+— **the dock is the one resource the venue indisputably owns** (D-002), so it
+neither competes with contractor billing nor cuts across show management's
+exhibitor relationship. **Marshal must NEVER price handling, drayage, or anything
+a contractor sells.** That restraint is what makes adoption possible.
+
+**⭐ The contractor's real incentive is INSURANCE, not efficiency.** Efficiency
+arguments get discounted; insurance is a number on their P&L. Marshal produces —
+as a byproduct — who moved what, when, with which *certified* operator, under
+what condition check, plus an immutable contention log and timestamped stills.
+**After an incident the question is always "what was supposed to be happening
+there?" and nothing on the market can answer it.** → **Q-60: will an insurer
+discount against this record?** If yes it's the strongest adoption lever in the
+product, and it's a broker conversation, not engineering.
+**One record, three commercial uses: safety defence, penalty auto-waiver,
+insurance.**
+
+**Contractors get a free read-only feed FOREVER.** The moment Marshal charges
+them it becomes a vendor to evaluate rather than infrastructure to assume — and
+contractors asking *other* venues for it is the only real distribution flywheel
+in a category the research found has no network effects.
+
+### CFO recommendations
+1. **5% + processing pass-through** (non-negotiable — it's 11 vs 28 venues)
+2. **Implementation $22K at ~2.4× delivery cost** — funds the ramp, and **aligns
+   training quality with transaction volume**, since a loss-leader implementation
+   creates an incentive to under-deliver the training that makes the schedule
+   enforceable
+3. Hardware at **cost + 12%** — don't build a hardware business
+4. **Zero margin on penalties**, processing recovery only
+5. **Qualify at ≥$800K volume**
+6. **Contractors free, forever, read-only**
+7. **🔴 No capital commitment until Q-53, Q-55, Q-58 are answered**
+
+### Plan rev 2 changes
+**Chokepoint contention moves INTO Phase 1** — it makes the schedule real and is
+the evidence engine for penalty waivers. Wave 0 adopts Porterly v2's **R25 + R13**
+alongside idempotency keys and the DLQ. Phase-1 exit gate test 3 (*one dispute
+the record settled*) is the binary proof that both the insurance argument and the
+waiver mechanism depend on.
+
+---
+
 ## D-015 · Dock & Marshalling Fee model — mechanism right, take rate wrong
 **2026-08-06 · John proposal + my analysis · PROPOSED, not settled**
 
