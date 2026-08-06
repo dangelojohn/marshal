@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_chokepoint_user,marshal.chokepoint.user,model_marshal_chokepoint,group_marshal_user,1,0,0,0
+access_chokepoint_mgr,marshal.chokepoint.mgr,model_marshal_chokepoint,group_marshal_manager,1,1,1,1
+access_buffer_user,marshal.buffer.user,model_marshal_buffer,group_marshal_user,1,0,0,0
+access_buffer_mgr,marshal.buffer.mgr,model_marshal_buffer,group_marshal_manager,1,1,1,1
+access_movement_user,marshal.movement.user,model_marshal_movement,group_marshal_user,1,1,1,0
+access_movement_mgr,marshal.movement.mgr,model_marshal_movement,group_marshal_manager,1,1,1,1
+access_claim_user,marshal.claim.user,model_marshal_claim,group_marshal_user,1,1,1,0
+access_claim_mgr,marshal.claim.mgr,model_marshal_claim,group_marshal_manager,1,1,1,1
+access_contention_user,marshal.contention.user,model_marshal_contention,group_marshal_user,1,0,1,0
+access_contention_mgr,marshal.contention.mgr,model_marshal_contention,group_marshal_manager,1,0,1,0

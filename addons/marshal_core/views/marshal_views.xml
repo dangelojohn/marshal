@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Chokepoints -->
+    <record id="view_chokepoint_tree" model="ir.ui.view">
+        <field name="name">marshal.chokepoint.tree</field>
+        <field name="model">marshal.chokepoint</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="rank"/><field name="code"/><field name="name"/>
+                <field name="chokepoint_type"/><field name="capacity"/>
+                <field name="changeover_minutes"/><field name="is_foreign"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_chokepoint_form" model="ir.ui.view">
+        <field name="name">marshal.chokepoint.form</field>
+        <field name="model">marshal.chokepoint</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/><field name="code"/>
+                            <field name="chokepoint_type"/><field name="active"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/><field name="changeover_minutes"/>
+                            <field name="rank"/><field name="is_foreign"/>
+                            <field name="resource_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Buffers -->
+    <record id="view_buffer_tree" model="ir.ui.view">
+        <field name="name">marshal.buffer.tree</field>
+        <field name="model">marshal.buffer</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="not has_space">
+                <field name="code"/><field name="name"/>
+                <field name="occupancy"/><field name="capacity"/>
+                <field name="has_space"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_buffer_form" model="ir.ui.view">
+        <field name="name">marshal.buffer.form</field>
+        <field name="model">marshal.buffer</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group><field name="name"/><field name="code"/><field name="capacity"/></group>
+                        <group><field name="occupancy"/><field name="has_space"/><field name="active"/></group>
+                    </group>
+                    <group>
+                        <field name="upstream_ids" widget="many2many_tags"/>
+                        <field name="downstream_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Movements -->
+    <record id="view_movement_tree" model="ir.ui.view">
+        <field name="name">marshal.movement.tree</field>
+        <field name="model">marshal.movement</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="is_blocking" decoration-info="priority_class == 'expedite'">
+                <field name="name"/><field name="crate_ref"/><field name="dest_booth"/>
+                <field name="priority_class"/><field name="is_blocking"/>
+                <field name="hard_deadline"/><field name="planned_end"/>
+                <field name="claim_count"/><field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_movement_form" model="ir.ui.view">
+        <field name="name">marshal.movement.form</field>
+        <field name="model">marshal.movement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_plan" string="Plan" type="object"
+                            class="oe_highlight" states="draft"/>
+                    <button name="action_start" string="Start" type="object"
+                            class="oe_highlight" states="planned"/>
+                    <button name="action_done" string="Done" type="object"
+                            class="oe_highlight" states="in_progress"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            states="draft,planned,in_progress"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="crate_ref"/><field name="dest_booth"/>
+                            <field name="equipment_id"/><field name="operator_id"/>
+                        </group>
+                        <group>
+                            <field name="priority_class"/><field name="is_blocking"/>
+                            <field name="hard_deadline"/>
+                        </group>
+                    </group>
+                    <group string="Timing">
+                        <group><field name="planned_start"/><field name="planned_end"/></group>
+                        <group><field name="actual_start"/><field name="actual_end"/>
+                               <field name="variance_reason"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Claims">
+                            <field name="claim_ids">
+                                <tree decoration-muted="state == 'yielded'"
+                                      decoration-success="state == 'occupied'">
+                                    <field name="sequence"/><field name="chokepoint_id"/>
+                                    <field name="start"/><field name="expected_end"/>
+                                    <field name="buffer_ok"/><field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/><field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Contention log -->
+    <record id="view_contention_tree" model="ir.ui.view">
+        <field name="name">marshal.contention.tree</field>
+        <field name="model">marshal.contention</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="create_date"/><field name="chokepoint_id"/>
+                <field name="deciding_rule"/><field name="winning_claim_id"/>
+                <field name="reason"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_movement" model="ir.actions.act_window">
+        <field name="name">Movements</field>
+        <field name="res_model">marshal.movement</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_chokepoint" model="ir.actions.act_window">
+        <field name="name">Chokepoints</field>
+        <field name="res_model">marshal.chokepoint</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_buffer" model="ir.actions.act_window">
+        <field name="name">Buffers</field>
+        <field name="res_model">marshal.buffer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_contention" model="ir.actions.act_window">
+        <field name="name">Contention Log</field>
+        <field name="res_model">marshal.contention</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_marshal_root" name="Marshal" sequence="20"
+              web_icon="marshal_core,static/description/icon.png"/>
+    <menuitem id="menu_marshal_ops" name="Operations" parent="menu_marshal_root" sequence="10"/>
+    <menuitem id="menu_movement" name="Movements" parent="menu_marshal_ops"
+              action="action_movement" sequence="10"/>
+    <menuitem id="menu_contention" name="Contention Log" parent="menu_marshal_ops"
+              action="action_contention" sequence="20"/>
+    <menuitem id="menu_marshal_cfg" name="Configuration" parent="menu_marshal_root" sequence="90"/>
+    <menuitem id="menu_chokepoint" name="Chokepoints" parent="menu_marshal_cfg"
+              action="action_chokepoint" sequence="10"/>
+    <menuitem id="menu_buffer" name="Buffers" parent="menu_marshal_cfg"
+              action="action_buffer" sequence="20"/>
+</odoo>

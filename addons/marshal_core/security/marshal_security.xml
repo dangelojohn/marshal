@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="module_category_marshal" model="ir.module.category">
+            <field name="name">Marshal</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="group_marshal_user" model="res.groups">
+            <field name="name">Marshal / Operator</field>
+            <field name="category_id" ref="module_category_marshal"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_marshal_manager" model="res.groups">
+            <field name="name">Marshal / Manager</field>
+            <field name="category_id" ref="module_category_marshal"/>
+            <field name="implied_ids" eval="[(4, ref('group_marshal_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Record rules from module one, deliberately. Controller discipline
+             alone is not a security model: one mis-coded domain is a full leak
+             with nothing beneath it. -->
+        <record id="rule_movement_company" model="ir.rule">
+            <field name="name">Marshal: operators see movements</field>
+            <field name="model_id" ref="model_marshal_movement"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_movement_manager" model="ir.rule">
+            <field name="name">Marshal: managers full access</field>
+            <field name="model_id" ref="model_marshal_movement"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_manager'))]"/>
+        </record>
+    </data>
+</odoo>

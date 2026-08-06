@@ -231,3 +231,50 @@ Recorded because each cost real time and will recur.
 | **3** | Copy backups **off this box** — a backup on the volume it protects is not a backup |
 | 4 | Update `/etc/ssl/certs` so the NAS can fetch from modern HTTPS endpoints |
 | 5 | Consider raising `workers` once real load is observed — 2 is deliberately cautious |
+
+---
+
+## `marshal_core` — installed and tested
+
+**Deployed 2026-08-06. State `installed`. All 16 tests pass.**
+
+```
+marshal_core: 16 tests  0.37s  512 queries   exit=0, zero failures
+```
+
+Implements D-014 (chokepoint contention) on the live instance:
+
+| Model | Purpose |
+|---|---|
+| `marshal.chokepoint` | Exclusive-occupancy resource — dock bay, elevator, aisle, staging |
+| `marshal.buffer` | Finite holding area **between** chokepoints |
+| `marshal.movement` | A crate's trip, as a chain of claims |
+| `marshal.claim` | One claim on one chokepoint |
+| `marshal.contention` | **Immutable** decision log — `write`/`unlink` raise |
+
+**What the tests actually prove**, rather than merely exercise:
+
+- **The blocking rule** — a full downstream buffer refuses entry, and the
+  movement is stamped `delay_buffer_full`. A chokepoint with nothing downstream
+  never blocks
+- **The comparator**, rule by rule — hard deadline (1), blocking/safety (2),
+  priority class (4), earliest due (5)
+- **Rule 7 determinism** — two claims identical on every other axis still
+  produce a decision, and the comparator is **antisymmetric** (`a beats b` ⇔
+  `not b beats a`), so a draw is impossible. This is what makes the scheduler
+  reproducible
+- **Sequences are unique and monotonic** — rule 7 depends on it
+- **Contention is logged with the deciding rule**, and the log **rejects writes
+  and deletes**
+- **Occupancy is never re-acquired** — claims are preemptible, occupancy is not
+- **Ranks ascend along the flow** — deadlock-free ordered acquisition
+
+All five models verified reachable over JSON-RPC as `admin`.
+
+**Install/upgrade and test helpers** (both stop the server first, because `-i`,
+`-u` and `shell` all bind 8069):
+
+```sh
+$BASE/scripts/install-module.sh marshal_core -i     # or -u to upgrade
+$BASE/scripts/run-tests.sh marshal_core
+```
