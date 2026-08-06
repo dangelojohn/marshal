@@ -6,6 +6,41 @@ drift.
 
 ---
 
+## D-005 · Venue pain CONFIRMED · it's a safety and revenue product
+**2026-08-06 · John, primary source · SETTLED**
+
+From direct experience building ERPs for top Toronto hotels with event
+operations. **This closes the riskiest assumption in the project** — that a
+software gap might not be a felt pain. It is felt: move-in and move-out days are
+"crazy" and need scheduling.
+
+Five things changed as a result. Full detail in
+`01_product/06_operating_model_v2_sourced.md`.
+
+1. **Safety first, efficiency second.** Forklifts and pump trucks in tight
+   spaces is the hazard; scheduling is the control. Changes the buyer (risk, not
+   just ops), the budget (less discretionary), and the killer feature — a
+   **defensible record of who moved what, where, when, with which equipment**.
+   Nothing on the market can answer "what was supposed to be happening there?"
+   after an incident.
+2. **Revenue, not cost avoidance.** Docks and material handling are *already
+   billable*, and metered on paper — so they leak. Marshal meters what it
+   schedules. *"You billed 40 hours. The floor consumed 62."*
+3. **The constraint is not the dock door.** It is the **specialised handling
+   resource and its route** — equipment + certified operator + a tight path to a
+   specific booth. **The schedulable unit is a movement, not a slot.**
+4. **SMS is the vendor surface**, not a portal. Drivers are in a truck and will
+   not log in. Vindicates `avn.capability`'s connector-maturity ladder.
+5. **Three billing parties, not two.** Facility *provides* handling; **show
+   management often bills it**; exhibitor pays. Whoever holds that margin has the
+   reason to meter it.
+
+**Also:** hotels may be the better beachhead than convention centres — worse
+constraints, no embedded GES/Freeman, far more of them, and existing
+relationships. Does not weaken D-002; strengthens it.
+
+---
+
 ## D-004 · Domain registered — `marshal.show`
 **2026-08-06 · John · SETTLED**
 
@@ -85,10 +120,18 @@ Evidence: `02_market_research/`.
 
 # Open questions — not yet decided
 
+**Q-1 is superseded by Q-1′.** D-005 confirmed the pain, so the question is no
+longer *whether* the venue hurts but *who holds the money*.
+
 | # | Question | How to resolve it |
 |---|---|---|
-| Q-1 | Is Phase 1 (venue) or Phase 4 (contractor early-warning) the better first sale? | **Two phone calls.** Ask a venue ops director the cost of an hour of dock idle during move-in; ask a contractor the cost of late scope-change notice. Both numbers are already on someone's books |
+| **Q-1′** | **Who captures the material-handling margin today — the facility or the show manager — and who wants it back?** | Determines who the invoice is addressed to, and therefore the buyer. Ask a facility ops director and a show manager the same question |
+| **Q-8** | **What is charged today, and on what unit** — dock hour, crate, pallet, weight? | **The metering model must match the existing billing unit or it won't be adopted.** Blocks the strongest part of the business case |
+| Q-6 | Hotels or convention centres first? | Leaning **hotels** — worse constraints, no embedded incumbent, more of them, existing relationships |
+| Q-7 | Is the freight elevator the true serial constraint in hotels? | Decides whether vertical transport is a first-class resource in the solver |
+| Q-9 | Who carries liability for a floor incident — facility or show manager? | The safety framing only sells to whoever holds the risk |
+| Q-10 | Is French-language SMS required for Quebec (Bill 96)? | Cheap to design in now, expensive to retrofit |
 | Q-2 | Register `dock.show`? | Still available. Cheap. Decide before someone else does |
-| Q-3 | Odoo-based or standalone? | Depends on Q-1 — a contractor-first product argues for standalone; venue-first argues for Odoo, where we own more |
-| Q-4 | Is the Show Board's information-exchange model defensible? | **Needs counsel, not engineering.** Competing venues seeing each other's availability is antitrust-sensitive in both Canada and the US. Get an opinion before building it — the constraint shapes the data model |
-| Q-5 | Which Canadian venue is the design partner? | Market is fragmented (Ottawa splits two contractors across two venues) — that helps a venue-side product. No incumbent to dislodge |
+| Q-3 | Odoo-based or standalone? | Depends on Q-1′. Metering + billing argues strongly for Odoo, where we own the most |
+| Q-4 | Is the Show Board's information-exchange model defensible? | **Needs counsel, not engineering.** Antitrust-sensitive in both Canada and the US. The constraint shapes the data model |
+| Q-5 | Which venue is the design partner? | Now likely a Toronto hotel, from existing relationships |
