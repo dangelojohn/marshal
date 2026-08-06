@@ -6,6 +6,75 @@ drift.
 
 ---
 
+## D-014 · Chokepoint contention — Q-46 answered
+**2026-08-06 · SETTLED**
+
+The core scheduling primitive. Full design:
+`01_product/15_chokepoint_contention.md`.
+
+**⭐ The structural decision: chokepoints are separated by BUFFERS.**
+```
+[DOCK BAY]──(apron)──[AISLE]──(elev lobby)──[ELEVATOR]──(upper lobby)──[AISLE]──▶ booth
+ exclusive   cap 2   exclusive   cap 4       exclusive    cap 4        exclusive
+```
+**THE BLOCKING RULE: a movement may enter a chokepoint only if the DOWNSTREAM
+buffer has space.** Never occupy what you cannot clear. A forklift that enters
+the elevator and finds the upper lobby full **blocks the elevator for everyone**,
+and unlike a software deadlock **you cannot roll back a crate.** This also makes
+the marshalling yard behave correctly for free — it's just the buffer upstream of
+the dock bays, so trucks wait because the apron is full, not because a timer said.
+
+**Claims: `PROPOSED → CLAIMED → HELD → OCCUPIED → RELEASED`** (or `YIELDED`).
+> **Claims are preemptible. Occupancy NEVER is.** A movement scheduled for the
+> elevator can lose the slot; a forklift *in* the elevator cannot.
+
+**The comparator — deterministic, evaluated in order until one discriminates:**
+1 hard external deadline · 2 blocking/safety (**clearing an obstruction outranks
+starting new work**) · 3 precedence depth · 4 priority class · 5 earliest due ·
+6 least slack · **7 claim sequence number**.
+**Row 7 is not optional** — without a guaranteed final discriminator two runs on
+identical data could differ and rule 4 (reproducibility) is broken. **Every
+comparison records WHICH RULE decided it**, which is what makes it explainable:
+*"482 yielded to 517 — rule 1, hall opens 09:00."* The LLM may render that
+sentence; it never computes it.
+
+**Overrun: a chokepoint is NEVER released by a timer.** `expected_end` uses **p90**,
+not median. On overrun: notify the next claim, surface as drift, **occupancy ends
+only by explicit release or human decision.** Same lesson as aisle clearance —
+propose, never auto-release. A timer that frees a physical chokepoint while
+something is still in it causes a collision.
+
+**Foreign chokepoints (the hotel elevator) are ADVISORY.** On arrival it may be
+occupied by someone who never told us — that's a contention event, not an error:
+DLQ with reason `foreign_occupancy`, re-plan. **Do not build retry logic that
+hammers it.** The accumulating record becomes the evidence for asking the hotel
+for a reserved window. **The data is the argument.**
+
+**Deadlock prevented by two rules together:** global integer `rank` on
+chokepoints, always claimed ascending (no cycle can form) + the blocking rule (a
+movement can always drain forward). **Whole-chain atomic acquisition was
+deliberately REJECTED** — on a long chain nothing would ever start, and it
+contradicts how a floor really runs. A mover leaves the dock before the elevator
+is free and queues in the lobby. **The buffer is what makes partial progress
+safe.**
+
+**Odoo 16 CE:** `marshal.chokepoint` / `marshal.buffer` / `marshal.claim` /
+`marshal.contention` (immutable log). Concurrency uses the pattern already proven
+in Southbrook's ECO approval — **`SELECT ... FOR UPDATE` → `invalidate_recordset()`
+→ re-read → decide** — which closed a real double-approval race there and closes
+double-claim here. `resource.calendar` supplies *availability*; the claim layer
+handles contention *within* available time. **Contention resolves synchronously
+in the claim transaction, never in `queue_job`** — a movement must know
+immediately whether it holds the elevator.
+
+**Buildable now: no telemetry, no ML, no object detection, no distributed lock** —
+the four things that killed candidates in D-013. It also makes three shortlist
+survivors more useful: the DLQ gets its main producer, idempotency keys protect
+claim creation, and offline replay gets a clear rule — **a claim made offline is
+`PROPOSED`, never `HELD`.**
+
+---
+
 ## D-013 · Brainstorm round scored · two of my own decisions corrected
 **2026-08-06 · SETTLED**
 
