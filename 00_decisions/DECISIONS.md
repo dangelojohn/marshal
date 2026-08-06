@@ -6,6 +6,60 @@ drift.
 
 ---
 
+## D-009 · Tracking + LLM · both at the edges, never the core
+**2026-08-06 · SETTLED**
+
+**AirTags: NO as a system input.** Two fatal blockers, both deliberate design
+choices by Apple and Google, neither configurable: (1) **no API** — location
+lives in the Find My app only, and a data source a human must look at in another
+app is not a data source for a headless system; (2) **anti-stalking alerts** —
+tagged equipment moving among hundreds of exhibitor staff triggers *"an AirTag is
+travelling with you"* on their phones, and any of them can make it beep. Same for
+Android. *Legitimate minor use:* a human find-aid for genuinely lost carts.
+
+**What works instead:** **BLE tags + chokepoint gateways** at docks, elevator
+lobbies, charging bays and the yard gate — the same points Marshal already models
+as constrained resources. Open protocols, MQTT/HTTP, no anti-stalking issue.
+Marshal needs **zone-level** location (*Bay B*, *Level 3*), never coordinates,
+which is why this is cheap. **Check forklift telematics FIRST (Q-22)** — Toyota,
+Crown, Hyster and others already report hours, charge/fuel, impact detection and
+operator ID, which answers condition and fuel better than any tag.
+
+**Tagging automates exactly ONE of the three named checkpoints:** position ✅,
+fuel ❌ (telematics or a gauge), condition ❌ (**human eyes, nothing replaces
+this**). That split strengthens D-008 rather than weakening it.
+
+⚠ **Tag equipment, never people.** Operator-ID telematics crosses into employee
+monitoring — Ontario electronic-monitoring disclosure, provincial privacy law,
+and collective agreements on a unionised floor. A safety product that feels like
+surveillance gets sabotaged by the people it depends on.
+
+**LLM: YES at the edges, NEVER at the core.**
+- **Never:** producing the schedule, safety rules, metering/billing, anything on
+  a movement's critical path, or writing state directly. The **never-invocable
+  list is a checked-in, tested artifact**, enforced with a `PLM_LIFECYCLE`-style
+  identity sentinel
+- **Yes:** parsing what drivers actually text (*"stuck on the 401 maybe 40 min"*)
+  into structured intent; **bilingual SMS — turning the Bill 96 burden into a
+  feature**; explaining why the plan changed; natural-language Q&A over state;
+  structuring checkpoint free-text; incident narratives (**the record is the
+  evidence, the narrative is a convenience**)
+- **🔑 The rule that decides the design: if the model is unreachable, the dock
+  keeps running.** Every LLM feature degrades to something that still works —
+  keyword SMS fallback, canned bilingual templates, unrendered facts. An
+  enhancement, never a dependency
+- ⚠ **AEMI's AI layer was dead in prod because no key was configured and nothing
+  noticed.** Marshal needs a health check on the model path and a visible
+  degraded-mode indicator
+- **We own this architecture three times over:** `porterly-future-reference`
+  (agents propose / core re-derives from ground truth, 74 invariant tests),
+  `PLM_LIFECYCLE`, and **hermes-console — which is literally this, running
+  today.** Close enough to be the starting point, not just a reference
+
+Full detail: `01_product/10_equipment_tracking_options.md`, `11_llm_layer.md`.
+
+---
+
 ## D-008 · Per-facility headless infrastructure · the fork is resolved
 **2026-08-06 · John, primary source · SETTLED**
 
@@ -247,6 +301,11 @@ longer *whether* the venue hurts but *who holds the money*.
 | Q-2 | Register `dock.show`? | Still available. Cheap. Decide before someone else does |
 | **Q-18** | **Where does Marshal run — facility hardware or our cloud with a local agent?** | "Infrastructure per facility" implies on-prem; Law 25 and hotel IT policy may require it |
 | **Q-19** | **What happens when the network drops mid-move-in?** | Infrastructure must degrade gracefully. A dock cannot stop because a WAN link did |
+| **Q-22** | **Do the venue's forklifts have telematics, and can we get the data?** | May answer fuel + condition + utilisation with zero new hardware. **Add to the Phase-0 calls** |
+| Q-23 | Which zones actually need distinguishing? | Gateway count and placement — **answer from Phase-1 data, not guesswork** |
+| Q-25 | Union / works-council position on equipment monitoring? | Cheaper to know before install than after |
+| Q-26 | Local model on facility hardware, or cloud with graceful degradation? | Follows Q-18/Q-19; only matters for SMS intent, the one edge feature on a live path |
+| Q-27 | Does venue IT policy prohibit sending operational text to a third-party model? | Hotel/enterprise IT often does — decides whether local is mandatory |
 | Q-20 | Handheld: operator's own phone or facility-provided device? | Decides whether checkpoints are web or native |
 | Q-21 | Who administers an install — facility IT or us remotely? | Support model and update path |
 | ~~Q-3~~ | ~~Odoo or standalone?~~ | **RESOLVED by D-008 — Odoo.** Single-tenant, record-heavy, native maintenance+fleet |
