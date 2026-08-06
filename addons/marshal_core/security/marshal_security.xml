@@ -19,23 +19,89 @@
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
-        <!-- Record rules from module one, deliberately. Controller discipline
-             alone is not a security model: one mis-coded domain is a full leak
-             with nothing beneath it. -->
-        <record id="rule_movement_company" model="ir.rule">
-            <field name="name">Marshal: operators see movements</field>
+        <!-- ================================================================
+             FAIL-CLOSED ACCESS (R13)
+
+             Porterly has zero `domain_force` across 289 modules: access there
+             is 100% controller discipline with no ORM backstop, so one
+             mis-coded domain is a full leak. Marshal declares record rules
+             from module one, and they are meant to actually constrain — a rule
+             of [(1,'=',1)] is theatre, not a control.
+
+             Marshal is single-tenant per facility, so "isolation" here is
+             about ROLE, not company: an operator coordinates a floor and
+             genuinely needs to SEE all movements, but must not be able to
+             rewrite work assigned to someone else, and must never delete.
+             ================================================================ -->
+
+        <!-- Movements: operators read all (floor coordination requires it) but
+             write only their own or unassigned work. -->
+        <record id="rule_movement_user_read" model="ir.rule">
+            <field name="name">Marshal: operators read all movements</field>
             <field name="model_id" ref="model_marshal_movement"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_marshal_user'))]"/>
             <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_movement_user_write" model="ir.rule">
+            <field name="name">Marshal: operators write own or unassigned</field>
+            <field name="model_id" ref="model_marshal_movement"/>
+            <field name="domain_force">['|', ('operator_id', '=', False),
+                                            ('operator_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_user'))]"/>
+            <field name="perm_read" eval="False"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 
         <record id="rule_movement_manager" model="ir.rule">
-            <field name="name">Marshal: managers full access</field>
+            <field name="name">Marshal: managers full access to movements</field>
             <field name="model_id" ref="model_marshal_movement"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_manager'))]"/>
+        </record>
+
+        <!-- Claims follow their movement. -->
+        <record id="rule_claim_user_write" model="ir.rule">
+            <field name="name">Marshal: operators act on own or unassigned claims</field>
+            <field name="model_id" ref="model_marshal_claim"/>
+            <field name="domain_force">['|', ('movement_id.operator_id', '=', False),
+                                            ('movement_id.operator_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_claim_user_read" model="ir.rule">
+            <field name="name">Marshal: operators read all claims</field>
+            <field name="model_id" ref="model_marshal_claim"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_claim_manager" model="ir.rule">
+            <field name="name">Marshal: managers full access to claims</field>
+            <field name="model_id" ref="model_marshal_claim"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_marshal_manager'))]"/>
+        </record>
+
+        <!-- Idempotency keys are infrastructure. Operators never touch them
+             directly; the mixin writes them as sudo. -->
+        <record id="rule_idem_manager" model="ir.rule">
+            <field name="name">Marshal: idempotency visible to managers only</field>
+            <field name="model_id" ref="model_marshal_idempotency"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_marshal_manager'))]"/>
         </record>

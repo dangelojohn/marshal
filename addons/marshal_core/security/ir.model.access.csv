@@ -9,3 +9,7 @@ access_claim_user,marshal.claim.user,model_marshal_claim,group_marshal_user,1,1,
 access_claim_mgr,marshal.claim.mgr,model_marshal_claim,group_marshal_manager,1,1,1,1
 access_contention_user,marshal.contention.user,model_marshal_contention,group_marshal_user,1,0,1,0
 access_contention_mgr,marshal.contention.mgr,model_marshal_contention,group_marshal_manager,1,0,1,0
+access_dlq_user,marshal.dlq.user,model_marshal_dlq,group_marshal_user,1,1,1,0
+access_dlq_mgr,marshal.dlq.mgr,model_marshal_dlq,group_marshal_manager,1,1,1,1
+access_idem_user,marshal.idempotency.user,model_marshal_idempotency,group_marshal_user,0,0,0,0
+access_idem_mgr,marshal.idempotency.mgr,model_marshal_idempotency,group_marshal_manager,1,0,0,1

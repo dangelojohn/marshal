@@ -14,7 +14,7 @@ The two mechanics that must be exactly right:
    claim sequence number as the guaranteed final discriminator so the
    scheduler is reproducible.
 """,
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.1.0",
     "category": "Operations",
     "author": "Marshal.show",
     "website": "https://marshal.show",

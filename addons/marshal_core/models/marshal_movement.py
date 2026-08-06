@@ -7,7 +7,7 @@ class MarshalMovement(models.Model):
     """
     _name = "marshal.movement"
     _description = "Freight Movement"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "marshal.idempotent.mixin"]
     _order = "id desc"
 
     name = fields.Char(default=lambda self: _("New"), copy=False,
@@ -62,12 +62,19 @@ class MarshalMovement(models.Model):
              "Clearing an obstruction outranks starting new work.")
 
     claim_ids = fields.One2many("marshal.claim", "movement_id", string="Claims")
+    dlq_ids = fields.One2many("marshal.dlq", "movement_id", string="Blockages")
+    dlq_open_count = fields.Integer(compute="_compute_dlq_open")
     claim_count = fields.Integer(compute="_compute_claim_count")
 
     @api.depends("claim_ids")
     def _compute_claim_count(self):
         for rec in self:
             rec.claim_count = len(rec.claim_ids)
+
+    @api.depends("dlq_ids.state")
+    def _compute_dlq_open(self):
+        for rec in self:
+            rec.dlq_open_count = len(rec.dlq_ids.filtered(lambda d: d.state == "open"))
 
     @api.model_create_multi
     def create(self, vals_list):

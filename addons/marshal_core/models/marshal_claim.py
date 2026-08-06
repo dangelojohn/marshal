@@ -202,6 +202,13 @@ class MarshalClaim(models.Model):
         if not self._downstream_has_space():
             self.write({"state": "proposed"})
             self.movement_id.variance_reason = "delay_buffer_full"
+            self.env["marshal.dlq"].raise_entry(
+                self.movement_id, "buffer_full",
+                detail=(f"Downstream buffer of {self.chokepoint_id.code} is at "
+                        f"capacity; entering would block it for everyone behind."),
+                chokepoint=self.chokepoint_id,
+                suggested="Wait for the buffer to drain, or re-route via "
+                          "another chokepoint of the same type.")
             return False
 
         rivals = self.search([
@@ -221,6 +228,12 @@ class MarshalClaim(models.Model):
             })
             if not wins:
                 self.write({"state": "yielded"})
+                self.env["marshal.dlq"].raise_entry(
+                    self.movement_id, "lost_contention",
+                    detail=f"Yielded {self.chokepoint_id.code}: {reason}",
+                    chokepoint=self.chokepoint_id,
+                    suggested="Re-plan after the winning movement releases, or "
+                              "escalate priority if this is genuinely urgent.")
                 return False
             rival.write({"state": "yielded"})
 
