@@ -26,12 +26,14 @@ with a breakeven, a sensitivity range, and a venue qualification threshold.
 
 | | Absorbed | **Passed through** |
 |---|---|---|
-| Marshal gross (5% of $150) | $7.50 | $7.50 |
+| Marshal gross (22% of $150) | $33.00 | $33.00 |
 | Stripe (2.9% + $0.30) | −$4.65 | $0 |
-| **Net** | **$2.85 (1.9%)** | **$7.50 (5.0%)** |
+| **Net** | **$28.35 (18.9%)** | **$33.00 (22.0%)** |
 
-> Absorbing processing converts a 5% business into a **1.9%** business. It is the
-> difference between breakeven at ~11 venues and breakeven at **~28**.
+> Absorbing processing costs **3.1 points of take** — at mid-case volume that is
+> **$27,900 per venue per year**, or a 15% haircut on contribution. It mattered
+> more at 5% (where it halved the business) but it is still free money to pass
+> through, and exhibitors already expect it from ticketing.
 
 ### Cost
 
@@ -66,7 +68,7 @@ with a breakeven, a sensitivity range, and a venue qualification threshold.
 Contribution = (bookings × D × t) − (bookings × $0.15) − $6,700
 ```
 
-| Case | Bookings | Fee `D` | Volume | Marshal 5% | **Contribution** |
+| Case | Bookings | Fee `D` | Volume | Marshal @22% | **Contribution** |
 |---|---|---|---|---|---|
 | **Low** | 3,000 | $120 | $360K | $79,200 | **$71,900** |
 | **Mid** | 6,000 | $150 | $900K | $198,000 | **$190,400** |
@@ -118,10 +120,10 @@ deliberately:
 is part of infrastructure positioning — a rate that visibly varies by who
 negotiated hardest is a vendor's rate, not infrastructure's.
 
-## 4. Breakeven — and the problem
+## 4. Breakeven
 
 ```
-Venues to breakeven = $400,000 ÷ contribution per venue
+Venues to breakeven = $400,000 company fixed ÷ contribution per venue
 ```
 
 | Case | Contribution | **Venues to breakeven** |
@@ -132,51 +134,55 @@ Venues to breakeven = $400,000 ÷ contribution per venue
 
 > # 🔴 The finding a CFO cares about
 >
-> **At 22%, breakeven ranges from 1 to 6 venues — still a 6× spread — driven entirely by two
-> numbers nobody has asked for yet.**
+> **Raising the take rate did not remove the uncertainty. It moved it into a
+> survivable range.**
 >
-> **You cannot commit capital against a 9× spread.** At the high end this is an
-> attractive business reachable with a handful of design partners. At the low end
-> it needs 37 venues before it covers a two-person team, which is a different
-> company with a different funding requirement.
+> At 5%, breakeven spanned **4 to 37 venues** — the low case was a different
+> company with a different funding requirement, and no rational board commits
+> against that. **At 22% it spans roughly 1 to 6.** The spread is still ~6×,
+> because it is still driven by two numbers nobody has asked for — but **every
+> point in the range is now reachable with a handful of design partners.**
+>
+> **That robustness is the real argument for 22%, not the extra margin.** We are
+> most likely to be wrong about fee and volume; the take rate is the one lever
+> that makes being wrong survivable.
 
-**Therefore the first dollar goes to narrowing the range, not to building.**
-Two phone calls — *what would you pay for a guaranteed dock slot* (Q-53) and
-*how many vehicles book in per show* (Q-55) — move the decision more than six
-months of engineering.
+**The first dollar still goes to narrowing the range, not to building.** Two
+phone calls — *what would you pay for a guaranteed slot* (Q-53) and *how many
+vehicles book in per show* (Q-55) — move the decision more than six months of
+engineering.
 
 ---
 
-## 4. The venue qualification threshold
+## 5. The venue qualification threshold
 
-Rearranging for a target contribution of **$35,000** per venue-year (enough that
-11 venues clears company fixed with margin):
+Solving for a target contribution of **$60,000** per venue-year (enough that
+~7 venues clears company fixed with real margin):
 
 ```
-bookings × D  ≥  ($35,000 + $6,700) ÷ (0.05 − 0.0015/D)   ≈  $835,000
+bookings × D  ≥  ($60,000 + $6,700) ÷ (0.22 − 0.0015/D)   ≈  $305,000
 ```
 
 > ### The sales qualification rule
-> **At 22%, a venue must generate ≈ $220K+ in annual dock-fee volume to be worth
-> serving** — down from $800K at 5%. **The higher rate widens the addressable
-> market dramatically**, which matters most for the hotel-first strategy, where
-> individual properties are smaller.
+> **A venue must generate ≈ $300K+ in annual dock-fee volume to be worth
+> serving** — roughly **2,000 bookings/year** at a $150 fee. About 15 shows at
+> 135 vehicles, or 30 smaller events at 65.
 >
-> At $150 per booking that is **~5,300 bookings per year** — roughly 25 shows at
-> 210 vehicles, or 50 smaller events at 105.
+> **At 5% the same test required $800K+.** Raising the rate did not just improve
+> unit economics — **it roughly tripled the addressable market**, which matters
+> most precisely where the launch strategy points: hotels, where individual
+> properties are smaller than convention centres.
 
-This is the single most useful output of the model: **a one-line test a
-salesperson can apply before spending a week on a venue.** Below it, the venue
-consumes support without funding it.
+**A one-line test a salesperson can apply before spending a week on a venue.**
+Below it, the venue consumes support without funding it.
 
-*It also implies something uncomfortable: small hotels may not qualify
-individually.* The fix is a **multi-property agreement** — one implementation
-across a hotel group's several event properties, sharing facility fixed cost. Not
-a change to the model, but a change to who you sell to. → Q-59.
+**Multi-property agreements (Q-59) remain the fix for the smallest hotels** — one
+implementation across a group's several event properties, sharing facility fixed
+cost. Now an optimisation rather than a necessity.
 
 ---
 
-## 5. Year-one economics per venue
+## 6. Year-one economics per venue
 
 The implementation fee is what funds the ramp before transaction volume matures.
 
@@ -186,9 +192,9 @@ The implementation fee is what funds the ramp before transaction volume matures.
 | Cost to deliver | −$9,100 | ~7 days at $1,300/day loaded |
 | **Implementation contribution** | **$12,900** | ≈2.4× cost — profitable, not a loss leader |
 | Hardware — cameras, rugged devices, printers, BLE | pass-through | **at cost + 12%** procurement/config margin |
-| Transaction contribution, year 1 at 60% adoption | **$22,400** | Mid case, ramping |
-| **Year-1 total per venue** | **≈ $35,300** | |
-| Year-2+ steady state | **$37,400** | Full adoption |
+| Transaction contribution, year 1 at 60% adoption | **$114,200** | Mid case, ramping |
+| **Year-1 total per venue** | **≈ $127,100** | |
+| Year-2+ steady state | **$190,400** | Full adoption |
 
 **Implementation must be priced above cost.** A loss-leader implementation
 creates an incentive to under-deliver training, and training is what determines
@@ -197,7 +203,10 @@ volume. **The two are causally linked; price them so they pull the same way.**
 
 ---
 
-## 6. Sensitivity — where the model actually breaks
+## 7. Sensitivity — where the model actually breaks
+
+*Ranks computed at the 5% rate; **the ordering is unchanged at 22%**, only the
+absolute breakeven numbers shift down.*
 
 | Variable | ±20% swing | Effect on breakeven |
 |---|---|---|
@@ -215,7 +224,7 @@ operational.
 
 ---
 
-## 7. What the exhibitor is actually buying — the model's load-bearing assumption
+## 8. What the exhibitor is actually buying — the model's load-bearing assumption
 
 **They pay something they don't pay today. That only works if it replaces a cost
 they already bear.**
@@ -245,7 +254,7 @@ only framing under which adoption happens without coercion.
 
 ---
 
-## 8. Getting the show services companies to adopt
+## 9. Getting the show services companies to adopt
 
 The goal: **GES, Freeman, Shepard and the regional contractors actively want this,
 and it costs them nothing.**
@@ -315,17 +324,18 @@ it becomes a vendor to be evaluated rather than infrastructure to be assumed.
 
 ---
 
-## 9. The CFO recommendation
+## 10. The CFO recommendation
 
 | # | Decision | Rationale |
 |---|---|---|
-| **1** | **Take 22% list / 18% design partner, pass processing through** | The facility's alternative is $0, not the fee. Even the LOW case then breaks even at ~6 venues |
+| **1** | **22% list / 18% design partner, processing passed through** | The facility's alternative is $0, not the fee. **Even the LOW case breaks even at ~6 venues** — robustness, not greed |
+| **1b** | **Per-booking floor $17.50; decay to 18% above $1.5M/yr; contractually capped** | The floor protects the take when a venue discounts off-peak, which we actively recommend they do |
 | **2** | **Implementation fee $22K, ~2.4× delivery cost** | Funds the ramp; profitable; and it aligns training quality with transaction volume |
 | **3** | **Hardware at cost + 12%** | Cover procurement and configuration. **Do not build a hardware business** |
 | **4** | **Zero margin on penalties** — processing recovery only | Removes any financial interest in the schedule failing. Governance, not generosity |
 | **5** | **Qualify venues at ≥$800K annual fee volume** | One-line sales test. Below it, a venue consumes support without funding it |
 | **6** | **Contractors: free, forever, read-only** | It is the distribution mechanism. Charging kills it |
-| **7** | **🔴 No capital commitment until Q-53, Q-55 and Q-58 are answered** | Breakeven spans 4–37 venues. **That range is the decision, and three phone calls collapse it** |
+| **7** | **🔴 No capital commitment until Q-53, Q-55 and Q-58 are answered** | Breakeven still spans ~1–6 venues. **That range is the decision, and three phone calls collapse it** |
 
 ## Open questions, ranked by financial impact
 
