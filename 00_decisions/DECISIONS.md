@@ -6,6 +6,43 @@ drift.
 
 ---
 
+## D-006 · The camera is the interface · Reolink confirmed on site
+**2026-08-06 · John, primary source · SETTLED**
+
+> *"Ease of use and use of live video feed are both important. The video cameras
+> are Reolink."* — and confirmed we already have the integration.
+
+**These are one requirement, not two.** An ops person at 6am looks at the door,
+not at a Gantt chart. Any product that makes them translate between schedule and
+reality has lost. So the primary surface is **a wall of dock camera tiles, each
+overlaid with what is scheduled there right now** — not a schedule with video
+bolted on. No vendor in any researched category does this.
+
+**Verified by direct read** of `~/hermes-console/api/mcp/clients/reolink.py`
+(present in `qnap/hermes-console.git` — pushed and safe):
+
+- ✅ Working: camera auth/command layer, `get_dev_info`, **`get_motion_state`**,
+  `get_snapshot_url`, multi-camera config from env
+- ❌ **NOT built: live streaming.** The client says so itself at line 16 —
+  *"Hermes does NOT stream video."* RTSP/FLV is new work. **Never claim we have
+  live video; we have snapshots, motion state, and a working integration**
+
+**Motion state is the sleeper asset.** `spec/03` said instrument actuals in v1
+but couldn't solve the obvious weakness — nobody types a variance reason at 6am.
+Motion state removes the ask: motion during a scheduled window means it happened;
+silence means it didn't; **motion with nothing scheduled is a safety exception.**
+That is automatic actuals capture from hardware already on the wall, and it is
+what the entire predictive layer rests on.
+
+**Snapshot refresh (2–5s) probably beats live streaming for the wall board** —
+an `<img>` rather than a player, low bandwidth, trivial reconnect, and enough to
+answer "is door 4 clear?". Reserve true streaming for supervising a live movement
+and for incident review, as a click-through from a tile.
+
+Full reasoning: `01_product/07_video_and_ease_of_use.md`.
+
+---
+
 ## D-005 · Venue pain CONFIRMED · it's a safety and revenue product
 **2026-08-06 · John, primary source · SETTLED**
 
@@ -127,7 +164,9 @@ longer *whether* the venue hurts but *who holds the money*.
 |---|---|---|
 | **Q-1′** | **Who captures the material-handling margin today — the facility or the show manager — and who wants it back?** | Determines who the invoice is addressed to, and therefore the buyer. Ask a facility ops director and a show manager the same question |
 | **Q-8** | **What is charged today, and on what unit** — dock hour, crate, pallet, weight? | **The metering model must match the existing billing unit or it won't be adopted.** Blocks the strongest part of the business case |
+| **Q-11** | **Is Reolink motion detection reliable at dock distance and in dock lighting?** | **The cheapest de-risking test in the project.** Point the existing client at one camera on one dock, log motion state against a known schedule for one show. No product needed. Validates automatic actuals capture — which the whole predictive layer rests on |
 | Q-6 | Hotels or convention centres first? | Leaning **hotels** — worse constraints, no embedded incumbent, more of them, existing relationships |
+| Q-12 | Wall board in the dock office only, or a driver-facing display in the yard too? | Radio traffic is a proxy for coordination the system is failing to do |
 | Q-7 | Is the freight elevator the true serial constraint in hotels? | Decides whether vertical transport is a first-class resource in the solver |
 | Q-9 | Who carries liability for a floor incident — facility or show manager? | The safety framing only sells to whoever holds the risk |
 | Q-10 | Is French-language SMS required for Quebec (Bill 96)? | Cheap to design in now, expensive to retrofit |
