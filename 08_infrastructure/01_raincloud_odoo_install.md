@@ -160,8 +160,12 @@ runs QTS and must not be starved:
 - `dbfilter = ^marshal.*$` — pins the instance to its own database
 - `gevent_port = 8072` (**not** `longpolling_port`, which Odoo 16 deprecates and
   warns about)
-- `list_db = True` for dev convenience — **set False before any exposure beyond
-  the LAN**
+- **`list_db = False`** (set 2026-08-06). Verified functionally, not by eye:
+  `POST /web/database/list` and RPC `db.list` both return **AccessDenied**, and
+  the database name is not rendered in any page. Login unaffected.
+  *Note: the login template still ships the database-manager markup inline, so
+  grepping the HTML for "create database" gives a false positive — test the
+  endpoints, not the page source.*
 
 **PostgreSQL** — tuned for 15.5GB shared with QTS, verified in effect:
 
@@ -227,7 +231,7 @@ Recorded because each cost real time and will recur.
 | Priority | Action |
 |---|---|
 | **1** | **Mirror CACHEDEV2** — add one of the five idle disks to md2. Single points of failure under a database are not acceptable once real work lands |
-| **2** | Set `list_db = False` and put Odoo behind a reverse proxy with TLS before any access from outside the LAN |
+| ~~2~~ | ~~Set `list_db = False`~~ **DONE.** Still needs a reverse proxy with TLS before any access from outside the LAN |
 | **3** | Copy backups **off this box** — a backup on the volume it protects is not a backup |
 | 4 | Update `/etc/ssl/certs` so the NAS can fetch from modern HTTPS endpoints |
 | 5 | Consider raising `workers` once real load is observed — 2 is deliberately cautious |
