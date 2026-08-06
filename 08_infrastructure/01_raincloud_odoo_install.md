@@ -66,14 +66,26 @@ RAID1 but have no mirror.
 Meanwhile **seven 1.86TB disks are physically present** (sda–sdg) and only two
 carry data volumes. **Five drives are sitting idle.**
 
+**All seven drives are healthy** — verified via the QTS SMART endpoint
+(`disk/qsmart.cgi?func=all_hd_data`), WD Se enterprise units (WD2000F9YZ),
+`Health: OK`, 36–38°C. Bay 8 is empty. **So five good drives are idle.**
+
 > **Recommendation: mirror CACHEDEV2 before this instance holds anything you'd
-> miss.** Adding a second disk to md2 converts it to a real RAID1 with no
-> downtime and no data loss. Right now a single drive failure loses the whole
-> Odoo instance — the nightly backup is the only protection, and a backup on the
-> *same failed volume* protects nothing.
+> miss.** Right now a single drive failure loses the whole Odoo instance — and
+> the nightly backup currently lives *on the volume it protects*, so it protects
+> nothing against that failure.
 >
-> This is the single most valuable improvement available on this box, and the
-> hardware for it is already installed.
+> **⚠ Do it through Storage & Snapshots in the QTS web UI — not `mdadm`.**
+> I originally wrote "add a disk to md2", which implies a manual `mdadm --add`.
+> That was careless advice. **QNAP layers its own volume manager over md**, and a
+> hand-run `--add`/`--grow` against a live `[1/1]` array is a data-loss event
+> rather than a recoverable mistake. A documentation sweep found no authoritative
+> procedure (QNAP's wiki is dead and archive.org is unreachable), so there is no
+> verified CLI recipe to follow — which is exactly why this belongs in the UI
+> that understands the layering.
+>
+> This remains the single most valuable improvement available on this box, and
+> the hardware is already installed and healthy.
 
 ### 2. QTS 4.3.6 is an end-of-life branch
 

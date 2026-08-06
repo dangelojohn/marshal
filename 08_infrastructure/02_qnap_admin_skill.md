@@ -118,7 +118,7 @@ setsid dockerd \
 **Put the data-root on a data volume, never the system volume** — images fill
 space fast, and a full *system* volume can wedge QTS itself.
 
-## Storage
+## Storage — reading the array
 
 ```sh
 cat /proc/mdstat
@@ -133,7 +133,7 @@ mirror — they look redundant in `mdstat` and are not. **Always check the
 
 ## The QTS web API
 
-Useful for scripting what the CLI won't do:
+Useful for scripting what the CLI won't do.
 
 ```sh
 PW64=$(printf '%s' "$PASSWORD" | base64)   # encode OFF the NAS
@@ -143,6 +143,64 @@ curl -sk "http://127.0.0.1:8080/cgi-bin/authLogin.cgi?user=admin&pwd=$PW64"
 
 The login response also reports `modelName`, `platform`, `platform_ex` and
 firmware version — the quickest reliable way to identify exactly what you're on.
+Pass the sid on every later call as `&sid=<sid>` (GET) or `sid` in the POST body.
+
+**Other endpoints** — reverse-engineered from the maintained `python-qnapstats`
+client (what Home Assistant uses). **Unofficial but real and current**; QNAP
+publishes no CGI reference.
+
+| Endpoint | Params | Gives you |
+|---|---|---|
+| `management/manaRequest.cgi` | `subfunc=sysinfo&sysHealth=1` | System health |
+| `management/manaRequest.cgi` | `subfunc=sysinfo&hd=no&multicpu=1` | CPU/system info |
+| **`disk/qsmart.cgi`** | `func=all_hd_data` | **SMART data for every disk** |
+| `management/chartReq.cgi` | `chart_func=disk_usage&disk_select=all&include=all` | Volume usage |
+| `sys/sysRequest.cgi` | `subfunc=firm_update` | Firmware update state |
+| `devices/devRequest.cgi` (POST) | `func=getExternalDev` | External devices |
+
+**`qsmart.cgi` is the one to remember** — `smartctl` is often absent or silent on
+QTS, and this is the reliable way to get drive health.
+
+## QPKG packaging (if you ever need to build one)
+
+Build tooling is **QDK** (`github.com/qnap-dev/QDK`); the real manual is
+`docs/QDK-Developer-Guide.md` in that repo, not the README.
+
+- `qbuild --create-env MyQPKG` scaffolds; `qbuild` inside the dir compiles
+- **`qpkg.cfg`** — `QPKG_NAME`, `QPKG_VER`, `QPKG_AUTHOR` required; `QPKG_REQUIRE`
+  expresses dependencies (e.g. `container-station >= 2.0`)
+- **`package_routines`** hooks, in call order: `pkg_init` → `pkg_check_requirement`
+  → `pkg_pre_install` → `pkg_install` → `pkg_post_install`; removal is
+  `PKG_PRE_REMOVE` → `PKG_MAIN_REMOVE` → `PKG_POST_REMOVE`
+- **`SYS_*` at install time** — corroborates the filesystem contract above:
+  `SYS_CONFIG_DIR=/etc/config`, `SYS_QPKG_CONFIG_FILE=/etc/config/qpkg.conf`
+  ("the system-wide package registry"), `SYS_QPKG_INSTALL_PATH=$SYS_QPKG_BASE/.qpkg`
+- **`CMD_*` fixed paths** (don't rely on `$PATH`): `/sbin/getcfg`, `/sbin/setcfg`,
+  `/sbin/log_tool`, `/sbin/write_log`, `/usr/local/sbin/qsh`
+- Files listed in `QPKG_CONFIG` are MD5-compared on upgrade; **locally modified
+  ones are preserved as `.qdksave`**, unmodified ones silently replaced
+
+## Entware — opkg for CLI tooling
+
+An alternative to QPKGs when you just want CLI packages. Installs to **`/opt`**
+universally, via a thin QPKG wrapper (App Center → *Install Manually*) that
+auto-detects architecture.
+
+- **Remove Optware/Qnapware first — they conflict**
+- Non-admin users need `source /opt/etc/profile` to get it on `$PATH`
+- `OneCDOnly/sherpa` layers a CLI package manager on top — **self-describes as
+  beta, not for production**
+
+## Container Station availability
+
+**Docker requires QTS 4.2.6+** (LXD 4.5.3+, Kata 4.2+ and 64-bit x86 only).
+
+**So the firmware version is rarely the blocker — the *model* is.** A TS-879 Pro
+on 4.3.6 clears the version floor comfortably and still has no Container Station
+available, because App Center gates per-model on CPU instruction set. **Check the
+App Center for the specific model rather than reasoning from the QTS version.**
+When it isn't available, install Docker directly (above) — often the better
+outcome anyway.
 
 ## Odoo on QNAP — three specific traps
 
@@ -163,6 +221,22 @@ firmware version — the quickest reliable way to identify exactly what you're o
 `curl` to `127.0.0.1:<port>` on the NAS can return `000` even when the service is
 perfectly healthy — a loopback/curl quirk. **Test published ports from a
 different machine** before concluding anything is broken.
+
+## 🔴 Storage — what is NOT known (do not improvise)
+
+**There is no verified procedure here for converting a single-disk QNAP volume to
+a real mirror.** A documentation sweep (2026-08-06) found nothing sourceable:
+`wiki.qnap.com` is dead, `web.archive.org` is unfetchable, and the community
+forum has migrated with no deep technical archive.
+
+> **Do not improvise `mdadm` against a live QNAP volume from memory.** QNAP layers
+> its own volume manager over md, and a wrong `--grow`/`--add` on a
+> `[1/1]` array is a data-loss event, not a recoverable mistake.
+>
+> Do it through **Storage & Snapshots in the QTS web UI**, which understands the
+> QNAP-specific layering, or confirm the procedure against current vendor
+> documentation first. Capture `cat /proc/mdstat` and `mdadm --detail` before
+> touching anything.
 
 ## Etiquette
 
