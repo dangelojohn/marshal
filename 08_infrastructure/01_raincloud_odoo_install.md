@@ -278,3 +278,88 @@ All five models verified reachable over JSON-RPC as `admin`.
 $BASE/scripts/install-module.sh marshal_core -i     # or -u to upgrade
 $BASE/scripts/run-tests.sh marshal_core
 ```
+
+---
+
+## Seeded topology, and the blocking rule proven on live data
+
+```
+[DOCK1..3] ─(APRON cap 2)─ [AISLE-A] ─(LOBBY-L cap 4)─ [LIFT1] ─(LOBBY-U cap 4)─ [AISLE-C]
+  rank 10-12                 rank 20                    rank 30                    rank 40
+```
+
+Ranks ascend along the flow, which is what makes acquisition deadlock-free.
+`LIFT1` is flagged **`is_foreign`** — a hotel freight elevator is shared with
+housekeeping and may be occupied on arrival by someone who never told us.
+
+Re-runnable: `cat scripts/seed-venue.py | scripts/odoo-shell.sh`
+
+**The blocking rule, exercised against the real topology** (apron capacity 2):
+
+```
+CRATE-1 -> DOCK1  acquire=True   apron=0/2  buffer_ok=True
+CRATE-2 -> DOCK2  acquire=True   apron=1/2  buffer_ok=True
+CRATE-3 -> DOCK3  acquire=False  apron=2/2  buffer_ok=False  variance=delay_buffer_full
+```
+
+Crates 1 and 2 clear the dock into the apron; at capacity the third is refused
+and stamped. **Never occupy what you cannot clear.**
+
+---
+
+## Backups are now off-box
+
+The nightly NAS backup wrote to CACHEDEV2 — **the same single-disk,
+non-redundant volume it was protecting.** That guards against a bad upgrade or a
+dropped database and against **nothing** if sdg dies.
+
+| | |
+|---|---|
+| Puller | `~/Downloads/_backups/raincloud-offbox/pull-backups.sh` |
+| Schedule | **03:15 daily** on the Mac via launchd (`com.marshal.offbox-backup`), 45 min after the NAS backup |
+| Holds | backups + `config`, `stack`, `scripts`, `addons` |
+| Retention | 30 days off-box, 14 on the NAS |
+
+**Uses tar-over-ssh, not rsync** — the NAS ships busybox rsync, which rejects
+GNU rsync's flags.
+
+**Restore is verified, not assumed.** `scripts/verify-restore.sh` restores the
+newest dump into a scratch database, checks it, and drops it:
+
+```
+restored OK: 222 tables, 30 modules installed, 6 chokepoints
+```
+
+A backup you have never restored is a hope, not a backup.
+
+---
+
+## Firmware — no update available, and I would not apply one yet
+
+**Asked: update to the latest QNAP OS. Answer: there isn't one for this model.**
+
+- The NAS's own authenticated update endpoint (`sysRequest.cgi?subfunc=firm_update`)
+  returns **empty** version and build fields — QNAP's update service telling this
+  device there is nothing newer
+- Current build **20240619 (June 2024)** on the 4.3.6 branch, so QNAP was still
+  patching this legacy track recently
+- TS-879 Pro is a 2012 model; QTS 5.x requires newer hardware
+
+*(`update.qnap.com/SoftwareRelease.xml` turned out to be a **client-application**
+feed — Qfile/Qsync, note the `androidSDK`/`iOS` tags — not a firmware-per-model
+feed, so its silence on TS-879 is not evidence either way.)*
+
+**Even if an update appeared, the prerequisites were not met until now:**
+
+1. **No redundancy** — both volumes are single-disk. A firmware update that goes
+   wrong on a box with no mirror is unrecoverable
+2. **No off-box backup** — now fixed, above. This was the real blocker
+3. **A live service** with real data
+4. **Our Docker install sits outside QNAP's app framework.** Data on CACHEDEV2
+   and `autorun.sh` on the DOM both persist — but a firmware update can reset the
+   **`Run user defined processes during startup` flag**, which would leave the
+   stack down after reboot with no obvious cause
+
+**If an update does appear, the order is:** off-box backup (done) → verify
+restore (done) → mirror CACHEDEV2 → snapshot the autorun flag → update →
+re-check the flag and `scripts/health.sh`.
