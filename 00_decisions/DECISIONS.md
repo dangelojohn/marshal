@@ -6,6 +6,50 @@ drift.
 
 ---
 
+## D-012 · Surface map — one per role
+**2026-08-06 · John · SETTLED**
+
+> *"Receivers get iPhone, runners get Apple Watch, managers get web interface,
+> customers get SMS and a web portal."*
+
+| Role | Surface | State |
+|---|---|---|
+| **Receiver** | **iPhone** — capture, evidence, custody | ✅ **LIVE** (Porterly Inbound PWA) |
+| **Runner** | **Apple Watch** — one movement, two taps | ❌ New |
+| **Manager** | **Web** — wall board + coordinator | ❌ New |
+| **Customer** | **SMS + portal** | Portal ✅ **LIVE** (Outbound PWA) · SMS designed only |
+
+**🔑 Five surfaces is FEWER, not more.** The original brief asked for *"as few
+surfaces as possible"* and `spec/01` proposed three — but the metric was wrong.
+**What matters is how many surfaces any ONE PERSON must learn. Here it is one.**
+`spec/01`'s three were *role-spanning* (a shared console for venue ops AND show
+managers), so both had to navigate past the other's concerns. Role-scoped
+surfaces where nobody sees another role's screen are simpler for every
+individual. **This only works because of D-008 — one headless core, N
+renderings. Adding a surface costs a client, not a system.**
+
+**"Customer" is three parties with diverging needs:** driver/carrier = **SMS
+only** (in a truck, will never log in) · exhibitor = portal + SMS · show manager
+= portal, read-only.
+
+**⚠ Gap this exposes (Q-42): equipment checkpoints have no home.** Runners only
+carry watches, but condition/fuel/position need eyes, probably a photo, and more
+than two taps. **Recommendation: a shared tablet at the equipment/charging bay** —
+checkpoints are *location-bound*, not person-bound; they happen where the machine
+is parked, at shift start and end. Keeps the watch to two taps, needs no
+per-person hardware.
+
+**Q-38 RESOLVED** — facility-provided, Apple ecosystem. So Watch **Ultra** for
+the Action Button (gloves), not a standard Watch.
+
+**Half the surface area is already in production.** New work concentrates exactly
+where Marshal is differentiated: the runner's watch, the manager's board, and the
+coordinator loop underneath.
+
+Full detail: `01_product/14_surface_map.md`.
+
+---
+
 ## D-011 · Porterly Design corpus is the backlog · wrist surface adopted
 **2026-08-06 · SETTLED**
 
