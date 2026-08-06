@@ -54,15 +54,25 @@ on the physical bottleneck everything else queues behind.
 
 ## Saving
 
-This folder is a **git repository**. Every save is a commit, so nothing is lost
-to an overwrite and any earlier state is recoverable.
+This folder is a **git repository**, pushed to Forgejo on the QNAP.
 
 ```bash
-./save.sh "what changed"      # stage, commit, and report
+./save.sh "what changed"      # commit, mirror, and push
 git log --oneline             # see every save
 ```
 
-No remote is configured. Nothing leaves this machine until you add one.
+| | |
+|---|---|
+| **Repo** | `john/marshal` |
+| **Web** | https://southbrookcabinetry.space/git/john/marshal |
+| **Clone** | `https://southbrookcabinetry.space/git/john/marshal.git` |
+| **SSH** | `ssh://git@192.168.68.108:2223/john/marshal.git` |
+| **Visibility** | **Public** — anonymous clone and read, no credentials needed |
+| **Local mirror** | `~/Downloads/_backups/marshal-show-latest` |
+
+Deliberately public so it's easy to reach on the internal network. Anonymous
+**read** needs nothing; **push** still needs your Forgejo credential, which is
+what keeps the history intact.
 
 ## Honest status
 
