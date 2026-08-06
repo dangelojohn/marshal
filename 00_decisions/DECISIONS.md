@@ -6,6 +6,123 @@ drift.
 
 ---
 
+## D-017 · Stakeholder analysis · take rate 18% · workers are the kill risk
+**2026-08-06 · SETTLED (structure) · PROPOSED (rates)**
+
+Three parallel deep analyses. Full detail:
+`01_product/18_stakeholder_analysis.md`.
+
+### ⭐⭐ The launch sequence was decided for us
+> **GSC blocking power: 7/10 at a convention centre. 2/10 at a hotel.**
+At a convention centre the GSC is embedded via multi-year official-contractor
+agreements and controls the union labour relationship. **At a hotel there is
+usually no GSC at all.** This **independently confirms hotels-first** from a
+completely different direction than I argued (constraints + relationships).
+**The real reason: the party most able to kill Marshal isn't in the building.**
+
+### 🔴 WORKERS are the most likely killer — and the only silent one
+Every other objection is **loud and negotiable**. Workers have motive **and
+silent means** — tap sloppily, leave it in a locker, let the battery die,
+badge-share. **Invisible until the data has been worthless for months.**
+**The cascade:** worker distrust → sloppy taps → data quality collapses → the
+insurer's evidentiary case is gutted → the last external check on *"is the fee
+buying anything?"* disappears → **the exhibitor pays more for less and Marshal
+can never prove otherwise.**
+
+**🔴 The objection that exposed a dishonesty in MY framing:**
+> *"You tell me it's not tracking me, and you tell the insurance company it
+> proves who touched what and when — pick one."*
+
+**Correct.** D-009 said *"tag equipment, never people"* — but **operator identity
+is on every movement**, which is exactly what makes the record valuable to an
+underwriter. **The data DOES identify individuals.**
+> **REPLACES D-009's wording:** *Record the movement, including who performed it.
+> Never track location between movements. Never use it for performance
+> management.* **The commitment is about USE, not existence.** Claiming otherwise
+> is a lie a worker sees through in a week.
+
+**Intervention (do this FIRST):** put *no individual performance metrics, no
+discipline use, no leaderboards* into **enforceable collective-agreement
+language, co-written with the union BEFORE rollout.** Not announced afterwards as
+product philosophy. **It removes the MOTIVE rather than trying to detect defeat —
+a detection arms race workers always win, because they control the physical act
+of tapping.**
+**Red lines to concede before being asked:** no individual timing in discipline ·
+no leaderboards, in writing · **no autonomous "you cannot work today" without
+mandatory same-shift human override with zero punitive consequence** (a cert
+lapse is usually the EMPLOYER's tracking failure, and auto-benching someone
+publicly is algorithmic management at its worst).
+**⭐ What makes a runner glad it exists: it ends radio chaos and double-dispatch,
+and it becomes their ALIBI not their leash** — use the record publicly to back
+runners against unfair blame the first few times it matters. The lesson lands
+through experience, never through policy language.
+
+### 🔴 Flat pricing is regressive TWICE OVER — the exhibitor is 3 segments
+| Segment | Detention bill today? | How the fee reads |
+|---|---|---|
+| **Small self-driven van** | **NONE** — no carrier invoice exists | **Purely additive** |
+| Mid/large contracted carrier | **Yes** — detention + rush labour | **Genuine substitution** |
+| Advance-warehouse shipper | Insulated | Irrelevant |
+**The group most likely to experience it as a junk fee is the group least able to
+point to what it displaced.** Worst possible political combination.
+**Fixes: TIER by freight volume/vehicle class** · **⭐ contractual backstop —
+"miss your slot by >30min and we cover documented detention / waive the rebooking
+fee"**, which converts the fee from a lottery ticket into **real risk transfer**
+and means Marshal only keeps it if the slot is honoured · **for small exhibitors
+lead with show-open certainty, NOT cost substitution — the substitution claim is
+FALSE for them and they'll know it.**
+
+### GSC's real objection is MARGIN, not pride
+Exhibitors don't do resource accounting — they see two bills for one truck and
+blame the GSC for the total. Chain: push back on total freight spend → hand-carry
+more → **GSC tonnage softens** → organisers use it as renewal leverage.
+**Dangerous because unprovable: the anecdote circulates long before anyone has
+numbers, and the anecdote alone triggers lobbying.**
+**→ Instrument CWT/tonnage at pilot venues from day one.**
+**Correction: "free read-only forever" is TABLE STAKES for the nationals, not a
+concession.** They need **API write-access** (their freight system stays the
+operational layer), **co-branding on exhibitor-facing touchpoints**, and a
+**modest revenue share from OUR take, never their margin.** Not a governance seat.
+**Lead with liability/insurance — it maps to their P&L, not their pride.**
+
+### Two corrections to the financial case
+**The damage/insurance story is real but SMALL** — dock fee is **73–96%** of the
+facility's gain; everything else is a ~18% uplift, not a second pillar. **Build
+the pitch on the dock-fee line; damage is colour, not foundation.**
+**Insurance is oversold as premium reduction and can BACKFIRE** — $0–10K year 1;
+GL underwriting is dominated by loss history. **And recording near-misses the
+facility fails to act on hands plaintiff's counsel a "you had the data and didn't
+act" heightened-duty argument.** Never lead with *"cuts your insurance"* — lead
+with **"makes your claims cheaper to fight and easier to win."** Best near-term
+version: **if the facility self-insures its GL retention, its risk manager
+benefits from every avoided incident immediately.**
+
+### ⚠ The exhibitor-only-payer governance flaw
+Every other party captures benefit at zero marginal cost. **Only the exhibitor
+pays — so nobody but the exhibitor has skin in the game to keep the fee honest.**
+A venue under revenue pressure has every incentive to let it creep, and
+**Marshal's own incentive points at the stakeholder least able to push back.**
+Check: publish what the fee prevents · tier and cap · the detention backstop ·
+**contractually cap Marshal's take, no unilateral escalation.**
+
+### TAKE RATE: 18% (was 5%)
+At 5% the facility kept **$855K of new revenue on a resource previously given
+away free** for a $22K one-time fee, while Marshal — which creates the entire
+line — broke even at **11 venues**. **The facility's alternative is $0, not
+$855K.**
+**18% → Marshal $162K, facility $738K, breakeven 2.6 venues.** Plus:
+**per-booking floor $15–20** (without it our own off-peak discounting would erode
+the take — I had missed this) and **volume decay to ~15% above $1.5M/yr**.
+Thresholds: **≤20–22% obvious yes** · **~25% invites "a quarter of a revenue line
+on my own dock, forever?"** · **>30–35% reads as a landlord on their asset.**
+**Correction: I cited hotel OTAs as support — wrong comparable.** OTA commission
+is priced for *bringing the customer*; **Marshal brings no exhibitors, the trucks
+are coming regardless.** Right anchor = parking-reservation / ticketing service
+fees. **No cut of the damage bucket** (avoided cost, not a transaction,
+unauditable, reads as scope creep).
+
+---
+
 ## D-016 · Financial model · plan rev 2
 **2026-08-06 · SETTLED (model) · PROPOSED (rates, pending Q-53/55/58)**
 
