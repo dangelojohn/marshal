@@ -6,6 +6,81 @@ drift.
 
 ---
 
+## D-015 · Dock & Marshalling Fee model — mechanism right, take rate wrong
+**2026-08-06 · John proposal + my analysis · PROPOSED, not settled**
+
+Exhibitors prepay a dock fee; off-slot arrival or no-show triggers a penalty;
+Marshal takes ~5%; **venue pays no recurring subscription**, only a one-time
+implementation fee plus hardware.
+
+**⭐ The fee IS the scheduling mechanism — this is a PRODUCT insight, not just
+revenue.** Target move-in times already exist (GES/Freeman assign them) and fail
+because there is no consequence. The brainstorm's "congestion pricing" candidate
+was killed by the breaker for exactly that — **no enforcement**. **Prepayment
+plus a priced consequence is the missing enforcement.** Everything else — solver,
+chokepoint contention, wall board — is downstream of whether anyone honours the
+plan.
+
+**Also right:** it puts payment where the payer already expects it (Porterly's own
+analysis reached this independently — freight is a budgeted show cost), and it
+removes the hardest sale by deleting the venue's annual re-justification.
+
+### 🔴 Problem 1 — the economics don't work at 5% gross
+**Payment processing eats most of the take.** On an illustrative $150 fee: 5% =
+$7.50, **Stripe ≈ $4.65**, SMS ≈ $0.08 → **net ≈ $2.77, about 1.8%.**
+*5% gross is really ~2% net.* At 30 shows × 200 vehicles × $150 = $900K volume
+per venue → **~$27K net per venue per year**, before infrastructure, support,
+patching and all development. **One venue does not fund a business.**
+**→ Fix: quote 5% PLUS processing pass-through.** Preserves the "no recurring
+cost" story exactly and is a structure exhibitors already know from ticketing.
+
+### 🔴 Problem 2 — Marshal must NEVER profit from the schedule failing
+Penalty margin looks attractive. **Do not take it.** If Marshal earns more when
+exhibitors miss slots, **Marshal has a financial interest in a failing schedule**
+— a governance defect any venue counsel spots immediately. **Penalty revenue goes
+to whoever absorbed the cost** (venue, or the contractor who staffed a crew for
+freight that never came). Marshal takes its normal rate or nothing.
+**⭐ Automatic waiver is the key trust feature.** The real dispute is *"I was late
+because the truck ahead was still in the bay."* **If Marshal or the venue caused
+it, the exhibitor cannot be charged.** And Marshal already holds the evidence —
+**the D-014 contention log records which claim held the bay, when, and under
+which rule.** Waive automatically, without the exhibitor having to argue.
+**The defensible-record layer built for SAFETY turns out to be the
+dispute-resolution engine.** Both need the same thing.
+**Language: "rebooking fee" / "missed-slot fee", never "ticket" or "fine"** —
+those imply punitive authority Marshal doesn't have. Bilingual (Bill 96).
+
+### 🔴 Problem 3 — the model may not be PERMITTED. Q-1′ now gates viability
+D-005 §5: facility PROVIDES handling, **show management OFTEN BILLS it**,
+exhibitor pays. **If show management owns the exhibitor billing relationship,
+Marshal charging exhibitors directly cuts across an existing contract** and may
+breach the venue's agreement with the organiser. Q-1′ is no longer a
+go-to-market question — it decides whether this works at all.
+**→ Do NOT build the payment layer until Q-1′ is answered.** Metering and the
+consumption record (D-010) are correct under every outcome — build those.
+
+### Other corrections
+- **Price the constraint, not the resentment.** Weight is the WRONG primary axis
+  — **drayage priced by weight is the most-complained-about line in the category.**
+  Price on **slot duration + vehicle class**; discount off-peak, because that
+  pricing lever does actual scheduling work by flattening the peak
+- **Never hold the money.** Stripe Connect, **venue as the connected account** —
+  exhibitor pays the venue, Stripe splits Marshal's fee. Sidesteps
+  payment-facilitator / FINTRAC exposure entirely
+- **"Free" is not free.** A venue with no recurring cost has no annual "is this
+  worth it?" moment — good for retention, **bad for engagement**. **Keep the
+  implementation fee substantial: it is the commitment device.** And year-3 costs
+  (support, **Odoo 16 security patching is ours per D-010**, hardware
+  replacement, retraining after turnover) are real
+- **🔧 DROP AirTags from the hardware package** (D-009) — no API, and
+  anti-stalking alerts will fire on exhibitor staff phones. Selling them as
+  tracking hardware means support calls in week one. **BLE tags + chokepoint
+  gateways instead.** Reolink, rugged devices, printers and scanners are all sound
+
+Full analysis: `01_product/16_business_model_dock_fee.md`.
+
+---
+
 ## D-014 · Chokepoint contention — Q-46 answered
 **2026-08-06 · SETTLED**
 
