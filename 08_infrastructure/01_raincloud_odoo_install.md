@@ -367,3 +367,52 @@ feed, so its silence on TS-879 is not evidence either way.)*
 **If an update does appear, the order is:** off-box backup (done) → verify
 restore (done) → mirror CACHEDEV2 → snapshot the autorun flag → update →
 re-check the flag and `scripts/health.sh`.
+
+---
+
+## Wave 0 + Wave 1 — what is now running
+
+**`marshal_core` 16.0.1.2.0 · 30 tests passing · CI gate green · zero downtime.**
+
+### Wave 0
+| Piece | Why |
+|---|---|
+| **Idempotency keys** | Clients are a watch, a gloved phone and an SMS gateway on networks that drop. They must be able to retry *dumbly*. Client-supplied key, server-side dedup, and a loud log if the same key returns with a different payload — that is a client bug, not a retry |
+| **Dead-letter queue** | Every refusal writes a coded entry with suggested actions. A blockage is visible and actionable rather than discovered when a truck is already waiting |
+| **Fail-closed access** | Operators read all movements, **write only their own or unassigned**, never unlink |
+| **CI gate** | `scripts/ci.sh` — static checks, then a real install+test against a scratch database |
+
+### Wave 1 — the custody spine (R04)
+Per-movement hash chain, **not one global chain**. A global chain serialises
+every write behind one tail pointer and makes verifying one crate mean walking
+every event ever recorded. Per-movement chains are independent and short:
+*"prove this crate's history"* touches only that crate. Cross-chain integrity
+comes from periodic **anchors** instead.
+
+Verified on live data: `CHAIN INTACT | events=3` and an anchor over the chain
+heads. Tests prove it **detects** tampering rather than merely storing history —
+each bypasses the ORM guard with raw SQL, the way someone with database access
+would: an edited payload is caught, a deleted middle event is caught, and
+tampering with one movement's chain leaves another's intact.
+
+> **What it is not:** this is not a blockchain and it will not stop an admin
+> rewriting a chain wholesale. The anchor is what makes that expensive — and it
+> is worth far more now that anchors leave the box with the nightly off-box
+> backup.
+
+### Two corrections found along the way
+
+**`--no-http` means zero downtime.** I had been stopping production for every
+install and test, and had written that into the skill as fact. Tested and
+disproved: `-i --test-enable --no-http` against a scratch database coexists with
+the live server. Both helper scripts corrected.
+
+**QTS has no python3 at all**, so `lint.sh` borrows the odoo container's
+interpreter over stdin rather than installing anything.
+
+### The CI gate earned itself immediately
+
+Its first real run caught a bug before it reached the live database: a
+string-replace put the *Verify Custody Chain* button on `marshal.dlq` instead of
+`marshal.movement`, which Odoo rejects at view-validation time. Static checks
+alone would have passed it — it took the real install to catch.

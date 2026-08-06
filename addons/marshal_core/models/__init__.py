@@ -4,4 +4,5 @@ from . import marshal_buffer
 from . import marshal_movement
 from . import marshal_claim
 from . import marshal_contention
+from . import marshal_event
 from . import marshal_dlq

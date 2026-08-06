@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class MarshalMovement(models.Model):
@@ -63,6 +64,9 @@ class MarshalMovement(models.Model):
 
     claim_ids = fields.One2many("marshal.claim", "movement_id", string="Claims")
     dlq_ids = fields.One2many("marshal.dlq", "movement_id", string="Blockages")
+    event_ids = fields.One2many("marshal.event", "movement_id", string="Custody Log")
+    chain_ok = fields.Boolean(compute="_compute_chain_ok", string="Chain intact")
+    chain_detail = fields.Char(compute="_compute_chain_ok")
     dlq_open_count = fields.Integer(compute="_compute_dlq_open")
     claim_count = fields.Integer(compute="_compute_claim_count")
 
@@ -76,13 +80,48 @@ class MarshalMovement(models.Model):
         for rec in self:
             rec.dlq_open_count = len(rec.dlq_ids.filtered(lambda d: d.state == "open"))
 
+    def _compute_chain_ok(self):
+        Event = self.env["marshal.event"]
+        for rec in self:
+            if not rec.id:
+                rec.chain_ok, rec.chain_detail = True, "no events"
+                continue
+            ok, bad, detail = Event.verify_chain(rec)
+            rec.chain_ok = ok
+            rec.chain_detail = detail if ok else f"BROKEN at seq {bad}: {detail}"
+
+    def action_verify_chain(self):
+        """Surfaced as a button — this is what you press in a dispute."""
+        self.ensure_one()
+        ok, bad, detail = self.env["marshal.event"].verify_chain(self)
+        raise UserError(  # deliberately a dialog: the answer must be read
+            f"Custody chain for {self.name}: "
+            f"{'INTACT' if ok else 'BROKEN'} — {detail}")
+
     @api.model_create_multi
     def create(self, vals_list):
         seq = self.env["ir.sequence"]
         for vals in vals_list:
             if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = seq.next_by_code("marshal.movement") or _("New")
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        for rec in records:
+            self.env["marshal.event"].record(rec, "created", {
+                "crate_ref": rec.crate_ref, "dest_booth": rec.dest_booth,
+                "priority_class": rec.priority_class,
+            })
+        return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Only state and variance are worth chaining — chaining every field
+        # write would bury the signal in noise.
+        if "state" in vals or "variance_reason" in vals:
+            for rec in self:
+                self.env["marshal.event"].record(rec, "state", {
+                    k: vals[k] for k in ("state", "variance_reason") if k in vals
+                })
+        return res
 
     def _latest_claim(self):
         """The claim with the highest sequence is this movement's most recent

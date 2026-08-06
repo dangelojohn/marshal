@@ -202,3 +202,88 @@ class TestAccessRules(TransactionCase):
         for rule in self._rules("marshal.movement", "perm_unlink"):
             self.assertNotIn(op, rule.groups,
                              "operators must never be granted unlink on movements")
+
+
+@tagged("post_install", "-at_install", "marshal")
+class TestCustodyChain(TransactionCase):
+    """R04 — the custody log must DETECT tampering, not merely store history.
+
+    This is the artifact three separate arguments rest on: the safety record
+    (D-005), the automatic penalty waiver (D-015), and the insurance case
+    (D-017). If it can be edited silently, all three collapse.
+    """
+
+    def _mv(self, **kw):
+        v = {"crate_ref": "CHAIN-1", "dest_booth": "900"}
+        v.update(kw)
+        return self.env["marshal.movement"].create(v)
+
+    def test_creation_starts_a_chain(self):
+        mv = self._mv()
+        self.assertTrue(mv.event_ids, "creating a movement must open its chain")
+        self.assertEqual(mv.event_ids[0].seq, 1)
+        self.assertEqual(mv.event_ids[0].event_type, "created")
+
+    def test_chain_verifies_clean(self):
+        mv = self._mv()
+        mv.action_plan()
+        mv.action_start()
+        ok, bad, detail = self.env["marshal.event"].verify_chain(mv)
+        self.assertTrue(ok, f"clean chain must verify: {detail}")
+        self.assertIsNone(bad)
+
+    def test_events_are_append_only(self):
+        mv = self._mv()
+        ev = mv.event_ids[0]
+        with self.assertRaises(Exception):
+            ev.write({"payload": '{"tampered": true}'})
+        with self.assertRaises(Exception):
+            ev.unlink()
+
+    def test_tampered_payload_is_detected(self):
+        """The whole point. Bypass the ORM guard the way an attacker with
+        database access would, and confirm verification still catches it."""
+        mv = self._mv()
+        mv.action_plan()
+        ev = mv.event_ids[0]
+        self.env.cr.execute(
+            "UPDATE marshal_event SET payload = %s WHERE id = %s",
+            ('{"crate_ref": "SWAPPED"}', ev.id))
+        self.env.invalidate_all()
+        ok, bad, detail = self.env["marshal.event"].verify_chain(mv)
+        self.assertFalse(ok, "an edited payload must break verification")
+        self.assertEqual(bad, 1)
+        self.assertIn("altered", detail)
+
+    def test_deleted_middle_event_is_detected(self):
+        mv = self._mv()
+        mv.action_plan()
+        mv.action_start()
+        self.assertGreaterEqual(len(mv.event_ids), 3)
+        victim = mv.event_ids[1]
+        self.env.cr.execute("DELETE FROM marshal_event WHERE id = %s", (victim.id,))
+        self.env.invalidate_all()
+        ok, bad, _ = self.env["marshal.event"].verify_chain(mv)
+        self.assertFalse(ok, "a hole in the chain must be detected")
+
+    def test_chains_are_independent_per_movement(self):
+        """Per-movement chains, not one global chain — verifying one crate must
+        not depend on any other."""
+        a, b = self._mv(crate_ref="A"), self._mv(crate_ref="B")
+        self.assertNotEqual(a.event_ids[0].prev_hash, b.event_ids[0].prev_hash,
+                            "each chain needs its own genesis")
+        self.env.cr.execute(
+            "UPDATE marshal_event SET payload = %s WHERE id = %s",
+            ('{"x": 1}', a.event_ids[0].id))
+        self.env.invalidate_all()
+        self.assertFalse(self.env["marshal.event"].verify_chain(a)[0])
+        self.assertTrue(self.env["marshal.event"].verify_chain(b)[0],
+                        "tampering with A must not invalidate B")
+
+    def test_anchor_covers_chain_heads(self):
+        self._mv(); self._mv()
+        anchor = self.env["marshal.anchor"].take()
+        self.assertTrue(anchor.digest)
+        self.assertGreaterEqual(anchor.chain_count, 2)
+        with self.assertRaises(Exception):
+            anchor.write({"digest": "x"})

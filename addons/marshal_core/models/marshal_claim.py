@@ -238,7 +238,13 @@ class MarshalClaim(models.Model):
             rival.write({"state": "yielded"})
 
         self.write({"state": "held" if self.chokepoint_id.has_room() else "claimed"})
+        self._log("claimed")
         return True
+
+    def _log(self, event_type, **extra):
+        payload = {"chokepoint": self.chokepoint_id.code, "claim_seq": self.sequence}
+        payload.update(extra)
+        self.env["marshal.event"].record(self.movement_id, event_type, payload)
 
     def action_occupy(self):
         """Physically enter. Re-checks the blocking rule: the world may have
@@ -251,6 +257,7 @@ class MarshalClaim(models.Model):
         if not self.chokepoint_id.has_room():
             raise UserError("Chokepoint is at capacity.")
         self.write({"state": "occupied"})
+        self._log("occupied")
 
     def action_release(self):
         """Occupancy ends ONLY here or by human action — never by a timer.
@@ -258,3 +265,4 @@ class MarshalClaim(models.Model):
         causes a collision."""
         self.ensure_one()
         self.write({"state": "released"})
+        self._log("released")

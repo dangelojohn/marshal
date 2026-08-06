@@ -92,6 +92,8 @@
                             class="oe_highlight" states="in_progress"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             states="draft,planned,in_progress"/>
+                    <button name="action_verify_chain" string="Verify Custody Chain"
+                            type="object" class="btn-secondary"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -117,6 +119,17 @@
                                 <tree decoration-danger="state == 'open'">
                                     <field name="create_date"/><field name="reason_code"/>
                                     <field name="detail"/><field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Custody Log">
+                            <field name="chain_detail" readonly="1"/>
+                            <field name="event_ids" readonly="1">
+                                <tree create="false" edit="false" delete="false">
+                                    <field name="seq"/><field name="recorded_at"/>
+                                    <field name="event_type"/><field name="user_id"/>
+                                    <field name="payload"/>
+                                    <field name="hash" widget="char" optional="hide"/>
                                 </tree>
                             </field>
                         </page>
