@@ -234,10 +234,17 @@ prevents · tier and cap it · offer a credible remedy (the detention backstop) 
 | take | Marshal | facility keeps | breakeven venues |
 |---|---|---|---|
 | 5% | $45K | $855K | 10.7 |
-| **18%** | **$162K** | **$738K** | **2.6** |
+| 18% (design partner) | $162K | $738K | 2.6 |
+| **22% (list)** | **$198K** | **$702K** | **2.1** |
 | 25% | $225K | $675K | 1.8 |
 
-**Recommendation: 18%, with two structural additions.**
+**SETTLED: 22% list, 18% design-partner rate**, with two structural additions.
+
+*22% sits at the top of the "obvious yes" band, so it carries no headroom — a
+venue that pushes back moves you below list, and it hands the GSC an easy
+sentence. **The two-tier structure is the mitigation, not a lower number:** the
+first venues take real risk on unproven software, so 18% for them is justified
+rather than conceded.*
 
 1. **A per-booking floor of $15–20** — without it, our own recommendation to
    discount off-peak slots (which flattens the peak) would erode the take. I had
@@ -277,4 +284,4 @@ our own rule that Marshal never profits when the floor goes wrong.
 | **6** | Give organisers the dashboard and the language unprompted | Before someone else frames it for them |
 | **7** | EAC grace window, small-operator tier, standby slots | The penalty currently lands hardest on those least able to absorb it |
 | **8** | Joint insurance pilot with the risk manager and broker | Instrument for the loss-run comparison from the start |
-| **9** | Take 18%, floor $15–20, decay above $1.5M, **contractually capped** | Breakeven 2.6 venues; facility still nets $738K from $0 |
+| **9** | **22% list / 18% design partner**, floor $17.50, decay above $1.5M, **contractually capped** | Breakeven 2.1 venues; facility still nets $702K from $0. Low case survives at ~6 venues |

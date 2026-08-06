@@ -18,7 +18,7 @@ with a breakeven, a sensitivity range, and a venue qualification threshold.
 | Item | Treatment |
 |---|---|
 | Dock fee `D` | Paid by exhibitor **to the venue** (Stripe Connect, venue is merchant) |
-| Marshal take `t` | **5% of `D`** |
+| Marshal take `t` | **22% of `D`** (list) · **18% design-partner rate** |
 | Payment processing | **Passed through to the exhibitor**, not absorbed |
 | Penalty / rebooking fee | To the venue. **Marshal takes processing cost recovery only — zero margin** |
 
@@ -68,11 +68,57 @@ Contribution = (bookings × D × t) − (bookings × $0.15) − $6,700
 
 | Case | Bookings | Fee `D` | Volume | Marshal 5% | **Contribution** |
 |---|---|---|---|---|---|
-| **Low** | 3,000 | $120 | $360K | $18,000 | **$10,850** |
-| **Mid** | 6,000 | $150 | $900K | $45,000 | **$37,400** |
-| **High** | 10,000 | $200 | $2.0M | $100,000 | **$91,800** |
+| **Low** | 3,000 | $120 | $360K | $79,200 | **$71,900** |
+| **Mid** | 6,000 | $150 | $900K | $198,000 | **$190,400** |
+| **High** | 10,000 | $200 | $2.0M | $440,000 | **$431,800** |
 
-## 3. Breakeven — and the problem
+## 3. Take rate — SETTLED at 22% list / 18% design partner
+
+| take | Marshal | facility keeps | contribution | **breakeven** | @10 venues |
+|---|---|---|---|---|---|
+| 18% (design partner) | $162,000 | $738,000 | $154,400 | **2.6** | $1.14M |
+| 20% | $180,000 | $720,000 | $172,400 | 2.3 | $1.32M |
+| **22% (list)** | **$198,000** | **$702,000** | **$190,400** | **2.1** | **$1.50M** |
+| 25% | $225,000 | $675,000 | $217,400 | 1.8 | $1.77M |
+
+**What 22% actually buys, stated honestly: not de-risking — reinvestment margin.**
+Breakeven barely moves (2.6 → 2.1 venues; both are "a handful of design
+partners"). **The real gain is $36K/venue-year, or $360K/year at ten venues** —
+which is a second engineer, and that compounds.
+
+**Per-booking floor $17.50.** At a $150 fee the rate binds, not the floor — the
+floor only engages below a **$79.55** fee. That is exactly its purpose: it
+protects the take when a venue discounts off-peak slots to flatten the peak,
+which is a thing we actively recommend they do.
+
+**Volume decay to ~18% above $1.5M/yr** at a single venue.
+
+### ⚠ The one cost of 22%: zero headroom
+
+The facility band is **≤20–22% = obvious yes · ~25% = invites a competing bid or
+an in-house-build reflex · >30–35% = reads as a landlord on their own asset.**
+
+**22% sits at the top of the safe band.** Two consequences worth accepting
+deliberately:
+
+1. **No room to concede.** A venue that pushes back moves you *below* list, so
+   the discount needs to be structured in advance rather than improvised
+2. **It hands the GSC a number.** D-017 found the nationals are motivated to
+   undermine Marshal with the venue — *"that vendor takes 22% of your dock
+   revenue"* is an easy sentence to say, and it doesn't need to be fair to work
+
+**The mitigation is the two-tier structure**, not a lower number:
+
+> **22% list. 18% for design partners** — the first venues, who are taking a real
+> risk on unproven software. **That is justified rather than conceded**, it
+> preserves the anchor, it rewards exactly the venues the hotels-first launch
+> depends on, and it means no rate is ever negotiated ad hoc.
+
+**Contractually capped, no unilateral escalation.** A published, consistent rate
+is part of infrastructure positioning — a rate that visibly varies by who
+negotiated hardest is a vendor's rate, not infrastructure's.
+
+## 4. Breakeven — and the problem
 
 ```
 Venues to breakeven = $400,000 ÷ contribution per venue
@@ -80,13 +126,13 @@ Venues to breakeven = $400,000 ÷ contribution per venue
 
 | Case | Contribution | **Venues to breakeven** |
 |---|---|---|
-| Low | $10,850 | **37** |
-| Mid | $37,400 | **11** |
-| High | $91,800 | **4.4** |
+| Low | $71,900 | **5.6** |
+| Mid | $190,400 | **2.1** |
+| High | $431,800 | **0.9** |
 
 > # 🔴 The finding a CFO cares about
 >
-> **Breakeven ranges from 4 to 37 venues — a 9× spread — driven entirely by two
+> **At 22%, breakeven ranges from 1 to 6 venues — still a 6× spread — driven entirely by two
 > numbers nobody has asked for yet.**
 >
 > **You cannot commit capital against a 9× spread.** At the high end this is an
@@ -111,8 +157,10 @@ bookings × D  ≥  ($35,000 + $6,700) ÷ (0.05 − 0.0015/D)   ≈  $835,000
 ```
 
 > ### The sales qualification rule
-> **A venue must generate ≈ $800K+ in annual dock-fee volume to be worth
-> serving.**
+> **At 22%, a venue must generate ≈ $220K+ in annual dock-fee volume to be worth
+> serving** — down from $800K at 5%. **The higher rate widens the addressable
+> market dramatically**, which matters most for the hotel-first strategy, where
+> individual properties are smaller.
 >
 > At $150 per booking that is **~5,300 bookings per year** — roughly 25 shows at
 > 210 vehicles, or 50 smaller events at 105.
@@ -271,7 +319,7 @@ it becomes a vendor to be evaluated rather than infrastructure to be assumed.
 
 | # | Decision | Rationale |
 |---|---|---|
-| **1** | **Take 5%, pass processing through** | Absorbing it makes this a 1.9% business and pushes breakeven from 11 to 28 venues |
+| **1** | **Take 22% list / 18% design partner, pass processing through** | The facility's alternative is $0, not the fee. Even the LOW case then breaks even at ~6 venues |
 | **2** | **Implementation fee $22K, ~2.4× delivery cost** | Funds the ramp; profitable; and it aligns training quality with transaction volume |
 | **3** | **Hardware at cost + 12%** | Cover procurement and configuration. **Do not build a hardware business** |
 | **4** | **Zero margin on penalties** — processing recovery only | Removes any financial interest in the schedule failing. Governance, not generosity |
