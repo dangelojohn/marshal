@@ -6,6 +6,89 @@ drift.
 
 ---
 
+## D-013 · Brainstorm round scored · two of my own decisions corrected
+**2026-08-06 · SETTLED**
+
+52 candidates from 4 generators → 24 shortlisted → adversarial breaker with a
+hard **FZ<7 auto-kill** on Odoo 16 CE. **8 clean survivors, 6 below them, 4 dead.**
+
+### 🔴 Two corrections to earlier decisions — both against me
+
+**D-006 was wrong that "motion with nothing scheduled is a safety exception."**
+A live dock has constant incidental motion (staff, non-Marshal equipment, doors,
+HVAC curtains). It fires continuously → the coordinator stops reading the queue
+within a week. Narrowing scope doesn't help; telling safety-relevant motion from
+ordinary motion needs **object classification the Reolink client does not
+provide.**
+> **The asymmetry: motion is useful as CORROBORATION, not as DETECTION.**
+> *"Did the 14:20 movement happen?"* — good question, checked in a known window.
+> *"Is something happening that shouldn't be?"* — bad question; on a live dock the
+> null hypothesis is *there is always motion*.
+**Everything else in D-006 stands.** Motion as automatic actuals capture is
+unaffected; Q-11's test is unchanged.
+
+**D-008 overclaimed on network failure.** *"Kill the wall board and the facility
+still runs"* is true for **screens**, not for **Odoo**. The edge-ledger fix
+(autonomous dispatch for 1–2h) is **DEAD**: (1) SQLite is dock-local, so two edge
+boxes can't negotiate ownership of a shared forklift — **absence of a distributed
+lock**; (2) a decertification at minute 5 or a fatigue breach at minute 40 never
+reaches the edge, so **the safety story becomes non-deterministic exactly when it
+matters**; (3) reconciliation has no good answer — whoever writes the auto-merge
+is **authoring a second hidden scheduler**.
+> **The honest claim: when the network drops, already-assigned work continues and
+> is recorded; NO new assignments are made; everything offline is reviewed on
+> reconnect.** That answers Q-19 properly.
+
+### ⭐ The gap all 52 candidates missed → Q-46
+**Nothing handles two of Marshal's OWN movements contending for the same physical
+chokepoint** (dock bay, freight elevator, staging lane). E3 is voluntary batching;
+H1 is one *foreign* calendar. But the dock bay and elevator are **at least as
+often the bottleneck as the vehicle or operator**, and a "deterministic
+reproducible scheduler" is meaningless without an explicit booking/locking rule
+for them. **This is the core scheduling primitive. Design it before Phase 2.**
+
+### 🔑 Review heuristic — the same mechanism at two intensities
+Happened twice: **P2 handover (safe) vs SHCC handover+GPS+hash (unsafe)** — the
+difference is GPS on the person. **A6 offline replay (safe) vs H2 edge ledger
+(unsafe)** — the difference is making *new decisions* while cut off from safety
+data. **The fix both times was "stop being the dangerous version of the safe
+one."** When a candidate feels valuable but uncomfortable, look for the weaker
+sibling — it usually exists and is usually already in the list.
+
+### The shortlist (FZ ≥ 8, ship as specified)
+1. **Idempotency keys** (10) · 2. **Certification-first REFUSE** (9) ·
+3. **Aisle clearance propose+confirm, never auto** (9) · 4. **Dead-letter queue**
+(9) · 5. **Failed checkpoint → `maintenance.request`** (9) · 6. **Activity-based
+skill decay** (9) · 7. **Breaks as scheduled capacity** (9) · 8. **Offline replay
+with staleness cutoff** (8 — *ship this instead of the edge ledger*)
+
+Below: E5 operator-first assignment · P2 shift handover · P5 absence backfill ·
+E3 consolidation window · H1 foreign calendar · P3 fatigue limits (**legal
+exposure — a bug is a compliance incident, budget disproportionate test effort**)
+
+**DEAD:** A2 unscheduled-motion · A5 battery gating (**no telemetry exists —
+blocked on Q-22**) · H2 edge ledger · H7 YAML admin (contradicts Odoo-as-SoR).
+**All four reach for a capability that was never verified to exist.**
+
+### Two hidden rule violations caught
+**A4 schedule drift** never said *how* "actual" is captured. Via location polling
+it silently becomes per-operator tracking dressed as an equipment metric — and
+the framing sounds like it's about freight, which is why it would pass review.
+→ **Hard-code `actual = tap timestamp, NEVER a GPS breadcrumb`.**
+**P3 fatigue** is safe now but is the highest-temptation candidate for a future
+*"is the operator actually present"* presence-detection "improvement". Flagged so
+it arrives as a policy violation, not a feature idea.
+
+### One technical correction
+**"Stripe PULL" is not a real Stripe pattern** — Stripe can't poll a third-party
+feed. Fix without changing the principle: a thin connector pulls Marshal's
+consumption feed and pushes to Stripe/QBO via their APIs. **Marshal still never
+pushes an invoice**, which is all D-010 required.
+
+Full detail: `07_brainstorm_2026_08_06/SYNTHESIS.md`.
+
+---
+
 ## D-012 · Surface map — one per role
 **2026-08-06 · John · SETTLED**
 
