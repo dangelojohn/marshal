@@ -6,6 +6,88 @@ drift.
 
 ---
 
+## D-011 · Porterly Design corpus is the backlog · wrist surface adopted
+**2026-08-06 · SETTLED**
+
+**`~/Downloads/Porterly Design`** — 461 files, 344 markdown, July–Aug 2026.
+**Porterly v2's 26 hardened recommendations are substantially Marshal's Phase 1–3
+backlog**, already scored by a 4-reviewer panel with a hard feasibility veto, on
+**Odoo 16 CE** — exactly Marshal's target since D-010. Only 2 of 28 candidates
+cleared first pass; the survivors were re-scoped to what this team can run.
+
+**Directly adopted:** R25 testing/CI + migration harness (**linchpin, ship
+first**) · R13 fail-closed access + tenant isolation (keystone) · **R04
+tamper-evident custody log — use the REVISED mechanism: per-parcel hash chain +
+periodic anchor, NOT a global chain** (FZ 6 was the CE feasibility reality) ·
+R07 maker-checker billing (highest-scored, *no silent charge ever*) · R02
+point-in-time custody snapshots · R03 effective-dated pricing · R16 task→billing.
+**Wave 0 = R25 + R13 + `porterly_core` kernel, and that's right for Marshal too.**
+
+**⭐ Validates the thesis from a different direction.** Porterly's own analysis:
+at label capture the system already knows it holds one of **two different
+products** — guest incidental mail (*expects NOT to pay*, hotel relationship at
+risk, should be a free amenity) versus **exhibitor/event logistics (expects to
+pay — freight is a known show cost, priced by weight/dims/storage/accessorials)**.
+**Marshal is the second column.** D-005 §2 reached independently, months earlier.
+
+**⭐ Fourth independent convergence on the LLM boundary:** *"perception is
+probabilistic, actuation is deterministic — an LLM may read and propose, only a
+typed idempotent core may act."* With `PLM_LIFECYCLE`, porterly-future-reference
+and hermes-console, that's four. **Treat it as settled doctrine, not a choice.**
+Also: a big-bang rewrite **scored ~45%** and lost to strangler-fig + shadow mode
++ kill-switch.
+
+**Q-30 ANSWERED, precisely:** 3-shot capture, `PR###` sequence, **idempotency via
+`capture_uuid`**, geo, captured-by, 90s auto-logout are **SHIPPED AND LIVE
+(2026-07-21)**. The **offline outbox is R15 — designed, revised for "phase +
+device limits", NOT built.** So `3 queued · syncing` in the mockup is intent, not
+behaviour. **Q-19 is still real work.**
+**Q-33 ANSWERED:** QuickBooks **Online**, R11 async reconciled, **one-way** —
+matching D-010's boundary exactly.
+
+**⚠ CORRECTION I owe:** I called *"zero `domain_force` across 289 modules"* a live
+risk. Accurate but framed too harshly — an **Access-Control Baseline campaign was
+run and completed**, and the **2026-07-24 live-`main` audit verifies every IDOR,
+unauth-sudo and enumeration oracle is fixed.** The vulnerabilities were remediated
+at the controller layer and independently audited. What's missing is the *ORM
+backstop* — that's R13, designed and unbuilt. Guidance unchanged; the
+characterisation was unfair to work that was done.
+
+**Marshal = Porterly v2's exhibitor half + the resource layer Porterly never had.**
+New work is: resource scheduling, the coordinator loop, the wall board, and
+motion/tap actuals.
+
+### ⌚ Wrist surface — ADOPTED
+> *"An Apple Watch interface for the employees running the pump trucks and
+> forklifts — where to go, what booth, when, with what package — and tap when
+> they have arrived and delivered."*
+
+**It's the best actuals source in the system**, not just a convenience. A tap at
+*arrived* and *delivered* gives an **exact start and end per movement from the
+person who was there** — better than camera motion, and cheap enough to actually
+happen. **May de-risk Q-11**: motion becomes corroboration rather than primary.
+
+- **🔑 GLOVES decide the hardware.** Apple Watch touchscreen fails with work
+  gloves. **Design the primary action around the Watch Ultra's physical Action
+  Button** — that single detail makes it viable. Ultra also gives ~36h battery
+  and a brighter screen. **A standard Apple Watch is a poor fit**
+- **If devices are facility-provided and shared across shifts, an industrial
+  wrist wearable (Zebra WS50 class) beats it** — glove-designed, hot-swap
+  battery, built-in scanner, shared-device login. Apple Watch is architecturally
+  a *personal* device. **Q-38 decides this**
+- **Costs the architecture nothing** — it's another client of the headless core.
+  **First real test of D-008, and it passes**
+- **Two taps per movement is the design budget.** Never photos, checkpoints,
+  lists or typing — those belong on the handheld and the wall board
+- ⚠ **A wearable is on a *person*.** Record the movement, never the operator's
+  location between movements. No idle tracking, no leaderboards. **Get this wrong
+  and the watches end up in a drawer, taking the actuals with them**
+
+Full detail: `03_internal_assets/05_porterly_design_corpus.md`,
+`01_product/13_wearable_operator_surface.md`.
+
+---
+
 ## D-010 · Odoo 16 · Porterly is the freight layer · billing leaves Odoo
 **2026-08-06 · John · SETTLED**
 
