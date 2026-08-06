@@ -6,6 +6,61 @@ drift.
 
 ---
 
+## D-010 · Odoo 16 · Porterly is the freight layer · billing leaves Odoo
+**2026-08-06 · John · SETTLED**
+
+> *"We will be using Odoo v16 for this development and leverage the QuickBooks
+> application we already own."* · *"Let Quickbooks and Stripe and the invoice
+> module handle tax later."*
+
+**Target is Odoo 16, not 19.** Porterly *is* v16, edata+ is v15 — the port cost
+that dominated the earlier recommendation disappears. Trade stated once: v16 is
+outside Odoo's support window, so patches become ours and a v19 move later is a
+project not an upgrade. Defensible for **installed per-facility infrastructure**
+(D-008); not reopened.
+
+**Porterly Inbound/Outbound + `courier_tracking` + `event_extend` become
+Marshal's freight layer** — installed in the same single-tenant Odoo, no
+integration layer. **I had wrongly scoped this as new work**: `courier_tracking`
+has a working invoice pipeline (`action_create_invoice` :509, `account.move.line`
+:114/:129, `sale_order._create_invoices()` :595, `charge_type` :390), the inbound
+PWA is a real mobile dock-capture app, and the outbound PWA has **honeypot,
+rate-limit and idempotency-by-uuid** — *"a double-tap submit returns the SAME
+parcel"*, which is exactly the gloved-hands dock problem.
+
+**🔑 The billing boundary — Marshal meters, it does not bill.**
+```
+Marshal ──▶ priced consumption records ──▶ QuickBooks · Stripe · invoice module
+(meter)      what/who/when, evidenced        (tax, invoice, collection) [LATER]
+```
+Better than the original plan: it's the honest scope (D-005 §2 was always a
+*metering* claim), tax is solved elsewhere by tools already owned, and it keeps
+the defensible thing defensible — a dispute is settled by Marshal's evidence
+rather than argued inside Marshal's code. **QuickBooks and Stripe are
+`tenant_bridges`** (hermes-console's pattern). Neither is Phase 1.
+**Do NOT use `courier_tracking`'s `account.move` path.**
+
+**⚠ Two debts do NOT go away with the port cost — they were never about version:**
+1. **`ir.rule` from module one.** Porterly has **zero `domain_force` across 289
+   modules** — 100% controller discipline, no ORM backstop. Marshal has venue,
+   show manager, exhibitor and carrier on different slices; one mis-coded domain
+   is a full leak. **The single most important thing not to inherit**
+2. **Tests around anything lifted.** None exist anywhere in Porterly. For
+   infrastructure emitting records that settle money disputes, disqualifying as-is
+
+**Build from `john/porterly_erp`, never `~/porterly_dev`** (stale mirror, missing
+Q5/Q7 fixes, still contains the retired public POST hole).
+
+**PWA design language adopted** — the three-step capture strip
+(`LABEL·PACKAGE·SHELF`) is structurally identical to Marshal's three checkpoints
+(`CONDITION·FUEL·POSITION`). Offline `queued · syncing`, evidence photos +
+retake, custody rail, and honest per-channel failure states all transfer. See
+`01_product/12_ui_leverage_from_porterly.md`.
+
+Full detail: `03_internal_assets/04_porterly_as_the_freight_layer.md`.
+
+---
+
 ## D-009 · Tracking + LLM · both at the edges, never the core
 **2026-08-06 · SETTLED**
 
@@ -302,6 +357,10 @@ longer *whether* the venue hurts but *who holds the money*.
 | **Q-18** | **Where does Marshal run — facility hardware or our cloud with a local agent?** | "Infrastructure per facility" implies on-prem; Law 25 and hotel IT policy may require it |
 | **Q-19** | **What happens when the network drops mid-move-in?** | Infrastructure must degrade gracefully. A dock cannot stop because a WAN link did |
 | **Q-22** | **Do the venue's forklifts have telematics, and can we get the data?** | May answer fuel + condition + utilisation with zero new hardware. **Add to the Phase-0 calls** |
+| **Q-33** | **QuickBooks Online or Desktop?** | Online has a REST API; Desktop needs a connector and changes the bridge entirely |
+| **Q-30** | **Is the PWA offline queue implemented or mocked?** | If real, **Q-19 is largely answered** — one of the harder requirements |
+| Q-34 | Does Stripe collect from exhibitors directly, or is it invoice follow-up? | Decides whether a payment surface is ever needed in Marshal |
+| Q-28 | Does Porterly stay a live v16 product independently? | Decide now whether Marshal forks or tracks it |
 | Q-23 | Which zones actually need distinguishing? | Gateway count and placement — **answer from Phase-1 data, not guesswork** |
 | Q-25 | Union / works-council position on equipment monitoring? | Cheaper to know before install than after |
 | Q-26 | Local model on facility hardware, or cloud with graceful degradation? | Follows Q-18/Q-19; only matters for SMS intent, the one edge feature on a live path |
