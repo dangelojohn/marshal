@@ -5,12 +5,21 @@ description: Use when administering a QNAP NAS over SSH — running Docker/conta
 
 # QNAP administration
 
+> **Host inventory: `references/hosts.md`** — read it before touching any box.
+> The QNAPs here are materially different from each other (one has Container
+> Station and needs `system-docker`; the other has no Container Station at all
+> and uses hand-installed Docker). Assuming the wrong one wastes time.
+
 QTS is **not a normal Linux distro**. It is busybox on a heavily-customised
 kernel, with a root filesystem that is **rebuilt from firmware on every boot**.
 Almost every mistake below comes from assuming otherwise.
 
-Everything here was verified first-hand on real hardware (TS-879 Pro, QTS 4.3.6,
-and a TS-x53 on QTS 5.x) — not from documentation.
+**Provenance:** the traps below were verified first-hand on a **TS-879 Pro
+running QTS 4.3.6** (2026-08-06) while installing Docker and Odoo 16 from
+scratch. The Container Station / `system-docker` behaviour is from operational
+experience on a second, Celeron-based QNAP — its exact model and firmware are
+recorded in `references/hosts.md` only where confirmed. Nothing here is copied
+from vendor documentation.
 
 ## The filesystem contract — learn this first
 
