@@ -126,10 +126,37 @@ cat /proc/mdstat
 #                                                          ^^^^^
 ```
 
-**`[1/1]` means ONE disk.** QNAP presents single-disk volumes as `raid1` with no
-mirror — they look redundant in `mdstat` and are not. **Always check the
-`[n/m]` count before trusting a volume with a database.** Compare
-`ls /dev/sd?` against the arrays: idle disks are common.
+### `raid1` is a LEVEL, not a headcount
+
+The level says *"mirror whatever members I have."* The **slot count** says how
+many members there are. A one-member RAID 1 is a complete, healthy array that
+mirrors nothing.
+
+| `mdstat` | mdadm state | What it actually is |
+|---|---|---|
+| `[1/1] [U]` | `active` | **1 slot, 1 filled. NOT degraded — and NOT redundant.** A mirror with one leg |
+| `[2/2] [UU]` | `clean` | A real two-disk mirror |
+| `[8/7] [UUUUUU_U]` | `clean, degraded` | 8 slots, 7 filled — **genuinely missing a member** |
+
+**`[1/1]` and `[2/1]` are completely different situations** and both contain a
+"1". The first is by design; the second is a mirror that has lost a disk and
+needs a rebuild now.
+
+**Why QNAP builds single-disk volumes this way** — it is deliberate and
+sensible: because the array already speaks RAID 1, a disk can be added later
+with `--grow --raid-devices=2` and the existing data survives. Created as a plain
+partition or RAID 0, adding redundancy later would mean destroying and
+recreating the volume. **It is a mirror pre-wired for a second disk that was
+never fitted.**
+
+**The trap:** `raid1` in `mdstat` reads as "mirrored" to anyone skimming.
+**The truth is in `[n/m]`, and `mdadm --detail` states it in words.** Always
+check before trusting a volume with a database.
+
+**Expect false-alarm "degraded" on QNAP system arrays.** Boxes with empty bays
+show `[8/7]` on the small system mirrors (`md9`, `md13`) that span every bay —
+mdadm cannot tell "bay never populated" from "disk died". Check whether the
+missing slot corresponds to an empty bay before treating it as a fault.
 
 ## The QTS web API
 
