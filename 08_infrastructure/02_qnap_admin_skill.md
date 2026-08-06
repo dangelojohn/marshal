@@ -73,6 +73,14 @@ heredocs** with `cannot create temp file for here document` — a baffling error
 you don't know the cause. **Never stage downloads in `/tmp`.** Use the data
 volume.
 
+### There is no python3 on QTS
+
+Not a small thing — it breaks any tooling that assumes a scripting language
+is present. **Don't install one.** If a container is running, borrow its
+interpreter with `docker exec -i <container> python3 - "$ARGS"` and feed the
+script on stdin. Remember to translate host paths to the container's
+bind-mount points.
+
 ### The CA bundle is ancient on older QTS
 
 `curl` to some hosts works; **GitHub fails** with `unable to get local issuer
@@ -235,9 +243,12 @@ outcome anyway.
    directories owned by `admin` cause
    `PermissionError: '/var/lib/odoo/filestore'` **midway through the base
    install**, not at startup. `chown -R 101:101` the data and addons dirs.
-2. **`odoo shell` and CLI `-i` both bind port 8069**, so they fail with
-   `Address already in use` against a running server. Use `--no-http` for shell;
-   stop the service or use a one-off container for installs.
+2. **`odoo shell`, `-i` and `-u` all bind port 8069** by default, so they fail
+   with `Address already in use` against a running server. **The fix is
+   `--no-http`, NOT stopping the service** — verified on a live box: an
+   `-i --test-enable --no-http` run against a scratch database coexists happily
+   with the running server, so CI needs **zero production downtime**. Add
+   `--max-cron-threads=0` so the throwaway run doesn't fire crons.
 3. **`ir_module_module does not exist` is a red herring.** It's the shutdown
    handler failing on an already-rolled-back transaction, and it *masks* the real
    error further down the traceback. **Always read the whole log**, never the
