@@ -6,6 +6,32 @@ drift.
 
 ---
 
+## D-007 · Record before decide · plan sequenced, fork deferred
+**2026-08-06 · SETTLED**
+
+**`Record → Coordinate → Schedule → Meter → Predict`.** Deliberately not
+schedule-first. Three reasons: we have no duration data, so an optimiser would
+be confidently wrong and burn credibility we get once; the safety record and the
+metering are the strongest parts of the case and **neither needs an optimiser**;
+and recording generates exactly the calibration data the optimiser later needs.
+
+Marshal earns trust as a **system of record** before it becomes a system of
+decision.
+
+**Q-7 CLOSED** by primary source — lifts and elevators are first-class scheduled
+resources, coordinated with arrival and dock times, along with equipment
+(electric/standard forklift, pump truck, specialized cart). See
+`01_product/08_resource_model.md`. **Equipment is not fungible**; substitution is
+directional; the model is `avn.capability`'s contract pattern in a new domain.
+
+**The A/B fork — product vs operating system for a services business — is
+deliberately deferred.** Phases 0 and 1 are identical under both, so the decision
+can be made *with* Phase-1 evidence instead of ahead of it. It bites at Phase 2–3.
+
+Full plan: `PROJECT_PLAN.md`.
+
+---
+
 ## D-006 · The camera is the interface · Reolink confirmed on site
 **2026-08-06 · John, primary source · SETTLED**
 
@@ -165,6 +191,11 @@ longer *whether* the venue hurts but *who holds the money*.
 | **Q-1′** | **Who captures the material-handling margin today — the facility or the show manager — and who wants it back?** | Determines who the invoice is addressed to, and therefore the buyer. Ask a facility ops director and a show manager the same question |
 | **Q-8** | **What is charged today, and on what unit** — dock hour, crate, pallet, weight? | **The metering model must match the existing billing unit or it won't be adopted.** Blocks the strongest part of the business case |
 | **Q-11** | **Is Reolink motion detection reliable at dock distance and in dock lighting?** | **The cheapest de-risking test in the project.** Point the existing client at one camera on one dock, log motion state against a known schedule for one show. No product needed. Validates automatic actuals capture — which the whole predictive layer rests on |
+| **Q-13** | **Equipment: venue-owned, contractor-supplied, or exhibitor-brought?** | Determines who schedules and who bills it — feeds Q-1′ |
+| **Q-15** | **Who controls the freight elevator calendar in a hotel, and in what system?** | If it's a person not a system, `avn.capability`'s human_workflow tier is day-one critical |
+| Q-14 | How many electric units and chargers per venue, and real runtime? | Decides whether battery-charge modelling is critical |
+| Q-16 | Venue rules barring LP/diesel units indoors? | A hard safety constraint the scheduler must never violate |
+| Q-17 | Is operator certification tracked today, and where? | Free compliance win if we hold it |
 | Q-6 | Hotels or convention centres first? | Leaning **hotels** — worse constraints, no embedded incumbent, more of them, existing relationships |
 | Q-12 | Wall board in the dock office only, or a driver-facing display in the yard too? | Radio traffic is a proxy for coordination the system is failing to do |
 | Q-7 | Is the freight elevator the true serial constraint in hotels? | Decides whether vertical transport is a first-class resource in the solver |
