@@ -6,6 +6,49 @@ drift.
 
 ---
 
+## D-008 · Per-facility headless infrastructure · the fork is resolved
+**2026-08-06 · John, primary source · SETTLED**
+
+> *"I would not run it. It should be an infrastructure tool per facility that is
+> headless and auto-coordinates and has some few humans in the loop and checks
+> and balances — such as the condition of equipment and fuel, and if the
+> equipment was returned to the right position."*
+
+**Neither branch A nor B. A third shape** — infrastructure installed at a
+facility, single-tenant, running on its own, humans only where physical reality
+must be confirmed.
+
+- **Drops multi-tenancy entirely** — the largest source of complexity in a
+  scheduling product, gone. Each install knows one building, which is the only
+  scope where the physics makes sense
+- **Headless: the scheduler is the product, every screen is a client.** Kill the
+  wall board and the facility still runs, degraded not stopped. That is what
+  makes it infrastructure rather than an app
+- **Auto-coordination loop:** observe → reconcile → plan → act → **verify**.
+  Humans appear at *verify* only
+- **🔑 Humans are sensors, not operators.** The system's model drifts from the
+  world; checkpoints re-anchor it. Cheap sensor (camera motion, D-006) runs
+  constantly; expensive sensor (human checkpoint) runs where being wrong is
+  costly. **Nobody's job is "operate Marshal"** — if such a role appears, the
+  design has failed
+- **Q-3 RESOLVED: Odoo.** Single-tenant, record-heavy, and native `maintenance` +
+  `fleet` cover equipment condition and fuel logs
+
+**edata+ reviewed on the Porterly iMac** (`/Volumes/iMac`, 179 MB, 52 Odoo-15
+modules). **Correction to the recollection: it has NO physical-equipment
+maintenance, condition or fuel tracking** — `itm`'s "equipment" is IT assets
+(CPU/RAM/IP), and native `maintenance` is unused across the whole archive except
+one icon file. What it *does* contribute, all cleanly licensed:
+`quality_control_oca` (AGPL-3) is the checkpoint engine and a direct hit;
+`base_rest`+`component` (LGPL-3) is the headless API layer; `frepple` (AGPL-3)
+is a real finite-capacity planner worth comparing to OdooIQ before Phase 2.
+**Bryntum Gantt is commercially licensed — do not build the UI on it.**
+
+Full detail: `01_product/09_headless_architecture.md`,
+`03_internal_assets/03_edata_plus_inventory.md`.
+
+---
+
 ## D-007 · Record before decide · plan sequenced, fork deferred
 **2026-08-06 · SETTLED**
 
@@ -202,6 +245,10 @@ longer *whether* the venue hurts but *who holds the money*.
 | Q-9 | Who carries liability for a floor incident — facility or show manager? | The safety framing only sells to whoever holds the risk |
 | Q-10 | Is French-language SMS required for Quebec (Bill 96)? | Cheap to design in now, expensive to retrofit |
 | Q-2 | Register `dock.show`? | Still available. Cheap. Decide before someone else does |
-| Q-3 | Odoo-based or standalone? | Depends on Q-1′. Metering + billing argues strongly for Odoo, where we own the most |
+| **Q-18** | **Where does Marshal run — facility hardware or our cloud with a local agent?** | "Infrastructure per facility" implies on-prem; Law 25 and hotel IT policy may require it |
+| **Q-19** | **What happens when the network drops mid-move-in?** | Infrastructure must degrade gracefully. A dock cannot stop because a WAN link did |
+| Q-20 | Handheld: operator's own phone or facility-provided device? | Decides whether checkpoints are web or native |
+| Q-21 | Who administers an install — facility IT or us remotely? | Support model and update path |
+| ~~Q-3~~ | ~~Odoo or standalone?~~ | **RESOLVED by D-008 — Odoo.** Single-tenant, record-heavy, native maintenance+fleet |
 | Q-4 | Is the Show Board's information-exchange model defensible? | **Needs counsel, not engineering.** Antitrust-sensitive in both Canada and the US. The constraint shapes the data model |
 | Q-5 | Which venue is the design partner? | Now likely a Toronto hotel, from existing relationships |
