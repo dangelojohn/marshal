@@ -1,0 +1,25 @@
+A photorealistic screenshot of an Apple Watch Ultra screen showing "Marshal" — a freight movement app used by equipment operators on an exhibition floor. Show ONLY the screen content, filling the frame edge to edge in the Watch Ultra's rounded-rectangle screen shape. No watch body, no strap, no wrist, no hand, no background. Pixel-sharp, dead-on, no perspective, no reflection, no drop shadow.
+
+Pure black background #000000 — a true OLED black so the display reads at maximum contrast on a bright dock and burns minimal battery on an always-on screen.
+
+The single most important design fact: this shows ONE JOB AND ONLY ONE JOB. There is no list, no scroll indicator, no tab bar, no navigation. An operator's hands are on a forklift's controls; they get one glance and one physical button press.
+
+LAYOUT, top to bottom, generously spaced:
+
+At the very top, small and quiet in mid-grey uppercase monospace, letter-spaced: "MV00042". Beside it on the right, in the same small grey, "09:41".
+
+Below that, dominating the upper half of the screen, the destination in very large bold condensed sans-serif, pure white, filling the width: "BOOTH 412". This is the biggest element by a wide margin — it is the one thing that must be readable in a fraction of a second.
+
+Beneath it, in medium-weight white sans-serif at roughly a third that size: "CRATE-7".
+
+Below that, a thin horizontal hairline rule in dark grey #2A2A2A spanning most of the width.
+
+Under the rule, two short lines in warm amber #E0A458, medium size, left-aligned: "PUMP TRUCK #2" on the first line, and "DUE 09:50" on the second.
+
+Occupying the bottom fifth of the screen, a wide flat control shaped like a rounded rectangle spanning nearly the full screen width, with a solid 3px warm amber border and a fully transparent interior. Inside it, centred, the single uppercase word "ARRIVED" in bold amber. To the immediate left of that word, a small solid amber circle roughly the size of the text — a deliberate visual echo of the physical Action Button on the side of the watch, signalling that this action is triggered by the hardware button rather than by touching the glass.
+
+At the very bottom edge, in tiny dim grey, the words "press action button".
+
+STYLE: purpose-built industrial wearable software. Extremely high contrast, very large type, generous empty black space. No decorative elements whatsoever. The typeface is a clean condensed grotesque for the large text and a monospace for identifiers and times. Only two colours appear on the whole screen: white and one warm amber. Nothing else.
+
+DO NOT RENDER: the watch case, bezel, crown, strap, or any part of the physical device; a wrist, arm, hand or glove; any background or environment; a list of multiple jobs; a scrollbar; a tab bar or navigation dots; a progress ring or activity rings; a map; a photograph; a chart; emoji; cartoon or flat-illustration icons; a colourful app grid; rounded consumer-app cards; gradients of any kind; glassmorphism; drop shadows; a light or white background; the Apple Watch default watch face; or any generic fitness-app aesthetic.

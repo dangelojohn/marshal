@@ -1,0 +1,19 @@
+A photorealistic screenshot of the "Marshal" freight board rendered on a rugged TABLET held in portrait orientation, as used by a dock supervisor walking the floor of a convention centre. Show ONLY the screen content, filling the frame edge to edge — no tablet bezel, no hands, no room, no browser chrome. 3:4 portrait aspect ratio, dead-on, pixel-sharp.
+
+Dark interface, background #0E1116, tuned for glare and for gloved hands: everything is large, high-contrast and generously spaced.
+
+HEADER: "MARSHAL" in condensed letter-spaced uppercase amber #E0A458 on the left; on the right a large "1" in red-orange #D7503A above the tiny grey uppercase label "EXCEPTION", and beside it "09:41" in monospace above "UPDATED" with a small green dot.
+
+BELOW: camera tiles stacked in a SINGLE COLUMN, three visible with the fourth cropped by the bottom edge — this is a scrolling view. Each tile is noticeably taller than a desktop tile so the camera image and the text both stay readable at arm's length.
+
+TILE 1 — EXCEPTION, at the top because exceptions sort first. A hard 4px red-orange border. Camera still of a dock bay where a forklift sits stationary with a raised pallet. Top bar in red-orange: monospace "DOCK 2" left, uppercase "LATE" right. Bottom panel over the image: white line "MV00039 · CRATE-3 → BOOTH 118", then a red-orange line "18 MIN OVER · apron 2/2 FULL". Below the panel, spanning the full tile width, a single large flat touch button at least 56 pixels tall with a 2px red-orange outline, transparent fill, and the centred uppercase text "ACKNOWLEDGE". No icon in the button.
+
+TILE 2 — ACTIVE. Camera still of a white box truck reversed into a bay, rear doors open, shrink-wrapped pallets inside. Dark slate top bar: "DOCK 1" and "ACTIVE". Bottom panel: white "MV00042 · CRATE-7 → BOOTH 412", grey "P. Novak · Pump Truck #2 · due 09:50". Thin amber accent line down the left edge of the panel.
+
+TILE 3 — CLEAR. Camera still of an empty swept dock bay, shutter up, daylight beyond. Top bar "DOCK 3" and "CLEAR". Sparse bottom panel, small grey text only: "next MV00043 · 10:15".
+
+TILE 4 — partially cut off by the bottom edge of the screen, showing only its top bar reading "FREIGHT LIFT 1" and the top sliver of a camera image, making it obvious the view scrolls.
+
+STYLE: authentic industrial field software built for a noisy, bright, gloved environment. Clean grotesque sans for labels, monospace for every code and time. Square or barely-rounded corners. Touch targets visibly generous. The only saturated colours are the amber accent and the red-orange exception treatment. Camera images look like genuine fixed CCTV stills, slightly wide-angle with flat lighting and mild noise.
+
+DO NOT RENDER: a tablet bezel or device frame, hands or fingers, a person, a room or warehouse background behind the screen, any browser or address bar, rounded consumer-app cards, glassmorphism, blur, neon glow, drop shadows, gradients, a hero heading, marketing copy, a sidebar or hamburger menu, emoji, cartoon icons, charts or graphs of any kind, a light or white background, or a generic mobile-app aesthetic.

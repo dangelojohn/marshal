@@ -17,3 +17,5 @@ access_event_user,marshal.event.user,model_marshal_event,group_marshal_user,1,0,
 access_event_mgr,marshal.event.mgr,model_marshal_event,group_marshal_manager,1,0,1,0
 access_anchor_user,marshal.anchor.user,model_marshal_anchor,group_marshal_user,1,0,0,0
 access_anchor_mgr,marshal.anchor.mgr,model_marshal_anchor,group_marshal_manager,1,0,1,0
+access_camera_user,marshal.camera.user,model_marshal_camera,group_marshal_user,1,0,0,0
+access_camera_mgr,marshal.camera.mgr,model_marshal_camera,group_marshal_manager,1,1,1,1

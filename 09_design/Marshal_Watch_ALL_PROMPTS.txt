@@ -1,0 +1,61 @@
+A photorealistic screenshot of an Apple Watch Ultra screen showing "Marshal" — a freight movement app used by equipment operators on an exhibition floor. Show ONLY the screen content, filling the frame edge to edge in the Watch Ultra's rounded-rectangle screen shape. No watch body, no strap, no wrist, no hand, no background. Pixel-sharp, dead-on, no perspective, no reflection, no drop shadow.
+
+Pure black background #000000 — a true OLED black so the display reads at maximum contrast on a bright dock and burns minimal battery on an always-on screen.
+
+The single most important design fact: this shows ONE JOB AND ONLY ONE JOB. There is no list, no scroll indicator, no tab bar, no navigation. An operator's hands are on a forklift's controls; they get one glance and one physical button press.
+
+LAYOUT, top to bottom, generously spaced:
+
+At the very top, small and quiet in mid-grey uppercase monospace, letter-spaced: "MV00042". Beside it on the right, in the same small grey, "09:41".
+
+Below that, dominating the upper half of the screen, the destination in very large bold condensed sans-serif, pure white, filling the width: "BOOTH 412". This is the biggest element by a wide margin — it is the one thing that must be readable in a fraction of a second.
+
+Beneath it, in medium-weight white sans-serif at roughly a third that size: "CRATE-7".
+
+Below that, a thin horizontal hairline rule in dark grey #2A2A2A spanning most of the width.
+
+Under the rule, two short lines in warm amber #E0A458, medium size, left-aligned: "PUMP TRUCK #2" on the first line, and "DUE 09:50" on the second.
+
+Occupying the bottom fifth of the screen, a wide flat control shaped like a rounded rectangle spanning nearly the full screen width, with a solid 3px warm amber border and a fully transparent interior. Inside it, centred, the single uppercase word "ARRIVED" in bold amber. To the immediate left of that word, a small solid amber circle roughly the size of the text — a deliberate visual echo of the physical Action Button on the side of the watch, signalling that this action is triggered by the hardware button rather than by touching the glass.
+
+At the very bottom edge, in tiny dim grey, the words "press action button".
+
+STYLE: purpose-built industrial wearable software. Extremely high contrast, very large type, generous empty black space. No decorative elements whatsoever. The typeface is a clean condensed grotesque for the large text and a monospace for identifiers and times. Only two colours appear on the whole screen: white and one warm amber. Nothing else.
+
+DO NOT RENDER: the watch case, bezel, crown, strap, or any part of the physical device; a wrist, arm, hand or glove; any background or environment; a list of multiple jobs; a scrollbar; a tab bar or navigation dots; a progress ring or activity rings; a map; a photograph; a chart; emoji; cartoon or flat-illustration icons; a colourful app grid; rounded consumer-app cards; gradients of any kind; glassmorphism; drop shadows; a light or white background; the Apple Watch default watch face; or any generic fitness-app aesthetic.
+A photorealistic close-up photograph of an Apple Watch Ultra worn on the wrist of an equipment operator working a loading dock at a convention centre. Natural documentary photography, shallow depth of field, the watch face sharp and the background softly blurred. 4:3 or 3:2 aspect ratio.
+
+THE STORY THIS IMAGE MUST TELL: the operator is wearing a thick work glove, and is pressing the flat orange ACTION BUTTON on the left-hand side of the watch case with their gloved thumb. They are NOT touching the glass. This is the entire point — a capacitive touchscreen does not work through a work glove, so the primary action lives on a physical button.
+
+THE WATCH: a 49mm Apple Watch Ultra in natural titanium, flat sapphire front, on a rugged dark grey or black band. The distinctive raised guard around the Digital Crown is visible on the right side of the case, and the flat rectangular ORANGE Action Button is clearly visible and being pressed on the left side.
+
+ON THE SCREEN, small but legible: a pure black background with, from top down — tiny grey monospace "MV00042"; then in large bold white condensed capitals "BOOTH 412"; below it smaller white "CRATE-7"; a thin grey divider; two short warm amber lines reading "PUMP TRUCK #2" and "DUE 09:50"; and along the bottom a wide amber-outlined control containing the word "ARRIVED".
+
+THE HAND AND ARM: a heavy-duty work glove in dark grey or tan leather, and a hi-vis sleeve in safety orange or yellow with a reflective silver stripe at the cuff.
+
+THE BACKGROUND, thrown well out of focus: the interior of a loading dock — a concrete floor, the yellow-and-black striped edge of a dock leveller, a shrink-wrapped pallet, the blurred silhouette of a forklift, and cool overhead industrial lighting with a slice of daylight from an open shutter door. Muted, desaturated, industrial.
+
+LIGHTING: available light, slightly cool and uneven, as it genuinely is inside a dock. The watch screen is self-illuminated and clearly brighter than its surroundings. Mild grain. Nothing glossy or advertisement-like.
+
+DO NOT RENDER: a finger touching the watch glass; a bare wrist or ungloved hand; a clean studio or white background; a desk, office, gym or outdoor sports setting; a smiling model or any face; marketing lighting, lens flare or rim lighting; an Apple product-photography look; the default Apple watch face; activity rings; a colourful app grid; text overlays, captions, logos or watermarks; a smartwatch from any other brand; or any polished lifestyle-advertising aesthetic. This should look like a photograph taken by someone documenting real work, not a product launch.
+A photorealistic screenshot of an Apple Watch Ultra screen showing the CONFIRMATION state of the "Marshal" freight app, one second after the operator has pressed the physical Action Button. Show ONLY the screen content in the Watch Ultra's rounded-rectangle screen shape — no watch body, strap, wrist or background. Pixel-sharp, dead-on, no perspective or reflection.
+
+WHY THIS SCREEN EXISTS: a silent success is a failure. If the operator presses the button and nothing visibly changes, they will press it again, and the movement gets double-recorded. This screen is the visible confirmation, and it must be unmistakable in peripheral vision.
+
+Pure black background #000000.
+
+CENTRED IN THE UPPER TWO THIRDS, dominating the screen: a large, thin-stroke, geometric checkmark drawn in soft green #5FB37E. It should be simple and precise — a single clean two-segment stroke with rounded ends, no circle around it, no fill, no shadow, no sparkle or animation effect.
+
+DIRECTLY BENEATH THE CHECKMARK, in bold white condensed uppercase, large: "ARRIVED".
+
+BELOW THAT, in medium grey monospace, smaller: "09:47:12". This is the timestamp that was actually recorded — showing it back is what lets the operator trust that the tap landed.
+
+BELOW THAT, smaller still and dimmer grey: "MV00042 · BOOTH 412".
+
+In the BOTTOM FIFTH of the screen, clearly separated by empty black space, a small quiet block of two lines in mid-grey: the tiny uppercase label "NEXT" on the first line, and on the second, in slightly brighter white, "BOOTH 118 · 10:05".
+
+That NEXT block is deliberately understated — it is a single glanceable line so the operator can pre-position, NOT a list of upcoming work. There must be exactly one upcoming item shown, never two or more.
+
+STYLE: purpose-built industrial wearable software. Extreme contrast, very large primary type, generous black space, absolutely no decoration. Condensed grotesque for the large text, monospace for times and identifiers. Only three colours on the entire screen: white, one soft green for the confirmation, and mid-grey. No amber appears on this screen — the action is complete.
+
+DO NOT RENDER: the watch case, bezel, crown, button, strap or any physical device part; a wrist, hand or glove; any background or environment; a list of multiple upcoming jobs; a scrollbar, tab bar or navigation dots; activity or progress rings; a circle or badge around the checkmark; confetti, sparkles, starbursts or celebration effects; emoji; cartoon icons; gradients; glassmorphism; drop shadows; a light or white background; the default Apple watch face; or any generic fitness or consumer-app aesthetic.

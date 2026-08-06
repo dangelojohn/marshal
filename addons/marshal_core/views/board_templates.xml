@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The board page is a thin shell: all rendering happens client-side
+         against /marshal/board/state, so the same document could be served
+         from anywhere. That is the headless claim being cashed. -->
+
+    <record id="view_camera_tree" model="ir.ui.view">
+        <field name="name">marshal.camera.tree</field>
+        <field name="model">marshal.camera</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="last_error">
+                <field name="name"/><field name="chokepoint_id"/>
+                <field name="host"/><field name="channel"/>
+                <field name="vendor"/><field name="last_seen"/>
+                <field name="last_error"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_camera_form" model="ir.ui.view">
+        <field name="name">marshal.camera.form</field>
+        <field name="model">marshal.camera</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group><field name="name"/><field name="chokepoint_id"/>
+                               <field name="vendor"/><field name="active"/></group>
+                        <group><field name="host"/><field name="port"/>
+                               <field name="scheme"/><field name="channel"/></group>
+                    </group>
+                    <group string="Credentials">
+                        <field name="username"/><field name="password" password="True"/>
+                    </group>
+                    <group string="Advanced">
+                        <field name="snapshot_url_override" placeholder="leave blank for Reolink"/>
+                        <field name="last_seen" readonly="1"/><field name="last_error" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_camera" model="ir.actions.act_window">
+        <field name="name">Cameras</field>
+        <field name="res_model">marshal.camera</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_camera" name="Cameras" parent="menu_marshal_cfg"
+              action="action_camera" sequence="30"/>
+
+    <!-- Token refresh: Reolink tokens last about an hour, so refresh well
+         inside that. Doing a login per tile per 3s refresh would hammer the
+         cameras, which is why the board reads a cached token instead. -->
+    <record id="cron_camera_tokens" model="ir.cron">
+        <field name="name">Marshal: refresh camera tokens</field>
+        <field name="model_id" ref="model_marshal_camera"/>
+        <field name="state">code</field>
+        <field name="code">model.refresh_tokens()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="cron_chain_anchor" model="ir.cron">
+        <field name="name">Marshal: anchor custody chains</field>
+        <field name="model_id" ref="model_marshal_anchor"/>
+        <field name="state">code</field>
+        <field name="code">model.take()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+    </record>
+</odoo>
