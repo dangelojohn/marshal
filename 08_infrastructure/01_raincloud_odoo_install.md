@@ -416,3 +416,46 @@ Its first real run caught a bug before it reached the live database: a
 string-replace put the *Verify Custody Chain* button on `marshal.dlq` instead of
 `marshal.movement`, which Odoo rejects at view-validation time. Static checks
 alone would have passed it — it took the real install to catch.
+
+---
+
+## The wall board — live
+
+**http://192.168.68.89:8069/marshal/board** (add `?demo=1` for hardcoded tiles,
+no backend needed). `marshal_core 16.0.1.3.0`.
+
+Verified from the LAN: board page **200**, demo mode **200**, state endpoint
+returning 4 tiles with buffer occupancy, backend **200**.
+
+**Served as a plain file, not through Odoo's asset pipeline.** The board is a
+client of `POST /marshal/board/state` and nothing more, so it must stay servable
+from a kiosk, a spare tablet, or another host entirely — bundling it would
+quietly make the headless claim untrue.
+
+### Design decisions worth keeping
+
+- **Tiles never reorder.** Their position mirrors the physical yard the
+  coordinator has memorised. Reflowing the grid every 3 seconds would break the
+  mapping between screen and window, which is the one thing this board must
+  never do. Exceptions are made loud *in place* instead
+- **Status is carried by shape as well as colour** — circle / diamond /
+  triangle — so it survives a colour-blind viewer and a sun-washed screen
+- **Exception changes border width, not just colour**
+- **The clock runs off the device**, never the poll, so it stays an honest
+  reference when "updated" looks wrong
+- **Snapshots via cache-busted `<img>`, not video.** No player to break, trivial
+  reconnect, and enough to answer *"is door 4 clear?"*. A failed image falls back
+  to a "no camera" tile that still shows schedule state
+- **Staleness is stated in words** across the full width when the endpoint is
+  unreachable. A frozen board that still looks live is dangerous
+- **No animation anywhere.** A board that moves gets ignored
+
+### ⚠ Correction: "zero downtime" applies to tests and data, not new Python
+
+`--no-http` lets tests and `-u` run against a live server with no downtime, and
+that still holds. **But a new controller or model needs a container restart** —
+the running process holds the old Python in memory and `-u` never re-imports it.
+The board returned 404 until `docker-compose restart odoo`, and the fix is not
+obvious from the upgrade log, which exits 0.
+
+**Deploy rule: data and view changes are hot; new Python is not.**

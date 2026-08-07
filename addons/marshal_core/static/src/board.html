@@ -1,6 +1,295 @@
 <!doctype html>
-<meta charset="utf-8"><title>Marshal Board</title>
-<body style="background:#0f1419;color:#c9d1d9;font:16px system-ui;padding:2rem">
-<h1>Marshal wall board</h1>
-<p>Placeholder. The live board polls <code>POST /marshal/board/state</code> every 3s.</p>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Marshal — Wall Board</title>
+<style>
+/* ===========================================================================
+   MARSHAL WALL BOARD
+   Mounted in a dock office. Read at 3m by someone walking past, and at arm's
+   length on a tablet with gloves on. Every rule below that looks unusual is
+   there because of that environment.
+   =========================================================================== */
+:root{
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1C2128;
+  --hair:#242B33; --hair-strong:#39424D;
+  --text:#E6EDF3; --text-dim:#9BA7B4; --text-faint:#6B7681;
+  --amber:#E0A458;      /* active / accent */
+  --red:#D7503A;        /* exception ONLY */
+  --red-dim:#2A1512;
+  --green:#5FB37E;      /* clear / healthy */
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+
+/* ---------------------------------------------------------------- header */
+.hdr{position:sticky;top:0;z-index:10;display:flex;align-items:center;
+  gap:1.5rem;padding:.85rem 1.25rem;background:var(--surface-2);
+  border-bottom:1px solid var(--hair)}
+.brand{font-weight:800;letter-spacing:.14em;color:var(--amber);font-size:1.05rem}
+.ctx{color:var(--text-faint);font-size:.85rem;letter-spacing:.04em}
+.spacer{flex:1}
+.stat{display:flex;flex-direction:column;align-items:flex-end;
+  padding-left:1.25rem;border-left:1px solid var(--hair)}
+.stat b{font-family:var(--mono);font-size:1.5rem;font-weight:800;line-height:1}
+.stat span{font-size:.62rem;letter-spacing:.12em;color:var(--text-faint);
+  text-transform:uppercase;margin-top:.3rem}
+.stat.alert b{color:var(--red)}
+.stat.calm b{color:var(--green)}
+/* The clock runs off the DEVICE clock, never the poll. It is the honest
+   reference: if "updated" ever looks wrong, this is what you check against. */
+.clock b{color:var(--text-dim)}
+.dot{width:.55em;height:.55em;border-radius:50%;background:var(--green);
+  display:inline-block;margin-right:.4em;vertical-align:middle}
+.dot.stale{background:var(--amber)}
+.dot.dead{background:var(--red)}
+
+/* A frozen board that still looks live is dangerous, so failure is stated in
+   words across the full width — not left to a small coloured dot. */
+.banner{display:none;padding:.8rem 1.25rem;background:var(--red-dim);
+  border-bottom:2px solid var(--red);font-weight:700;letter-spacing:.02em}
+.banner.show{display:block}
+
+/* ----------------------------------------------------------------- grid */
+.board{display:grid;gap:.9rem;padding:1rem;grid-template-columns:1fr}
+@media(min-width:700px){.board{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1250px){.board{grid-template-columns:repeat(4,1fr);gap:1.1rem;padding:1.25rem}}
+
+/* ----------------------------------------------------------------- tile
+   Tiles NEVER reorder. Their position mirrors the physical yard the
+   coordinator has already memorised; reshuffling the grid every 3 seconds
+   would break the mapping between screen and window, which is the one thing
+   this board must never do. Exceptions are made loud in place instead. */
+.tile{background:var(--surface);border:1px solid var(--hair);
+  border-left:4px solid var(--hair-strong);display:flex;flex-direction:column;
+  overflow:hidden}
+.tile[data-s="active"]{border-left-color:var(--amber)}
+.tile[data-s="clear"]{border-left-color:var(--hair-strong)}
+/* Exception changes BORDER WIDTH as well as colour — a shape signal, so it
+   survives a colour-blind viewer and a washed-out screen in daylight. */
+.tile[data-s="exception"]{border:2px solid var(--red);border-left-width:8px}
+
+.thead{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;
+  background:var(--surface-2);border-bottom:1px solid var(--hair)}
+.tile[data-s="exception"] .thead{background:var(--red-dim)}
+.code{font-family:var(--mono);font-weight:800;font-size:1.05rem;letter-spacing:.02em}
+.nm{font-size:.72rem;letter-spacing:.08em;color:var(--text-faint);
+  text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st{margin-left:auto;display:flex;align-items:center;gap:.45em;
+  font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  white-space:nowrap}
+.tile[data-s="active"] .st{color:var(--amber)}
+.tile[data-s="clear"] .st{color:var(--text-faint)}
+.tile[data-s="exception"] .st{color:var(--red)}
+/* Shape carries status too: circle = clear, diamond = active, triangle =
+   exception. Never colour alone. */
+.g{width:.75em;height:.75em;flex:0 0 auto}
+.g[data-s="clear"]{border:2px solid var(--text-faint);border-radius:50%}
+.g[data-s="active"]{background:var(--amber);transform:rotate(45deg)}
+.g[data-s="exception"]{background:var(--red);clip-path:polygon(50% 4%,4% 96%,96% 96%)}
+
+/* --------------------------------------------------------------- camera */
+.cam{position:relative;aspect-ratio:16/9;background:#0a0d11;overflow:hidden}
+.cam img{width:100%;height:100%;object-fit:cover;display:block}
+.nocam{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.5rem;background:#1C2128;
+  color:var(--text-faint)}
+.nocam svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.5}
+.nocam span{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase}
+
+/* Info sits OVER the image so the tile stays one glanceable object rather
+   than two stacked things competing for the eye. */
+.info{position:absolute;left:0;right:0;bottom:0;padding:.55rem .8rem;
+  background:linear-gradient(transparent,rgba(0,0,0,.82)38%)}
+.l1{font-weight:700;font-size:.95rem;letter-spacing:.01em}
+.l2{font-size:.78rem;color:var(--text-dim);margin-top:.15rem}
+.l2.bad{color:var(--red);font-weight:700}
+.quiet{padding:.55rem .8rem;color:var(--text-faint);font-size:.78rem}
+
+.buf{display:flex;align-items:center;gap:.5rem;padding:.45rem .8rem;
+  border-top:1px solid var(--hair);font-size:.7rem;letter-spacing:.06em;
+  color:var(--text-faint);text-transform:uppercase}
+.bar{flex:1;height:5px;background:var(--hair);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--text-faint)}
+.buf.full{color:var(--red)} .buf.full .bar i{background:var(--red)}
+
+.foot{padding:1rem 1.25rem;color:var(--text-faint);font-size:.72rem;
+  letter-spacing:.06em;border-top:1px solid var(--hair)}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <span class="brand">MARSHAL</span>
+  <span class="ctx" id="ctx">—</span>
+  <span class="spacer"></span>
+  <div class="stat" id="excStat"><b id="exc">–</b><span>Exceptions</span></div>
+  <div class="stat"><b id="mv">–</b><span>Movements</span></div>
+  <div class="stat clock"><b id="clk">--:--:--</b><span>Now</span></div>
+  <div class="stat"><b id="upd" style="font-size:1rem"><span class="dot" id="dot"></span>–</b><span>Updated</span></div>
+</header>
+<div class="banner" id="banner"></div>
+<main class="board" id="board"></main>
+<footer class="foot" id="foot">Marshal wall board · polling /marshal/board/state every 3s</footer>
+
+<script>
+"use strict";
+const POLL_MS = 3000, STALE_MS = 10000;
+const $ = id => document.getElementById(id);
+const demo = new URLSearchParams(location.search).has("demo");
+
+let lastOk = 0, lastState = null, tiles = new Map();
+
+/* Device clock — independent of the network by design. */
+setInterval(() => { $("clk").textContent = new Date().toTimeString().slice(0,8); }, 1000);
+
+const NOCAM_SVG = `<svg viewBox="0 0 24 24"><path d="M2 7h13v10H2z"/><path d="M15 11l7-4v10l-7-4"/><path d="M3 3l18 18"/></svg>`;
+
+function tileEl(t){
+  const el = document.createElement("section");
+  el.className = "tile";
+  el.dataset.code = t.code;
+  el.innerHTML =
+    `<div class="thead"><span class="code"></span><span class="nm"></span>
+       <span class="st"><i class="g"></i><em class="stx" style="font-style:normal"></em></span></div>
+     <div class="cam"><img alt="" hidden><div class="nocam" hidden>${NOCAM_SVG}<span>No camera</span></div>
+       <div class="info" hidden><div class="l1"></div><div class="l2"></div></div></div>
+     <div class="quiet" hidden></div>
+     <div class="buf" hidden><span class="bl"></span><span class="bar"><i></i></span><span class="bn"></span></div>`;
+  return el;
+}
+
+function paint(el, t){
+  el.dataset.s = t.status;
+  el.querySelector(".code").textContent = t.code;
+  el.querySelector(".nm").textContent = t.name || "";
+  el.querySelector(".g").dataset.s = t.status;
+  const label = t.status === "exception"
+      ? (t.movement && t.movement.late_minutes > 0 ? "Late"
+         : t.buffer && !t.buffer.has_space ? "Blocked"
+         : !t.snapshot_url ? "Camera down" : "Exception")
+      : t.status === "active" ? "Active" : "Clear";
+  el.querySelector(".stx").textContent = label;
+
+  const img = el.querySelector("img"), nocam = el.querySelector(".nocam");
+  if (t.snapshot_url){
+    /* Cache-bust so the browser fetches a fresh frame. Deliberately an <img>
+       and not a video element: no player to break, trivial reconnect, and
+       enough to answer "is door 4 clear?". */
+    img.src = t.snapshot_url + (t.snapshot_url.includes("?") ? "&" : "?") + "_=" + Date.now();
+    img.hidden = false; nocam.hidden = true;
+    img.onerror = () => { img.hidden = true; nocam.hidden = false; };
+  } else { img.hidden = true; nocam.hidden = false; }
+
+  const info = el.querySelector(".info"), quiet = el.querySelector(".quiet");
+  if (t.movement){
+    info.hidden = false; quiet.hidden = true;
+    info.querySelector(".l1").textContent =
+      `${t.movement.name} · ${t.movement.crate_ref||"—"} → ${t.movement.dest_booth||"—"}`;
+    const l2 = info.querySelector(".l2");
+    if (t.movement.late_minutes > 0){
+      l2.className = "l2 bad";
+      l2.textContent = `${t.movement.late_minutes} MIN OVER · ${t.movement.operator||"unassigned"}`;
+    } else {
+      l2.className = "l2";
+      l2.textContent = [t.movement.operator, t.movement.equipment,
+                        t.movement.due && "due " + t.movement.due].filter(Boolean).join(" · ");
+    }
+  } else {
+    info.hidden = true; quiet.hidden = false;
+    quiet.textContent = t.next ? `next ${t.next.name}${t.next.eta ? " · " + t.next.eta : ""}` : "—";
+  }
+
+  const buf = el.querySelector(".buf");
+  if (t.buffer){
+    buf.hidden = false;
+    buf.classList.toggle("full", !t.buffer.has_space);
+    buf.querySelector(".bl").textContent = t.buffer.code;
+    buf.querySelector(".bn").textContent = `${t.buffer.occupancy}/${t.buffer.capacity}`;
+    buf.querySelector(".bar i").style.width =
+      Math.min(100, (t.buffer.occupancy / Math.max(1, t.buffer.capacity)) * 100) + "%";
+  } else buf.hidden = true;
+}
+
+function render(s){
+  const board = $("board");
+  /* Reconcile in place. Tiles keep their original position for the life of
+     the page — see the CSS note on why reordering would be harmful. */
+  s.tiles.forEach(t => {
+    let el = tiles.get(t.code);
+    if (!el){ el = tileEl(t); tiles.set(t.code, el); board.appendChild(el); }
+    paint(el, t);
+  });
+  const exc = s.tiles.filter(t => t.status === "exception").length;
+  $("exc").textContent = exc;
+  $("excStat").className = "stat " + (exc ? "alert" : "calm");
+  $("mv").textContent = s.tiles.filter(t => t.movement).length;
+  const extra = [];
+  if (s.alerts && s.alerts.dlq_open) extra.push(s.alerts.dlq_open + " blocked");
+  if (s.alerts && s.alerts.chains_broken) extra.push(s.alerts.chains_broken + " chain alerts");
+  $("ctx").textContent = extra.length ? extra.join(" · ") : "all chains intact";
+}
+
+function freshness(){
+  const age = Date.now() - lastOk;
+  const dot = $("dot"), upd = $("upd");
+  if (!lastOk){ dot.className = "dot dead"; return; }
+  dot.className = "dot" + (age > STALE_MS ? " stale" : "");
+  upd.childNodes[1].nodeValue = age < 5000 ? "live" : Math.round(age/1000) + "s ago";
+}
+setInterval(freshness, 1000);
+
+function fail(msg){
+  const b = $("banner");
+  b.className = "banner show";
+  b.textContent = msg + (lastState ? " — showing last known state, do not trust it as current."
+                                   : " — no data has been received yet.");
+  $("dot").className = "dot dead";
+}
+
+async function poll(){
+  if (demo) return;
+  try{
+    const r = await fetch("/marshal/board/state", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({jsonrpc:"2.0", method:"call", params:{}})
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    if (j.error) throw new Error(j.error.message || "server error");
+    lastState = j.result; lastOk = Date.now();
+    $("banner").className = "banner";
+    render(lastState);
+  } catch(e){ fail("Cannot reach Marshal (" + e.message + ")"); }
+  finally{ freshness(); }
+}
+
+if (demo){
+  const now = new Date().toTimeString().slice(0,5);
+  lastOk = Date.now();
+  render({tiles:[
+    {code:"DOCK1",name:"Dock Bay 1",status:"active",snapshot_url:null,
+     movement:{name:"MV00042",crate_ref:"CRATE-7",dest_booth:"412",
+               operator:"P. Novak",equipment:"Pump Truck #2",due:now,late_minutes:0},
+     buffer:{code:"APRON",occupancy:1,capacity:2,has_space:true}},
+    {code:"DOCK2",name:"Dock Bay 2",status:"exception",snapshot_url:null,
+     movement:{name:"MV00039",crate_ref:"CRATE-3",dest_booth:"118",
+               operator:"S. Whitfield",equipment:"Electric Forklift",due:now,late_minutes:18},
+     buffer:{code:"APRON",occupancy:2,capacity:2,has_space:false}},
+    {code:"DOCK3",name:"Dock Bay 3",status:"clear",snapshot_url:null,
+     movement:null,next:{name:"MV00043",eta:"10:15"},
+     buffer:{code:"APRON",occupancy:0,capacity:2,has_space:true}},
+    {code:"LIFT1",name:"Freight Elevator 1",status:"exception",snapshot_url:null,
+     movement:{name:"MV00044",crate_ref:"CRATE-2",dest_booth:"233",
+               operator:null,equipment:null,due:null,late_minutes:0},
+     buffer:null}
+  ], alerts:{dlq_open:2, chains_broken:0}});
+  $("foot").textContent = "DEMO MODE — hardcoded tiles, no backend. Remove ?demo=1 for live data.";
+} else { poll(); setInterval(poll, POLL_MS); }
+</script>
 </body>
+</html>
