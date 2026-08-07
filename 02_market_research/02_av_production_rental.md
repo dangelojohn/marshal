@@ -15,6 +15,31 @@ session. **[UNVERIFIED]** = could not confirm; included because it's a commonly-
 **[SPECULATIVE]** = my inference, flagged as such. **[FETCH-FAILED]** = the vendor's own site (and
 fallbacks) refused or returned nothing this session; noted rather than invented.
 
+**Gap-closing pass, 2026-08-07, WebSearch enabled.** Closed, substantially: HireHop and RTPro —
+both totally blocked in the original no-search pass (403s, empty JS-shell page bodies, blocked
+Wayback Machine) — are now fully substantiated vendor profiles with company-registry data,
+published pricing, and concrete feature detail. The **easyJOB section in the original pass
+profiled the wrong company** — a genuine name collision: it described Because Software AG, a
+German agency-project-management ERP vendor with zero AV/event/rental content, because
+`easyjob.de` redirects to `because-software.com`. The actual AV-industry easyjob is made by a
+different company entirely, **Protonic Software GmbH** (Hanau, Germany), and is now profiled
+correctly below, with the Because Software mixup retained and clearly flagged as a resolved false
+lead so it isn't repeated. **RentalWorks** — flagged as identity-ambiguous in the original pass —
+turned out to be **three separate entities wearing similar names**: the real, independent
+AV/broadcast RentalWorks (Database Works, Inc. — unrelated to United Rentals despite the
+`unitedrentals.com/rental-works` redirect), a same-named but unrelated industrial tool-crib
+product inside United Rentals' own Specialty Solutions division, and a probable mis-attribution to
+a distinct vehicle-rental product, RentWorks (no "al"), by BARS/Bluebird. **Lasso** — present only
+in the comparison table and the patterns/gaps sections in the original pass, never with its own
+vendor writeup — now has a full 9-point profile matching Rentman/Current RMS/Flex. A discovery
+pass beyond the original candidate list surfaced six additional vendors, most notably **Stagera** —
+a brand-new, purpose-built, explicitly AI-native competitor to Rentman/Current RMS/Flex/Point of
+Rental whose positioning is close to what Marshal itself is trying to be; see the new
+"Discovery pass" section below. Not everything closed: RTPro's pricing remains genuinely
+quote-gated everywhere searched (confirmed as vendor policy, not a research miss), and the
+RentalWorks/RentWorks Capterra-listing mismatch could not be resolved with full certainty. New
+findings are tagged **[SOURCED, 2026-08-07]** inline below.
+
 ---
 
 ## 1. Rentman
@@ -166,79 +191,206 @@ plan-pricing pages fetched successfully via its sitemap.
 
 ---
 
-## 4. HireHop
+## 4. Lasso
 
-**Site:** hirehop.com — **[FETCH-FAILED]**. Every attempt this session (root domain, `www` and
-bare, `/index.php`, `/features.php`, `/tour.php`) returned **HTTP 403**, consistent with active
-bot-blocking (likely Cloudflare) rather than the pages not existing. `docs.hirehop.com` had no DNS
-record. Wayback Machine (`web.archive.org`) is blocked entirely in this environment. G2, TrustRadius,
-and two Capterra product-slug guesses for HireHop all returned 403/404. A DuckDuckGo HTML search
-hit a CAPTCHA wall; a Bing HTML search returned unrelated cached content (not usable). I could not
-retrieve a single first- or third-party page with real HireHop content this session.
-**Everything below is [UNVERIFIED]** — reported, not invented, per instructions:
-- [UNVERIFIED] Widely known in the category as a UK-founded, relatively low-cost/high-feature
-  competitor with a generous free tier for very small operators, a diary/calendar scheduling view,
-  and its own CRM/accounting layer (Xero/QuickBooks/Sage integrations commonly cited).
-- [UNVERIFIED] Frequently cited in industry discussion as one of the more aggressively-priced
-  full-feature options, which is the closest thing to a "differentiator" I can report without a
-  primary source. **This claim should be independently verified before use** — it could not be
-  confirmed this session.
+**Site:** lasso.io. Positions itself as "the operating system event companies run on," not
+rental-only software.
 
----
-
-## 5. RTPro (Rental Tracker Pro)
-
-**Site:** rentaltrackerpro.com — **[FETCH-FAILED]**. The root domain and `/index.html` returned
-empty page bodies twice (the fetch tool explicitly reported no text content, not a network error —
-consistent with a JavaScript-only shell that this tool can't render), `/features` and
-`/product-features` returned 404. Capterra, G2, and Software Advice profile-URL guesses all 403'd
-or 404'd. DuckDuckGo/Bing searches returned irrelevant results (not usable). **No vendor content
-was retrieved this session.** I have deliberately not filled this section with recalled/assumed
-detail, per instructions not to invent — RTPro is long-established in broadcast/production camera
-and grip-rental circles but I cannot substantiate specific scheduling-engine claims from this
-session's fetches. Treat as a research gap, not an absence of capability.
-
----
-
-## 6. easyJOB (now under "Because Software")
-
-**Sites tried:** easyjobsoftware.com (DNS failure — domain no longer resolves), easyjob.net (500
-error), easyjob.de (redirected to `because-software.com`, then to `en.because-software.com`,
-which loaded). The rebrand itself is a finding: **[SOURCED]** the German/Austrian company behind
-easyJOB now trades as **Because Software**, positioning as "The ERP platform for agencies &
-project-driven businesses" — general project-agency ERP language, not AV/production-specific
-marketing, on the page fetched. [SOURCED] Claims "850+ installations and 35 years" in market.
-[SOURCED] Core modules mentioned: project management, accounting, controlling, time tracking.
-[SOURCED] Integrations: awork, Jira, Personio (none of these are AV/rental-industry tools —
-they're general project/HR tools, reinforcing that the fetched page is the generic-ERP framing of
-the product, not its rental-specific configuration). [SOURCED] Pricing is quote-gated (free-trial
-CTA only, no published tiers). **[UNVERIFIED]** — no equipment-availability, Gantt, crew-scheduling,
-kit-bundling, or serialized-stock language was present on the page fetched; this may simply mean
-the AV-specific product page lives at a different URL than the ones I found this session — treat
-the absence as a gap in what was retrieved, not as evidence the features don't exist. easyJOB has
-a long-standing **[INDUSTRY-COMMON]** reputation in German-speaking broadcast/event-technology
-markets specifically, which the "35 years" claim is consistent with, but I could not pull the
-AV-specific feature page to confirm scheduling-engine mechanics.
+1. **Scheduling engine** — [SOURCED] Event-centric, not order-centric: "built around the event —
+   gear, crew, travel, and billing on one timeline." Crew "scheduled across multiple shows and
+   multiple venues at once." "No line-count lag" even with "unlimited line items per gear order."
+   [SOURCED] Real-time availability with "Scanning Mode/Manual Prep Mode" for serialized cases; an
+   AI agent called "Lassie."
+2. **Crew/labour** — [SOURCED] Full crew stack: Scheduling, e-Signature, Time Tracking, Travel,
+   Payroll, plus LASSO's own Crew Marketplace ("500,000+ Crew on our App"). Crew database tracks
+   position/role history. "Deep scheduling with OT by state, certifications, and compliance built
+   in" — a stronger compliance/labor-law claim than Rentman/Current RMS/Flex show. Travel booking
+   claims "15% average savings on crew travel."
+3. **Multi-warehouse/multi-location** — [SOURCED] Transfer orders between warehouses; real-time
+   stock levels/locations/movements. Warehouse Operations is a line item inside the Inventory
+   Management bundle. Less granular than Current RMS's container model or Flex's per-location
+   pricing — bundled into the platform, not priced separately.
+4. **Job/project structure** — [SOURCED] Event-centric: "Rather than order-based tools, LASSO is
+   built around the event." Run-of-show and centralized event info live inside a "Project
+   Management" module.
+5. **Customer-facing surface** — [SOURCED] Client-facing invoicing/payment collection exists but no
+   dedicated self-service client booking portal was found — closer to Flex's model than to
+   Rentman/Current RMS's account area.
+6. **Integrations & extensibility** — [SOURCED] QuickBooks (via Zapier and a third-party connector
+   "Commercium"), Zapier generally, and an "extensive API." Narrower publicly-documented
+   integration list than Current RMS or Rentman.
+7. **Pricing model** — Quote-gated on lasso.io. [UNVERIFIED, third-party estimator only]
+   ITQlick/Vendr show $3–5/user/month for narrow add-ons scaling to $50/mo at 1 user up to
+   $35,000/mo at 1,000 users for fuller bundles; implementation estimates $5,000 (small) to
+   $200,000+ (enterprise). Flagged clearly as third-party estimates, not vendor-published figures.
+8. **What it does differently** — [VENDOR/SOURCED] Explicit positioning against rental-only tools:
+   "If you also schedule crew, track hours across venues, and run payroll and compliance, you've
+   outgrown rental-only software." Combines rental/inventory + full HR/payroll/compliance + crew
+   marketplace — materially broader scope than Rentman/Current RMS/Flex.
+9. **Why customers choose it / leave it** — [SOURCED, Capterra] Choose: "Great 5/5 across the
+   board," "scheduling is easy," "comparable price wise to the alternatives, while also offering
+   more on a base level." Leave: one reviewer flagged "a lot of training required to get going"
+   (offset by strong support per their own account). [SPECULATIVE] the payroll/compliance breadth
+   could be excess complexity for a small AV shop wanting only equipment scheduling — no direct
+   churn evidence, inference only.
 
 ---
 
-## 7. RentalWorks — identity could not be confirmed
+## 5. HireHop
 
-**[FETCH-FAILED / AMBIGUOUS]**. rentalworks.com 301-redirects to `unitedrentals.com/rental-works`,
-which itself returned 403 on fetch. The Capterra category listing separately surfaced a product
-called **"RentalWorks"** described as **"a powerful windows-based car rental software package for
-the global vehicle rental industry"** (4.5/5, 124 reviews) — i.e. **vehicle/car rental**, not
-AV/production. It is not clear from what I could fetch this session whether this is the same
-RentalWorks historically associated with entertainment/broadcast asset rental, a same-named
-different product, or whether United Rentals absorbed/repurposed the brand for its own internal
-tool-rental software. **I am flagging this explicitly rather than guessing**: treat "RentalWorks"
-as unconfirmed for this category until someone can browse `unitedrentals.com/rental-works`
-directly (it 403'd every automated fetch attempt) or find the vendor's independent site if one
-still exists.
+**Site:** hirehop.com / hirehop.biz. **[SOURCED, 2026-08-07]** Resolved via WebSearch this pass —
+the original no-search attempt hit HTTP 403 on every direct fetch path (consistent with active
+bot-blocking) and could not retrieve any first- or third-party content; search retrieval got past
+that block.
+
+- **[SOURCED — company registry]** UK company, HireHop Software Limited, registered no. 11241806,
+  based in Potters Bar, UK. Founded **2011 by Justin Levene**.
+- **[SOURCED]** Scheduling: visual calendar for crew assignment and cost allocation; "warehouse
+  schedule filters" and a recently-added "Availability Grid." No explicit Gantt-chart language
+  found. [SOURCED] Kit/package: "pre-preps" let the warehouse pre-allocate assets into boxes;
+  users can import a spreadsheet to match items by name/part number/bulk barcode into a kit list.
+  [SOURCED] Serialized tracking: tracks assets via barcode, QR, RFID, NFC, or serial number; a
+  "tracked products" type stores serial numbers/barcodes per individual asset; a dedicated
+  "second barcode" field exists specifically for non-programmable RFID tags.
+- **[SOURCED]** Crew: native calendar-based crew assignment inside HireHop itself, plus a distinct
+  third-party integration with **CrewBrain** — "information for projects and jobs automatically
+  sent from HireHop so crew scheduling can be directly managed from within CrewBrain," which adds
+  time recording, leave management, application forms, and risk assessments.
+- **[SOURCED]** Multi-warehouse/depot: unlimited depots, including "depots inside other depots"
+  (e.g., two companies trading from one address); users can be assigned to a specific depot;
+  barcode numbering customizable per depot. Multi-depot gated to Professional/Enterprise tiers.
+- **[SOURCED]** Pricing, published: Free/Starter tier (1 user, limited) → Professional at
+  £46/month primary user + £23/month per additional user → Enterprise (quote-gated: multi-depot,
+  advanced permissions, custom integrations). Licensing is concurrent-user, not named-seat —
+  "you only pay for the number of administrative team members logging in and processing actions
+  simultaneously"; read-only warehouse staff are free.
+- **[SOURCED]** Integrations: Xero, QuickBooks, Sage Business Cloud, Sage 50 Cloud, Zapier, and a
+  newer Microsoft Business Central integration. [VENDOR claim] "the only rental software that
+  allows different depots to sync with different accounting software."
+- **[SOURCED]** Reviews: 4.9/5 on Capterra (75 reviews); G2 users describe it as "inexpensive and
+  easy to use." Aggregator summary cites 97% satisfaction across 90 reviews on 3 sites.
+- **What it does differently** — concurrent-user pricing, a deep barcode/RFID/serial-tracking
+  layer, and reviewer sentiment repeatedly framing it as cheaper than Current RMS for comparable
+  feature depth.
+- **Job/project structure and customer-facing surface** — [UNVERIFIED] not covered in the sources
+  retrieved this pass; flagged as a residual gap rather than filled with recalled detail.
 
 ---
 
-## 8. Navigator Business Solutions — likely not a category vendor
+## 6. RTPro (Rental Tracker Pro)
+
+**Site:** rentaltracker.com. **[SOURCED, 2026-08-07]** Resolved via WebSearch this pass — the
+original no-search attempt got empty JS-shell page bodies and 404s on every direct path.
+
+- **[SOURCED]** Company: Rental Tracker Inc. RTPro is pitched as "the leading Inventory and
+  Warehouse Management Software for the Film/Entertainment Rental Industry," used from
+  1,000-asset shops up to 500,000+ asset studios, "for over 20 years." Sold in industry-specific
+  editions: "RTPro Set Lighting Audio Video Camera Touring Edition" and "RTPro Costume Property
+  Drapery Edition."
+- **[SOURCED]** Scheduling engine: a Space Scheduling module — "Schedule and book any type of
+  space, such as Stages, Office, and Parking spots," hourly/daily/weekly/monthly booking, calendar
+  and Gantt-chart views, conflict handling. [SOURCED] Kit/package + serialized+bulk explicitly
+  confirmed — "handle high-value serialized assets, bulk items, and supplies, kits, labor,
+  delivery and pick-up charges, outside processing, sub-rentals, and re-rents… inventory can be
+  grouped to form Kits or Packages, with pricing assigned to these bundles."
+- **[SOURCED]** Crew/labour: a Crew Scheduling product plus a separate Labor/Space Schedule add-on
+  module that feeds invoicing (Labor billed alongside Rentals, Sub-rentals, Sales, Restocking,
+  Cleaning, Loss, Damages, Space).
+- **[SOURCED]** Multi-location: real-time inventory visibility across all locations,
+  multi-currency, multi-language, centralized order management with staging/checkout/transfer/
+  return workflows, physical inventory cycle counts across locations. Handles "Parent companies,
+  Production companies, and Contact persons" as an org hierarchy.
+- **[SOURCED]** Customer-facing surface: customers can review terms, e-sign documents, accept
+  agreements online via a Customer Portal.
+- **[SOURCED]** RFID: "Mobile RFID Solution," marketed as [VENDOR claim] "the only proven mobile
+  RFID solution worldwide in the entertainment industry."
+- **[SOURCED]** Deployment flexibility: on-premise, cloud/SaaS, or hybrid — distinctive versus
+  every other vendor in this file (all cloud-only).
+- **Pricing** — still **[FETCH-FAILED, persists after search]**/quote-gated: no published pricing
+  found anywhere this pass either. Confirmed quote-gated, not a research miss.
+- **What it does differently** — the strongest confirmed differentiator is the on-prem/cloud/
+  hybrid deployment choice plus industry-specific editions — no other vendor in this file offers
+  anything but cloud-only.
+- **Why customers choose/leave** — [UNVERIFIED] no review or complaint data was surfaced this
+  pass.
+
+---
+
+## 7. easyjob (Protonic Software) — corrects the original "easyJOB" wrong-company profile
+
+**Resolved false lead, [SOURCED, 2026-08-07]: the original pass profiled the wrong company.**
+easyjob.de redirects to `because-software.com`, and the original research took that redirect at
+face value. **Because Software AG** (Germering/Munich + Vienna, founded 1988, ~25 employees,
+850+ installations, "35 years in the market") makes project-management/ERP software for
+**advertising and marketing agencies** — modules: job/project management, controlling, time
+tracking, CRM/groupware, HR, document management, resource planning; integrations Jira, awork,
+Personio. There is no AV/event/rental/broadcast content anywhere on its site. A Capterra listing
+under the `easyjob` slug corroborates: agency-ERP tool, 1.0/5 from its single reviewer, zero
+crew/kit/AV language, €39/month flat. **This is a genuine name collision** — "job" means "client
+project" in agency parlance, unrelated to AV production "job" — and it should not be repeated as
+the AV-industry easyJOB in future passes.
+
+**The actual AV/production/event-rental easyjob is made by Protonic Software GmbH**, Hanau,
+Germany — "developing professional solutions for the global event industry for more than 20
+years," "trusted by more than 2,000 companies worldwide," at protonic-software.com. Targeted at
+"rental, production and event logistics companies" working in "audio, video, trade shows, events,
+conferences, stages, touring, and tents."
+
+1. **Scheduling engine** — [SOURCED] A dedicated "Scheduling Board" and documented
+   "Dispositions-Terminologie"; "get availabilities, build schedules… plan more efficiently by
+   creating packages and anticipating shortages"; items are reschedulable directly in the Bill of
+   Items.
+2. **Crew/labour** — [SOURCED] A Crew Scheduling function to "manage and schedule employees, get
+   availabilities, build schedules and easily communicate with crew."
+3. **Multi-warehouse/multi-location** — [SOURCED] "Works across all sites and stock locations,
+   also in different countries and with different currencies."
+4. **Job/project structure** — [SOURCED] Editions scale by company size: easyjob S (one-man-shows),
+   M (~5 employees), L (~2 sites/~15 employees), XL (large, multi-site). Kit/package: "creating
+   packages and anticipating shortages" is explicit; a "Freelancer Communication Pack" module also
+   exists.
+5. **Customer-facing surface** — [UNVERIFIED] not found in the sources retrieved this pass.
+6. **Integrations & extensibility** — [SOURCED] Microsoft Teams (presence status, per-project
+   channels), DATEV export (German accounting standard) — narrower/more German-market-specific
+   than Rentman/Current RMS/Flex.
+7. **Pricing model** — Quote-gated (OMR review aggregator, 3.5/5 single review).
+8. **What it does differently** — sells adjacent products easytools (consumables) and rm.biz — a
+   small product family alongside the core easyjob line.
+9. **Why customers choose/leave** — [UNVERIFIED/thin evidence] only a single OMR review (3.5/5)
+   surfaced this pass — not enough to characterize sentiment reliably.
+
+---
+
+## 8. RentalWorks — three separate entities, not one ambiguous one
+
+**Resolved, [SOURCED, 2026-08-07]:** the original pass flagged this as identity-ambiguous after
+`rentalworks.com` 301-redirected to `unitedrentals.com/rental-works` (which itself 403'd) and a
+Capterra listing described a "car rental" RentalWorks. WebSearch untangled it into three distinct
+entities:
+
+1. **The AV/broadcast/entertainment RentalWorks is real, independent, and still actively sold.**
+   Made by Database Works, Inc., Brea, California — parent company founded 1983 by Terry Young.
+   Live at dbworks.com/products/rentalworks/ and rentalworkscloud.com. Named customer: 4Wall
+   Entertainment. Product suite: RentalWorks (core) + Storefront (customer-facing) + Customer
+   Portal (payments/account). [SOURCED] Features: multi-office/multi-warehouse, RFID/barcode
+   tracking via a QuikScan mobile app (iOS/Android), extensive third-party API, multi-currency,
+   customizable forms/reports/dashboards. This is **not** United Rentals and has not been absorbed
+   by anyone. [UNVERIFIED] scheduling-engine mechanics, crew module, job/project structure, and
+   pricing were not itemized in the sources retrieved this pass — flagged as residual gaps rather
+   than filled with recalled detail.
+2. **Separately, "Rental Works" acquired by United Rentals is a different company entirely** — it
+   sits under United Rentals' Specialty Solutions → Tool Solutions vertical (tool cribs, mobile
+   tool rooms "ProBox," construction/industrial tool-tracking via IoT/Bluetooth tags). A
+   construction/industrial tool-rental management company, unrelated to AV/entertainment.
+   Pre-acquisition history/original name remains [UNVERIFIED].
+3. **The Capterra "4.5/5, 124 reviews, car rental" listing the original pass cited does NOT match
+   Database Works' current Capterra listing (5.0/5, 1 review).** [SPECULATIVE, moderate
+   confidence] Most likely a mis-attribution/conflation with "RentWorks" (no "al") — a real,
+   distinct vehicle-rental product by BARS/Bluebird (barsnet.com/products/rentworks/). Could not
+   be fully confirmed with 100% certainty.
+
+---
+
+## 9. Navigator Business Solutions — likely not a category vendor
 
 **[SOURCED — negative result]**. navigatorbusinesssolutions.com (the domain named in the task
 brief) 301-redirects to an individual's personal LinkedIn profile — the domain has been
@@ -251,6 +403,64 @@ site.** My working conclusion: **this vendor does not belong in an AV/production
 competitive set** — it appears to have been included in the task's candidate list on a name
 collision, not a real product match. Recommend dropping it from this category's tracking list
 unless someone can point to a specific AV-vertical offering under this name that I failed to find.
+
+---
+
+## 10. Discovery pass, 2026-08-07: vendors found beyond the original candidate list
+
+WebSearch this pass surfaced six vendors not in the original candidate list. One of them —
+Stagera — is the most strategically relevant finding in this entire file.
+
+**Stagera (stagera.ai) — a direct, AI-native competitor to what Marshal itself is trying to be.**
+[SOURCED] A brand-new, purpose-built AV/production rental platform positioning itself as the
+modern/AI-native alternative to Rentman, Current RMS, Flex, and Point of Rental (dedicated
+`/vs-rentman`, `/compare/flex/`, `/compare/current-rms/`, `/compare/point-of-rental/` pages).
+Features: multi-warehouse inventory with barcode scanning and automated inter-location transfers;
+crew scheduling with certification tracking ("no more group texts or phone calls to fill a show");
+catalog/reservations/maintenance/automated pick lists; QuickBooks sync. Pricing: **flat
+$80/seat/month, all-inclusive, no feature gates, 14-day free trial, no card required** — the
+cleanest flat-rate pricing story in the category, and the only vendor in this file (besides Flex's
+unlimited-users model) not gating features by tier. AI angle: an "AI Features" nav link exists but
+wasn't detailed on pages fetched — [VENDOR claim, feature depth unconfirmed]. Company background:
+founded by "Cruz," described as "a technical founder and Oregon State University student who grew
+up around live event production" — reads as early-stage/possibly solo-founder/student-led, no
+funding/team size/founding date disclosed. **Treat as a nascent, unproven, very-early-stage direct
+competitor to what Marshal itself is trying to be** — near-identical "AI-native, purpose-built, not
+adapted from party-rental-tools" pitch, worth watching closely, not yet market-validated.
+
+**IntelliEvent Lightning** (intellieventlightning.com) — [SOURCED] Established 1998, "almost
+1,500 customers across 5 countries" — mature, not a newcomer. Real-time inventory across multiple
+business units/warehouses (audio, video, camera, lighting, rigging, staging); sub-rentals and PO
+creation; labor/crew scheduling for technicians/drivers/internal/freelance; serialized/
+non-serialized inventory; package management; RFID/barcode; QuickBooks. Close peer to RTPro — a
+direct third-party comparison exists (Slashdot: "IntelliEvent Lightning vs. Rental Track Pro"),
+confirming they compete head-to-head.
+
+**InTempo Software** (intemposoftware.com) — [SOURCED] Dedicated AV/camera/lighting/film-video
+vertical pages. Cycle counts, reorder-point management, rate/pricing control, quote/reservation/
+contract creation with cloning, automated maintenance alerts, utilization tracking, branch-to-
+branch transfer, mobile app. Self-positioned "for local and regional businesses" — a smaller/
+mid-market player.
+
+**Picker** — [UNVERIFIED/LOW CONFIDENCE] Appears in SEO-listicle aggregator content with plausible
+claims (mobile barcode scanning, online storefront, $129/$229/mo pricing) but no independent
+vendor website or company name could be located. **Recommend NOT including as a confirmed
+vendor** — flagged as possibly unreliable/fabricated listicle content, not added to the comparison
+table below.
+
+**EZRentOut** (ezo.io/ezrentout) — [SOURCED] Real, broader-scope (construction, heavy equipment,
+oil & gas, medical, event rental, AV/media) — a horizontal asset-tracking tool with AV as one of
+several verticals, not AV-native. 4.6/5 on G2 (211 reviews), starts $89/month. Worth a one-line
+"adjacent, not AV-native" mention, not a full profile.
+
+**Reservety** (reservety.com) — [SOURCED] Has an AV/production landing page but is fundamentally a
+small/midsize storefront rental-booking tool, closer to the party/event-rental category than
+AV-production scheduling depth. Lower priority.
+
+**Cheqroom** — appeared only in a secondary aggregator list alongside Rentman/Booqable/Point of
+Rental, no AV-specific detail. [UNVERIFIED] whether it has real AV-production depth vs. being a
+general asset-tracking tool (known market position: broader equipment/asset management for
+universities/corporate AV departments). Not verified this session beyond the passing mention.
 
 ---
 
@@ -303,9 +513,13 @@ source vendor):
 
 ## Where human judgment still dominates (the opening for agentic scheduling)
 
-None of the four vendors with confirmed detail (Rentman, Current RMS, Flex, Lasso) showed evidence
-of anything beyond **filter-and-manually-assign** logic — every "smart" claim found was UI
-convenience (drag-and-drop, color coding, real-time sync), not decision-making:
+None of the vendors with confirmed detail in this file (Rentman, Current RMS, Flex, Lasso,
+HireHop, RTPro, easyjob/Protonic, RentalWorks/Database Works) showed evidence of anything beyond
+**filter-and-manually-assign** logic — every "smart" claim found was UI convenience (drag-and-drop,
+color coding, real-time sync), not decision-making. [SOURCED, 2026-08-07] Stagera (see the
+Discovery pass section above) is the one vendor in the category that markets an "AI Features" nav
+link, but its actual decision-making depth was not detailed on the pages fetched — worth
+re-checking once Stagera publishes more than a nav link.
 
 - **Shortage *resolution* is entirely manual.** Every vendor surfaces the shortage; none showed
   evidence of *ranking* the resolution options (which sub-rental vendor is cheapest/fastest right
@@ -346,12 +560,13 @@ convenience (drag-and-drop, color coding, real-time sync), not decision-making:
 | **Rentman** | Real-time availability + shortage warnings; sub-rental as shortage fix | Skills/qualifications tagged, self-serve sign-up | Dedicated feature, €5/warehouse add-on | Not confirmed in fetched copy | **Published**, modular à la carte (€39 base + modules) | [SOURCED] Strong |
 | **Current RMS** | Color-coded 3-state Resource Planner; soft shortage warnings; per-line-item Prep/Travel/Setup/In-Use scheduler | Unified into general Resource Planner (no skills-match confirmed) | Container-based warehouse flow, Global Check-in | Kits confirmed; serialized/bulk split not explicit | **Published**, flat per-user, all features included | [SOURCED] Strong |
 | **Flex Rental Solutions** | Unified committed/available/in-transit view; live conflict detection | Separate paid module (StaffingPlus) with Gantt view, skills-based blast-inquiry | Explicitly priced per additional location | **Explicit** dual serialized+bulk tracking confirmed | **Published**, $510/mo base, unlimited users | [SOURCED] Strong |
-| **Lasso** | Real-time availability; "Scanning Mode/Manual Prep Mode" for serialized cases | Bulk scheduling + skills-matching claimed; AI agent "Lassie" | Warehouse ops referenced, not detailed | Serialized road-case tracking confirmed; kit depth not detailed | Quote-gated | [SOURCED] Partial |
-| **HireHop** | Unknown this session | Unknown this session | Unknown this session | Unknown this session | Unknown this session | **[FETCH-FAILED]** — 403 on every path |
-| **RTPro** | Unknown this session | Unknown this session | Unknown this session | Unknown this session | Unknown this session | **[FETCH-FAILED]** — empty/404 |
-| **easyJOB (Because Software)** | Not shown on fetched (generic-ERP) page | Not shown | Not shown | Not shown | Quote-gated | [SOURCED] Rebrand confirmed; product detail not found |
-| **RentalWorks** | Unknown — identity ambiguous (car rental vs. AV rental) | Unknown | Unknown | Unknown | Unknown | **[FETCH-FAILED/AMBIGUOUS]** |
+| **Lasso** | Event-centric timeline (gear+crew+travel+billing on one view); unlimited line items, no line-count lag; Scanning/Manual Prep Mode for serialized cases; AI agent "Lassie" | Full stack: Scheduling, e-Signature, Time Tracking, Travel, Payroll + Crew Marketplace (500,000+ crew); OT by state, certifications, compliance built in | Transfer orders between warehouses; bundled into Inventory Management, not priced separately | Serialized case tracking confirmed; kit depth not detailed | Quote-gated; [UNVERIFIED, 3rd-party estimate] ~$50–$35,000/mo depending on scale | [SOURCED, 2026-08-07] Full 9-point profile added |
+| **HireHop** | Visual calendar; warehouse schedule filters; Availability Grid; no explicit Gantt language | Native calendar-based crew assignment + CrewBrain integration (time/leave/applications/risk) | Unlimited depots incl. depots-inside-depots; per-depot barcode numbering; gated to Professional/Enterprise | Serialized (barcode/QR/RFID/NFC/serial#) + kit "pre-preps" with spreadsheet import | **Published**: Free/Starter → Professional £46 + £23/user/mo → Enterprise quote-gated; concurrent-user licensing | [SOURCED, 2026-08-07] Resolved via search — was [FETCH-FAILED] |
+| **RTPro** | Space Scheduling module: calendar + Gantt views, hourly–monthly booking, conflict handling | Crew Scheduling product + Labor/Space Schedule add-on feeding invoicing | Real-time multi-location, multi-currency/language, cycle counts across locations, parent/production-company hierarchy | Explicit serialized + bulk + kits/packages with bundle pricing | Quote-gated — confirmed unpublished after search too, not a research miss | [SOURCED, 2026-08-07] Resolved via search — was [FETCH-FAILED]; pricing still gated |
+| **easyjob (Protonic Software)** | Dedicated Scheduling Board; "creating packages and anticipating shortages"; items reschedulable in Bill of Items | Crew Scheduling function (availabilities, schedules, crew communication) | Works across all sites/stock locations, multi-country/currency | Package creation explicit; editions S/M/L/XL scale by company size | Quote-gated | [SOURCED, 2026-08-07] Original profile was the WRONG company (Because Software, agency ERP) — corrected, real vendor now profiled |
+| **RentalWorks (Database Works)** | Not itemized in sources retrieved this pass [UNVERIFIED] | Not found [UNVERIFIED] | Multi-office/multi-warehouse confirmed | Not itemized [UNVERIFIED] | Not found — presumed quote-gated [UNVERIFIED] | [SOURCED, 2026-08-07] Identity resolved into 3 distinct entities — was [FETCH-FAILED/AMBIGUOUS]; feature depth still partial |
 | **Navigator Business Solutions** | N/A | N/A | N/A | N/A | N/A | **[SOURCED]** Not an AV-rental vendor — likely wrong category match |
+| **Stagera** (new, 2026-08-07) | Multi-warehouse inventory w/ barcode scanning + automated inter-location transfers | Crew scheduling with certification tracking | Multi-warehouse confirmed | Catalog/reservations/maintenance/automated pick lists | **Published, flat**: $80/seat/mo all-inclusive, no feature gates, 14-day free trial, no card required | [SOURCED, 2026-08-07] New entrant — nascent, unproven, direct AI-native competitor to Marshal's own positioning |
 
 ---
 
@@ -399,3 +614,5 @@ convenience (drag-and-drop, color coding, real-time sync), not decision-making:
   rental).
 - DuckDuckGo HTML search — returned a CAPTCHA challenge page, no results extractable.
 - Bing HTML search — returned unrelated/cached content not matching the query, not usable.
+
+**2026-08-07, WebSearch enabled — resolved all of the above except RTPro's pricing:** HireHop, RTPro, and RentalWorks all substantiated via search (see sections 5, 6, 8). `easyjob.de`'s redirect to Because Software turned out to be a name collision, not the real rebrand — the actual AV-industry easyjob is Protonic Software GmbH, unrelated to the domain chased in the original pass (§7). Still genuinely unresolved even with search: RTPro's pricing (confirmed quote-gated, not a research gap), and G2/TrustRadius/Capterra review depth for HireHop/RTPro/RentalWorks (all still 403 or no-listing).

@@ -11,6 +11,11 @@ Ordered by what unblocks the most. Nothing here needs code.
 **Call a Canadian venue ops director.** Ask: *what does an hour of dock idle cost
 you during move-in, and how do you schedule the yard today?* Expect the answer to
 be a spreadsheet, a radio, and a person. The cost is already on their books.
+**Added 2026-08-07: if it's Toronto, Vancouver, or Calgary, ask specifically
+whether they already use Voyage Control (`voyagecontrol.com`) — confirmed live at
+MTCC, Vancouver Convention Centre, and BMO Centre Calgary — and if so, what it's
+failing to do for them.** See `02_market_research/07_canadian_market.md` §0. Don't
+assume greenfield at any of those three venues.
 
 **Call a service contractor.** Ask: *what does it cost you when a show's scope
 changes late — and when do you typically find out?* The research's most
@@ -30,20 +35,20 @@ and the only asset in this project someone else can take.
 
 ---
 
-## 3. Re-run the vendor census with web search enabled
+## 3. ~~Re-run the vendor census with web search enabled~~ DONE 2026-08-07 (Canadian pass)
 
-The market research was compiled **without web search** — agents could fetch
-known URLs but could not *discover* vendors. Consequences:
+Re-ran with real WebSearch, scoped to the Canadian market file (`07_canadian_market.md`).
+Closed: the 3 venue fetch-failures, market sizing, the national association identity
+(it's **CAEM**, not "CEMA"). Found the single most important competitive fact in the
+project so far: **Voyage Control already runs dock scheduling at MTCC, Vancouver
+Convention Centre, and BMO Centre Calgary** — see §0 of that file and the phone-call
+note in item 1 above. Also surfaced two vendors the original pass missed entirely
+(Global Convention Services, Encore Canada's cross-provincial AV consolidation).
 
-- Good coverage of vendors we could name in advance
-- **Weak on regional Canadian players and recent entrants** — precisely where a
-  competitive study most needs discovery
-
-The structural findings (the seam, the buffer gap, exclusivity, the price floor)
-are well evidenced and unlikely to move. **The vendor roster is a strong starting
-list, not a census.** Re-run it before any figure reaches an investor deck.
-
-See `04_research_archive/research_method_and_limits.md`.
+**Still not re-run**: the other 6 category files (`01`–`06` under `02_market_research/`)
+were compiled the same search-unavailable way and carry the same "strong starting
+list, not a census" caveat. Re-run those too before any figure reaches an investor
+deck. See `04_research_archive/research_method_and_limits.md`.
 
 ---
 

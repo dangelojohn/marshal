@@ -1,27 +1,20 @@
-# ⚠ CORRECTION — unverified ownership claims
+# ⚠ CORRECTION — ownership claims checked 2026-08-07, both FALSE
 
-**Added by the consolidating author after review.**
-
-This file contains two **corporate-ownership claims that could not be verified
-in this session** and which appear *untagged* in the summary table and closing
-roster even though the body text hedges them:
+**Gap-closing pass, 2026-08-07, WebSearch enabled.** The two ownership claims
+below were flagged as unverified in the original (no-search) pass. Both were
+checked with live search and **found to be false**, not merely unconfirmed —
+correcting course from the original header, which only asked that they not be
+repeated without checking.
 
 | Claim | Status |
 |---|---|
-| "Goodshuffle Pro acquired by Toast (2025)" | **UNVERIFIED.** Tagged `[INDUSTRY-COMMON]` in the body but stated as fact in the comparison table and roster |
-| "Booqable is Shopify-owned" | **UNVERIFIED.** Tagged `[SPECULATIVE]` in the body |
+| "Goodshuffle Pro acquired by Toast (2025)" | **[SOURCED] FALSE.** Goodshuffle's own About/News pages, and TechCrunch's Feb 2024 coverage, show it independently founded (2013, Andrew Garcia & Erik Dreyer) and raising a **$5M Series A led by FINTOP Capital, Feb 2024** — no acquisition by Toast or anyone else appears anywhere in the company's own materials, trade press, or Crunchbase/PitchBook/Tracxn profiles. Toast's own disclosed 2024–2025 M&A activity (Delphi Display Systems, an Amex/Resy/Tock partnership) is restaurant-tech-adjacent and has no connection to event rental software. |
+| "Booqable is Shopify-owned" | **[SOURCED] FALSE.** Booqable is bootstrapped/independently owned — Groningen, Netherlands, founded 2014 (Arjen Oosterkamp & Johan Van Zonneveld), no external funding raised per Crunchbase/Owler/Tracxn/Growjo. It has a Shopify App Store **integration** and appears in "Shopify vs. Booqable" comparison articles — almost certainly the source of the original ownership speculation, but integration/comparison ≠ ownership. |
 
-Neither could be confirmed — the session's search budget was exhausted, and the
-consolidating author has no independent knowledge of either transaction.
-
-**Do not repeat either claim externally without checking.** A competitive
-analysis that misstates who owns the category leader damages credibility more
-than the fact would ever have helped. Both are trivially checkable with one
-search each: the vendor's own about/press page, or a funding database.
-
-The *functional* analysis in this file — features, scheduling depth, and
-especially the "what this category fails at" section — is the valuable part and
-does not depend on either ownership claim.
+Both corrections are applied directly in the vendor profiles and comparison
+table below. The *functional* analysis in this file — features, scheduling
+depth, and especially the "what this category fails at" section — was already
+the valuable part and is unaffected by either correction.
 
 ---
 
@@ -44,7 +37,7 @@ Eight major vendors serve the $3B+ event rental market. The category excels at m
 **Integrations:** [UNVERIFIED] Not listed on public homepage  
 **Pricing:** [SOURCED] Quote-gated; not published  
 **Differentiator:** Market-leading brand in SMB event rental; dominant mindshare  
-**Status:** [INDUSTRY-COMMON] Acquired by Toast (2025); integration strategy unclear  
+**Status:** [SOURCED, 2026-08-07] Independent, privately held; raised $5M Series A (FINTOP Capital) Feb 2024. Not acquired by Toast — that claim was checked and refuted, see correction above  
 
 ---
 
@@ -139,8 +132,37 @@ Eight major vendors serve the $3B+ event rental market. The category excels at m
 
 ---
 
-### 9. Booqable (event-focused variant)
-**Note:** [SPECULATIVE] Booqable is a general-purpose rental SaaS (Shopify-owned) with event rental use cases. Event-specific feature set limited compared to dedicated vendors above. [UNVERIFIED] Exact event rental positioning not researched in this session.
+### 9. Rentman (added 2026-08-07)
+**Target:** Party/event rental (tents, tables, chairs, linens, inflatables) as a vertical product line within a broader AV/event rental platform — the AV-side product is separately profiled in `02_av_production_rental.md`, this entry covers only the party-rental positioning
+**Scheduling Model:** [SOURCED] Real-time availability across the platform
+**Quoting & Contracting:** [SOURCED] Standard quote-to-order workflow, shared with the AV product line
+**Operations:** [SOURCED] Founded 2015 (Utrecht, Netherlands) by an AV rental company owner; **$22M total raised, Series B closed Dec 2023** — a materially larger, better-funded company than every other vendor in this roster
+**Customer Portal:** [SOURCED] rentman.io/industries/party-rental — dedicated vertical page
+**Integrations:** Not researched for the party-rental line specifically this pass
+**Pricing:** [SOURCED] Published, modular (see AV file for detail) — more transparent than most of this category
+**Differentiator:** Scale and funding (250,000+ claimed AV/event professional users platform-wide) missed by the original no-search pass; a credible, well-capitalized competitor
+**Status:** [SOURCED, 2026-08-07] Active, well-funded, missed entirely by the original research
+
+### 10. Booqable (event-focused variant, expanded 2026-08-07)
+**Target:** [SOURCED] General-purpose, independently-owned, bootstrapped rental SaaS (Groningen, Netherlands; founded 2014; no external funding — see correction above) with a dedicated event/party-rental vertical page
+**Scheduling Model:** [SOURCED] Real-time availability; buffer/setup time supported
+**Quoting & Contracting:** [SOURCED] **"Party Rental Agreements"** — dedicated customizable e-signature contract templates for the event vertical specifically (distinct from Booqable's generic-vertical contracts). Operator chooses instant checkout **or** quote-first flow — explicit acknowledgment that event rental often needs consultative sales, not pure e-commerce
+**Operations:** [SOURCED] **"Bundles and Tent Packages"** — groups tables/chairs/linens/poles/sidewalls into wedding/event configurations while still tracking each component's inventory individually. Distance- and order-size-based automated delivery-fee rules
+**Customer Portal:** [SOURCED] booqable.com/industries/event-party-rental-software/; 8,000+ rental businesses platform-wide (not event-specific), 4.8★ across Google/Capterra/G2
+**Integrations:** [UNVERIFIED] Not itemized for the event vertical specifically
+**Pricing:** [SOURCED] **Published** — $29/$69/$149/mo — genuinely more transparent than all 8 other vendors in this file, which are entirely quote-gated. Worth flagging as a real differentiator
+**Differentiator:** Published pricing; cross-vertical platform underneath with an event-specific marketing/feature layer on top
+**Status:** [SOURCED, 2026-08-07] Active; not Shopify-owned — see correction above
+
+---
+
+## Discovery pass, 2026-08-07: does anything solve the "no federated multi-supplier quoting" gap?
+
+**No.** Searched hard from several angles (marketplace platforms, "federated quoting," trade-show/exhibitor tools, industry trade-press discussion) — the gap flagged below in "What This Category Is BAD At" #1 is **confirmed, not refuted**, by real search. Two honest sub-findings:
+
+- **A cluster of vendors market "multi-vendor party rental" but none of them are it.** Bookzia, QoreUps/QMarket, Yo!Rent, and MultiVendorX [SOURCED, fetched directly] are all **white-label marketplace-*building* infrastructure** sold to an entrepreneur who wants to launch their *own* branded rental marketplace from scratch — not an existing, adopted network where independent rental companies already federate quotes for a shared customer today. None published customer counts, named live marketplaces, funding, or founding dates — no traction evidence at all. Bookzia's own tagline concedes it: "optional multi-vendor capabilities — built for operators with real revenue" (i.e., you plug in your own vendors).
+- **One genuinely unresolved lead**: Goodshuffle's own **consumer-facing marketplace** at goodshuffle.com (distinct from the Goodshuffle Pro backend product profiled above) lets customers browse/compare rental items "by category" across what appear to be multiple different rental businesses. **[UNVERIFIED]** — the page content didn't clarify whether checkout is a single consolidated transaction spanning multiple independent vendors (true federation) or just parallel browsing with separate per-vendor checkouts. Worth a follow-up with a live signup/demo rather than asserting either way; it's the only signal anywhere in the category that gestures at real cross-vendor unification.
+- Ruled out as false leads: Curate (single-business ops/CRM, no cross-company federation), PartySlate+Tripleseat (vendor discovery/lead-routing, not federated quoting/fulfillment).
 
 ---
 
@@ -179,7 +201,7 @@ Eight major vendors serve the $3B+ event rental market. The category excels at m
 
 | Vendor | Target Segment | Scheduling Depth | Customer Portal | Pricing Transparency | Differentiator |
 |--------|---|---|---|---|---|
-| **Goodshuffle Pro** | SMB event rental | Quote-to-repeat | Basic | Quote-gated | Brand dominance; ownership UNVERIFIED (see correction) |
+| **Goodshuffle Pro** | SMB event rental | Quote-to-repeat | Basic | Quote-gated | Brand dominance; independently owned, $5M Series A Feb 2024 (not Toast-acquired) |
 | **TapGoods PRO** | Multi-vertical (party, construction, AV, staging) | Real-time multi-location + route opt | Full (storefront) | Quote-gated | Cross-vertical; sub-5-min support |
 | **Point of Rental** | Enterprise equipment (heavy + event) | Multi-location dispatch + telematic | eCommerce | Quote-gated (Essentials/Elite) | 70K users; heavy + event unified |
 | **Event Rental Systems** | SMB party/event | Automated conflict detection + routing | 24/7 mobile booking | Quote-gated | Growth automation (Google Ads, MailChimp) |
@@ -187,22 +209,26 @@ Eight major vendors serve the $3B+ event rental market. The category excels at m
 | **Party Track** | Event specialists (linen, tent) | Delivery routing (DispatchTrack-coupled) | Order + e-sig | Quote-gated | RFID asset tracking; PTSign bundled |
 | **Rentopian** | SMB event/AV/inflatables | Real-time availability calendar | Full (browse, quote, book, pay) | Quote-gated | Payment processor choice; WordPress integration |
 | **InflatableOffice** | SMB inflatables + event supplies | Multi-location delivery + worker app | Mobile-responsive + auto-contract | Published tiers (by inventory level) | Workers app + shift mgmt; all-in-one no routing dep |
+| **Rentman** (added 2026-08-07) | Party rental as a line within a broader AV/event platform | Real-time, shared w/ AV product | Full (rentman.io/industries/party-rental) | Published, modular | $22M raised, Series B Dec 2023 — best-funded vendor in this roster |
+| **Booqable** (expanded 2026-08-07) | SMB, general-purpose w/ event vertical layer | Real-time + buffer/setup time | Full (booking page/builder/custom) | **Published** — $29/$69/$149/mo | Only fully transparent pricing in the category; bootstrapped, not Shopify-owned |
 
 ---
 
 ## Summary: Vendor Roster & Category Weaknesses
 
-**Active Vendors (8):** Goodshuffle Pro (ownership UNVERIFIED), TapGoods PRO, Point of Rental (enterprise), Event Rental Systems, RentalResult (hybrid internal/external), Party Track (RFID-centric), Rentopian, InflatableOffice (workers app).
+**Active Vendors (10, updated 2026-08-07):** Goodshuffle Pro (independently owned, not Toast-acquired), TapGoods PRO, Point of Rental (enterprise), Event Rental Systems, RentalResult (hybrid internal/external), Party Track (RFID-centric), Rentopian, InflatableOffice (workers app), Rentman (best-funded, missed by original pass), Booqable (only transparent pricing, not Shopify-owned).
 
 **Differentiators:**
 - **Point of Rental** = scale (70K users, heavy equipment + events)
 - **TapGoods/Rentopian** = cross-vertical + payment flexibility
 - **InflatableOffice** = workers/shift management built-in
 - **RentalResult** = internal+external hybrid rental (enterprise only)
+- **Rentman** = scale/funding ($22M raised) missed by the original no-search pass
+- **Booqable** = the only vendor in the category with published, transparent pricing
 
-**What the category FAILS at:** Multi-supplier orchestration, venue constraints, exhibitor self-service at 100+ scale, labour rule enforcement, damage assessment, partial availability negotiation, sub-rental workflows, complex out/return windows, revenue forecasting. All platforms are single-vendor, single-event execution tools with no federated, constraint-aware, or strategic planning layers.
+**What the category FAILS at:** Multi-supplier orchestration, venue constraints, exhibitor self-service at 100+ scale, labour rule enforcement, damage assessment, partial availability negotiation, sub-rental workflows, complex out/return windows, revenue forecasting. All platforms are single-vendor, single-event execution tools with no federated, constraint-aware, or strategic planning layers. **Confirmed, not softened, by the 2026-08-07 discovery pass** — see the new section above; the "multi-vendor" tools that exist are white-label marketplace-building infrastructure, not an adopted federation network.
 
 ---
 
-**Data Sources:** [SOURCED] = vendor website homepage/features (goodshuffle.com, tapgoods.com, point-of-rental.com, eventrentalsystems.com, rentalresult.com, partytrack.com, rentopian.com, inflatableoffice.com). [SOURCED] = Capterra 2026 awards (TapGoods). [UNVERIFIED] = partyrentalsoftware.com (certificate expired, not fetched). [VENDOR] = vendor-claimed customer counts / awards. [INDUSTRY-COMMON] = category-wide limitations observed across all eight platforms.
+**Data Sources:** [SOURCED] = vendor website homepage/features (goodshuffle.com, tapgoods.com, point-of-rental.com, eventrentalsystems.com, rentalresult.com, partytrack.com, rentopian.com, inflatableoffice.com, rentman.io, booqable.com). [SOURCED] = Capterra 2026 awards (TapGoods). [UNVERIFIED] = partyrentalsoftware.com (certificate expired, not fetched). [VENDOR] = vendor-claimed customer counts / awards. [INDUSTRY-COMMON] = category-wide limitations observed across all eight original platforms. **2026-08-07 gap-closing pass** additionally sourced: pro.goodshuffle.com/about/, news.goodshuffle.com, techcrunch.com, help.booqable.com, rentman.io/industries/party-rental, plus Crunchbase/PitchBook/Tracxn/Owler/Growjo search snippets.
 

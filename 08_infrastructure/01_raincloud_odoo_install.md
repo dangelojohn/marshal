@@ -112,6 +112,12 @@ validates) and copied over, **with the sha256 verified identical on both ends**
 **Anything else fetched from this NAS over HTTPS may hit the same wall.** Fetch
 locally and copy, or update the bundle at `/etc/ssl/certs`.
 
+**RESOLVED, unprompted — checked 2026-08-06 evening.** QNAP's own
+`QcloudSSLCertificate` QPKG (stock-installed, see host inventory) evidently
+refreshed `/etc/ssl/certs` on its own schedule (file dates Jul 30 / Aug 4).
+`curl -v https://github.com` now returns `SSL certificate verify ok`, issuer
+Sectigo, exit 0. No action needed — leave this QPKG alone, it's doing its job.
+
 ### 4. `/tmp` is a 64MB tmpfs
 
 Small enough that a single 64MB download filled it to 100%, which then broke
@@ -230,10 +236,10 @@ Recorded because each cost real time and will recur.
 
 | Priority | Action |
 |---|---|
-| **1** | **Mirror CACHEDEV2** — add one of the five idle disks to md2. Single points of failure under a database are not acceptable once real work lands |
-| ~~2~~ | ~~Set `list_db = False`~~ **DONE.** Still needs a reverse proxy with TLS before any access from outside the LAN |
-| **3** | Copy backups **off this box** — a backup on the volume it protects is not a backup |
-| 4 | Update `/etc/ssl/certs` so the NAS can fetch from modern HTTPS endpoints |
+| **1** | **Mirror CACHEDEV2** — add one of the five idle disks to md2. Single points of failure under a database are not acceptable once real work lands. **Must be done by the owner in the QTS web UI** (Storage & Snapshots) — not something to script blind |
+| ~~2~~ | ~~Set `list_db = False`~~ **DONE.** Offsite/external access still needs a plan (reverse proxy+TLS, or a VPN overlay) — **network-layer decision, owner's call**, see below |
+| ~~3~~ | ~~Copy backups off this box~~ **DONE**, see below |
+| ~~4~~ | ~~Update `/etc/ssl/certs`~~ **Turned out already fine** — QcloudSSLCertificate keeps it current on its own, checked 2026-08-06 |
 | 5 | Consider raising `workers` once real load is observed — 2 is deliberately cautious |
 
 ---

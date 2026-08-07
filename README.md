@@ -12,11 +12,18 @@ A *marshalling yard* is where trucks stage before they are called to a dock.
 Marshal schedules that — the trucks, the docks, the yard, and eventually the
 whole move-in.
 
-It exists because of one finding: **the loading dock is the only part of an
-exhibition floor that no service-exclusivity contract covers.** Electrical,
-rigging, drayage and AV are all locked to venue-appointed contractors. The dock
-belongs to the building. That is the one door left open, and it happens to sit
-on the physical bottleneck everything else queues behind.
+It exists because of one finding, **refined 2026-08-07 after a pass built
+specifically to test it, not confirm it** (`02_market_research/12_exhibitor_facility_interaction_map.md`):
+electrical, rigging, drayage and AV are locked to venue-appointed contractors —
+but the dock isn't the *only* exhibitor-facility touchpoint that escapes those
+contracts (fire-marshal inspection and venue-exclusive utility installers are
+direct touchpoints too). **It's the only one of those touchpoints that is also
+a recurring scarce-resource scheduling problem** — many trucks, few doors, a
+hard time window, real cost to idling — rather than a one-time compliance gate
+or a discrete labor task. That's the physical bottleneck everything else queues
+behind, and it's why a real, funded, live competitor (Voyage Control, already
+running Toronto/Vancouver/Calgary's flagship venues) exists specifically for
+the dock and nowhere else on this list.
 
 ## Why it should work
 
@@ -38,7 +45,7 @@ on the physical bottleneck everything else queues behind.
 | 2 | `00_decisions/DECISIONS.md` | What's settled and what's still open |
 | 3 | `01_product/03_predictive_scheduling.md` | The scheduling engine and the demand model |
 | 4 | `03_internal_assets/` | What we already own and can reuse |
-| 5 | `02_market_research/` | The competitive evidence behind all of it |
+| 5 | `02_market_research/INDEX.md` | **Live status of the competitive evidence** — which files are gap-closing-pass complete |
 
 ## Folder map
 
@@ -76,12 +83,22 @@ what keeps the history intact.
 
 ## Honest status
 
-**Nothing is built.** This is research and a product decision. No code has been
-written for Marshal, and no code in any existing repo has been modified.
+**Infrastructure is live.** Odoo 16 CE running on RainCloud (QNAP), `marshal_core`
+module installed with 30 passing tests, implementing the chokepoint/buffer
+contention model (D-014), an idempotency/dead-letter/custody-chain spine (Wave
+0+1), and a live wall board. Full detail: `08_infrastructure/01_raincloud_odoo_install.md`.
+**The product/market thesis is still gated by two phone calls** — see
+`06_next_steps/OPEN_ITEMS.md`.
 
-The sourcing limit that applies to the market research is real and documented in
-`04_research_archive/research_method_and_limits.md` — **the vendor census was
-compiled without web search available**, so it is a strong starting list rather
-than a complete one. The structural findings (the seam, the buffer gap,
-exclusivity, the price floor) are well evidenced. **Re-run vendor discovery with
-search enabled before any figure goes in front of an investor.**
+The sourcing limit that applied to the market research is documented in
+`04_research_archive/research_method_and_limits.md` — the original vendor census
+was compiled **without web search available**. **Re-run complete, 2026-08-07**:
+all of `02_market_research/01`–`08` were gap-closed with real web search, plus
+four new files (`09`–`12`) applying Jobs-To-Be-Done research to the GSC, the
+venue, the exhibitor, and the direct exhibitor-facility interface — sourced
+from job postings, union agreements, and exhibitor complaints rather than
+vendor marketing. See `02_market_research/INDEX.md` for the full status and
+headline findings per file. The single most consequential result: **Voyage
+Control already runs dock scheduling at Toronto/Vancouver/Calgary's flagship
+venues** — not greenfield — which is why this file's own thesis above is
+stated more narrowly than the original version was.

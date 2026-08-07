@@ -201,10 +201,26 @@ first, at `marshal.show`.**
 
 It wins because it is the only entry point in this market that is simultaneously
 a real unmet need, a proven software category, physically impossible for the
-adjacent incumbents to serve, sellable to one buyer with a moving P&L, free of
-the exclusivity contracts that block every other door, and — the part that
-compounds — the instrument that generates the data for everything else in this
-study.
+adjacent incumbents to serve, sellable to one buyer with a moving P&L, and —
+the part that compounds — the instrument that generates the data for
+everything else in this study.
+
+**Correction, 2026-08-07** (`02_market_research/12_exhibitor_facility_interaction_map.md`,
+a pass built specifically to test this claim adversarially rather than confirm
+it): "free of the exclusivity contracts that block every other door" overstates
+it — fire-marshal/AHJ inspection and venue-exclusive utility installers
+(Showtech at MTCC, Edlen at McCormick Place) are *also* direct,
+GSC/organizer-unmediated exhibitor-facility touchpoints. The claim that
+survives, narrower and more defensible: **the dock is the one such touchpoint
+that is also a recurring scarce-resource scheduling problem** — many trucks,
+few doors, a hard time window, real cost to idling — not a one-time compliance
+gate (fire marshal) or a discrete labor task (utility install). That's *why* a
+real, funded, live competitor exists specifically for the dock (Voyage
+Control, already running MTCC/Vancouver/Calgary — see file 07) and not for
+fire-marshal inspection: nobody expects a "FireMarshalControl" SaaS product,
+because a one-time inspection with no queue isn't a scheduling problem. This is
+a better reason to build here than "nobody else touches it" alone would have
+been, and it's a more falsifiable claim than the one it replaces.
 
 **Immediate next step, and it is cheap:** phone one Canadian venue ops director
 and one service contractor. Ask the venue what an hour of dock idle costs during
