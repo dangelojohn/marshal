@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marshal — Coordinator</title>
+<style>
+:root{
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1C2128;
+  --hair:#242B33;
+  --text:#E6EDF3; --text-dim:#9BA7B4; --text-faint:#6B7681;
+  --amber:#E0A458; --red:#D7503A; --green:#5FB37E; --chrome:#8B94A3;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100%}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+.top{display:flex;align-items:center;gap:1rem;padding:.85rem 1.25rem;
+  background:var(--surface-2);border-bottom:1px solid var(--hair)}
+.brand{font-weight:800;letter-spacing:.1em;color:var(--amber)}
+.spacer{flex:1}
+.badge{font-family:var(--mono);font-size:.85rem;padding:.3rem .7rem;
+  border-radius:6px;background:var(--red);color:#2a0e0a;font-weight:700}
+.badge.zero{background:var(--surface);color:var(--text-faint)}
+.noauth{padding:.5rem 1.25rem;background:#2a1a0c;color:var(--amber);
+  font-size:.85rem;border-bottom:1px solid var(--hair);display:none}
+.noauth.show{display:block}
+
+.main{flex:1;display:flex;overflow:hidden}
+.queue{width:38%;min-width:320px;border-right:1px solid var(--hair);
+  overflow-y:auto}
+.detail{flex:1;padding:1.5rem;overflow-y:auto}
+
+.section-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-faint);padding:1rem 1.1rem .5rem}
+.item{padding:.85rem 1.1rem;border-bottom:1px solid var(--hair);cursor:pointer}
+.item:hover{background:var(--surface)}
+.item.active{background:var(--surface);border-left:3px solid var(--amber)}
+.item .mv{font-weight:700;font-family:var(--mono);font-size:.9rem}
+.item .reason{color:var(--text-dim);font-size:.85rem;margin-top:.2rem}
+.item .tag{display:inline-block;margin-top:.35rem;font-size:.7rem;
+  padding:.15rem .5rem;border-radius:999px;background:var(--red);
+  color:#2a0e0a;font-weight:700}
+.item .tag.claim{background:var(--amber)}
+.empty{padding:2rem;text-align:center;color:var(--text-dim)}
+
+.dtitle{font-family:var(--mono);font-size:1.3rem;margin-bottom:.3rem}
+.drow{display:flex;justify-content:space-between;padding:.4rem 0;
+  border-bottom:1px solid var(--hair);font-size:.9rem}
+.drow span:first-child{color:var(--text-dim)}
+.dbody{margin-top:1rem;color:var(--text-dim);font-size:.92rem;line-height:1.5}
+.dsuggest{margin-top:.75rem;padding:.85rem;background:var(--surface);
+  border-radius:8px;border-left:3px solid var(--amber);font-size:.88rem}
+
+.actions{display:flex;gap:.75rem;margin-top:1.5rem}
+.actions button{padding:.7rem 1.2rem;border-radius:8px;border:none;
+  font-weight:700;cursor:pointer;font-size:.92rem}
+.btn-resolve{background:var(--green);color:#0d1f14}
+.btn-dismiss{background:transparent;color:var(--chrome);border:1px solid var(--hair)}
+.btn-release{background:var(--amber);color:#1a1206}
+textarea{width:100%;margin-top:1rem;padding:.7rem;background:var(--surface);
+  border:1px solid var(--hair);border-radius:8px;color:var(--text);
+  font-family:var(--sans);font-size:.88rem;min-height:70px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:1.5rem;
+  padding:.8rem 1.3rem;border-radius:10px;background:var(--surface-2);
+  border:1px solid var(--hair);opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.fail{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">MARSHAL — COORDINATOR</div>
+  <div class="spacer"></div>
+  <div class="badge zero" id="dlqBadge">DLQ: 0</div>
+</div>
+<div class="noauth" id="noauth">Read-only — your account is not in Marshal / Manager, so resolve/dismiss/override are unavailable here.</div>
+
+<div class="main">
+  <div class="queue" id="queue"><div class="empty">Loading…</div></div>
+  <div class="detail" id="detail"><div class="empty">Select an item from the queue.</div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = {dlq: [], stuck_claims: [], isManager: false};
+let active = null;
+
+function toast(msg, ok){
+  const t = $('toast');
+  t.textContent = msg; t.className = 'toast show ' + (ok ? 'ok' : 'fail');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+async function callJson(route, params){
+  const res = await fetch(route, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({jsonrpc:'2.0', method:'call', params: params || {}}),
+  });
+  const data = await res.json();
+  if(data.error) throw new Error('request failed');
+  return data.result;
+}
+
+function renderQueue(){
+  const q = $('queue');
+  const dlqBadge = $('dlqBadge');
+  dlqBadge.textContent = 'DLQ: ' + state.dlq.length;
+  dlqBadge.className = 'badge' + (state.dlq.length ? '' : ' zero');
+  $('noauth').className = 'noauth' + (state.isManager ? '' : ' show');
+
+  if(!state.dlq.length && !state.stuck_claims.length){
+    q.innerHTML = '<div class="empty">Queue is clear.<br>Nothing needs a decision.</div>';
+    return;
+  }
+
+  let html = '';
+  if(state.dlq.length){
+    html += '<div class="section-label">Dead-letter queue</div>';
+    html += state.dlq.map(d => `
+      <div class="item ${active && active.kind==='dlq' && active.id===d.id ? 'active' : ''}" data-kind="dlq" data-id="${d.id}">
+        <div class="mv">${d.movement}</div>
+        <div class="reason">${d.reason}${d.chokepoint ? ' at ' + d.chokepoint : ''}</div>
+        <span class="tag">DLQ</span>
+      </div>`).join('');
+  }
+  if(state.stuck_claims.length){
+    html += '<div class="section-label">Stuck claims</div>';
+    html += state.stuck_claims.map(c => `
+      <div class="item ${active && active.kind==='claim' && active.id===c.id ? 'active' : ''}" data-kind="claim" data-id="${c.id}">
+        <div class="mv">${c.movement}</div>
+        <div class="reason">${c.chokepoint} — ${c.state}${c.operator ? ' · ' + c.operator : ''}</div>
+        <span class="tag claim">CLAIM</span>
+      </div>`).join('');
+  }
+  q.innerHTML = html;
+  q.querySelectorAll('.item').forEach(el => {
+    el.onclick = () => selectItem(el.dataset.kind, parseInt(el.dataset.id));
+  });
+}
+
+function selectItem(kind, id){
+  active = {kind, id};
+  renderQueue();
+  const d = $('detail');
+
+  if(kind === 'dlq'){
+    const entry = state.dlq.find(x => x.id === id);
+    d.innerHTML = `
+      <div class="dtitle">${entry.movement}</div>
+      <div class="drow"><span>Reason</span><span>${entry.reason}</span></div>
+      <div class="drow"><span>Chokepoint</span><span>${entry.chokepoint || '—'}</span></div>
+      <div class="dbody">${entry.detail || ''}</div>
+      ${entry.suggested ? `<div class="dsuggest">${entry.suggested}</div>` : ''}
+      <textarea id="note" placeholder="Resolution note (optional)"></textarea>
+      <div class="actions">
+        <button class="btn-resolve" id="btnResolve" ${state.isManager ? '' : 'disabled'}>Resolve</button>
+        <button class="btn-dismiss" id="btnDismiss" ${state.isManager ? '' : 'disabled'}>Dismiss</button>
+      </div>`;
+    $('btnResolve').onclick = () => act('/marshal/coordinator/dlq/resolve', {dlq_id: id, note: $('note').value});
+    $('btnDismiss').onclick = () => act('/marshal/coordinator/dlq/dismiss', {dlq_id: id});
+  } else {
+    const claim = state.stuck_claims.find(x => x.id === id);
+    d.innerHTML = `
+      <div class="dtitle">${claim.movement}</div>
+      <div class="drow"><span>Chokepoint</span><span>${claim.chokepoint}</span></div>
+      <div class="drow"><span>State</span><span>${claim.state}</span></div>
+      <div class="drow"><span>Operator</span><span>${claim.operator || 'unassigned'}</span></div>
+      <div class="dbody">This claim never entered its chokepoint and is not going
+        to on its own. Releasing it lets the movement be re-planned from
+        scratch — it never grants occupancy, only gives up a hold.</div>
+      <div class="actions">
+        <button class="btn-release" id="btnRelease" ${state.isManager ? '' : 'disabled'}>Release claim</button>
+      </div>`;
+    $('btnRelease').onclick = () => act('/marshal/coordinator/override/release_claim', {claim_id: id});
+  }
+}
+
+async function act(route, params){
+  try{
+    const result = await callJson(route, params);
+    if(result.ok){
+      toast('Done', true);
+      active = null;
+      $('detail').innerHTML = '<div class="empty">Select an item from the queue.</div>';
+      await load();
+    } else {
+      toast(result.detail || result.error || 'Could not complete that', false);
+    }
+  } catch(e){
+    toast('Network error', false);
+  }
+}
+
+async function load(){
+  try{
+    const data = await callJson('/marshal/coordinator/queue', {});
+    state.dlq = data.dlq; state.stuck_claims = data.stuck_claims; state.isManager = data.is_manager;
+    renderQueue();
+  } catch(e){
+    $('queue').innerHTML = '<div class="empty">Cannot reach Marshal.</div>';
+  }
+}
+
+load();
+setInterval(load, 12000);
+</script>
+</body>
+</html>

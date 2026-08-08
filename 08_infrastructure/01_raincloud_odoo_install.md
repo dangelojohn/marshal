@@ -582,3 +582,45 @@ tests: token generation/uniqueness, the SMS keyword parser including the
 "yeah be there in 10" case the design doc itself flags as the hard one,
 send-when-unconfigured is simulated not silent, Twilio signature
 round-trips and rejects tampering, the `claim_ids` regression above).
+
+---
+
+## Wave 4 — the coordinator's desk tool (2026-08-08)
+
+The wall board is ambient and read-only by design; nothing before this
+could actually DO anything about a DLQ entry except Odoo's raw backend
+views. `/marshal/coordinator/app` closes that loop: an always-visible
+queue (open DLQ entries + claims stuck at `proposed`/`yielded` on a
+DLQ-flagged movement), a detail/action panel, and three real actions —
+**Resolve** and **Dismiss** on a DLQ entry (the model already had
+`action_resolve()`/`action_dismiss()`; this is their first UI), and
+**Release claim** (force-give-up a stuck hold so the movement can be
+re-planned — deliberately can only ever release, never grant, so it cannot
+be used to jump a queue).
+
+**Scope admission:** this is single-approver resolve/dismiss/override,
+logged with who and when — not the full maker-checker (R07) a second
+person confirming before a consequential change takes effect. Building that
+needs a real second role to approve against; this pass didn't have one to
+build and test with. Treat R07 as still open.
+
+**Fail-closed, verified with a real second account, not just read from the
+code:** created a genuine non-manager `marshal.group_marshal_user` account,
+confirmed it can see the queue (coordination visibility is appropriate) but
+gets `{"ok": false, "error": "not_authorized"}` from resolve/dismiss/
+release. Then created two real DLQ entries via `odoo-shell.sh`, resolved
+one over live HTTP as the admin/manager account, and confirmed
+`resolved_by`/`resolved_on`/`resolution_note` all persisted correctly.
+
+**Cleanup ran into the custody chain's own guarantee working exactly as
+designed:** the two test movements this created (`crate_ref` `TEST-DLQ`/
+`TEST-DLQ-2`, ids 383/384) could not be deleted — `marshal.event.unlink()`
+refuses at the Python level ("Custody events cannot be deleted"), and the
+`marshal_event.movement_id` foreign key isn't `ON DELETE CASCADE` either,
+so even a direct SQL-level delete of the parent movement is rejected. A
+movement that has ever had a custody event genuinely cannot be deleted, by
+two independent layers. Left in place rather than fought — they're
+harmless and identifiable by name if ever noticed.
+
+45/45 tests still pass (this wave added routes, not models — no new tests
+needed beyond what Wave 3 already covers for the underlying DLQ model).
