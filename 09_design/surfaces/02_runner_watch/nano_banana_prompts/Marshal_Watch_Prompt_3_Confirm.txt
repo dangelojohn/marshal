@@ -1,0 +1,21 @@
+A photorealistic screenshot of an Apple Watch Ultra screen showing the CONFIRMATION state of the "Marshal" freight app, one second after the operator has pressed the physical Action Button. Show ONLY the screen content in the Watch Ultra's rounded-rectangle screen shape — no watch body, strap, wrist or background. Pixel-sharp, dead-on, no perspective or reflection.
+
+WHY THIS SCREEN EXISTS: a silent success is a failure. If the operator presses the button and nothing visibly changes, they will press it again, and the movement gets double-recorded. This screen is the visible confirmation, and it must be unmistakable in peripheral vision.
+
+Pure black background #000000.
+
+CENTRED IN THE UPPER TWO THIRDS, dominating the screen: a large, thin-stroke, geometric checkmark drawn in soft green #5FB37E. It should be simple and precise — a single clean two-segment stroke with rounded ends, no circle around it, no fill, no shadow, no sparkle or animation effect.
+
+DIRECTLY BENEATH THE CHECKMARK, in bold white condensed uppercase, large: "ARRIVED".
+
+BELOW THAT, in medium grey monospace, smaller: "09:47:12". This is the timestamp that was actually recorded — showing it back is what lets the operator trust that the tap landed.
+
+BELOW THAT, smaller still and dimmer grey: "MV00042 · BOOTH 412".
+
+In the BOTTOM FIFTH of the screen, clearly separated by empty black space, a small quiet block of two lines in mid-grey: the tiny uppercase label "NEXT" on the first line, and on the second, in slightly brighter white, "BOOTH 118 · 10:05".
+
+That NEXT block is deliberately understated — it is a single glanceable line so the operator can pre-position, NOT a list of upcoming work. There must be exactly one upcoming item shown, never two or more.
+
+STYLE: purpose-built industrial wearable software. Extreme contrast, very large primary type, generous black space, absolutely no decoration. Condensed grotesque for the large text, monospace for times and identifiers. Only three colours on the entire screen: white, one soft green for the confirmation, and mid-grey. No amber appears on this screen — the action is complete.
+
+DO NOT RENDER: the watch case, bezel, crown, button, strap or any physical device part; a wrist, hand or glove; any background or environment; a list of multiple upcoming jobs; a scrollbar, tab bar or navigation dots; activity or progress rings; a circle or badge around the checkmark; confetti, sparkles, starbursts or celebration effects; emoji; cartoon icons; gradients; glassmorphism; drop shadows; a light or white background; the default Apple watch face; or any generic fitness or consumer-app aesthetic.

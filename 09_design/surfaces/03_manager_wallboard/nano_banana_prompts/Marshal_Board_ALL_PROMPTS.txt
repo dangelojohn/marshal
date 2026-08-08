@@ -1,0 +1,66 @@
+A photorealistic screenshot of a wall-mounted operations display in the loading-dock office of a convention centre. This is "Marshal" — a freight scheduling board. 16:9 aspect ratio, captured perfectly straight on, pixel-sharp, no perspective tilt, no drop shadow, no browser chrome, no device frame, no desk or room visible. This is a flat screen capture only.
+
+The whole interface is DARK — background #0E1116, near-black with a slight cool cast. It is mounted on a wall in a dim dock and read from three metres away, so all type is large and high-contrast.
+
+LAYOUT, top to bottom:
+
+A slim header bar on #161B22 running full width. On the left, the word "MARSHAL" in a condensed uppercase sans-serif, letter-spaced, in warm amber #E0A458, followed by a thin vertical divider and the smaller grey text "Hall C · Move-in Day 2". On the right side of the header, three compact status blocks separated by thin vertical rules: the number "2" in large amber above the tiny grey uppercase label "EXCEPTIONS"; the number "14" in white above the label "MOVEMENTS"; and the text "09:41:22" in a monospace font above the label "UPDATED", with a small solid green dot beside it.
+
+BELOW THE HEADER — a grid of six large rectangular camera tiles, arranged 3 across and 2 down, with a generous dark gutter of about 14px between them. Each tile is a photographic still from a fixed security camera looking at a loading dock, with information overlaid on top of the image.
+
+TILE 1 (top-left) — STATUS ACTIVE. The camera image shows a white box truck backed squarely into a loading dock bay, rear doors open, a pallet of shrink-wrapped cardboard visible inside, concrete floor, industrial lighting. Along the top edge of the tile, a slim bar in muted slate #2D3748 containing the monospace text "DOCK 1" on the left and the small uppercase word "ACTIVE" on the right. Across the BOTTOM third of the tile, a semi-opaque black panel containing, in two neat lines: "MV00042 · CRATE-7 → BOOTH 412" in white, and beneath it in smaller grey "P. Novak · Pump Truck #2 · due 09:50". A thin solid amber vertical accent line runs down the far-left edge of this bottom panel.
+
+TILE 2 (top-centre) — STATUS EXCEPTION. This tile is unmistakably different at a glance. It has a solid 3px border in strong red-orange #D7503A around the entire tile. The camera image shows a dock bay where a forklift sits stationary with a pallet still raised, nothing moving. The top bar is red-orange with the monospace "DOCK 2" on the left and the uppercase word "LATE" on the right. The bottom panel is a deeper black, and reads "MV00039 · CRATE-3 → BOOTH 118" in white, with the line beneath in red-orange: "18 MIN OVER · apron 2/2 FULL". No flashing, no glow, no animation — just a hard, obvious, static border and colour shift.
+
+TILE 3 (top-right) — STATUS CLEAR. The camera image shows an empty, clean, well-lit dock bay with the shutter door up and daylight visible outside. The top bar is dark slate with "DOCK 3" and the uppercase word "CLEAR". The bottom panel is minimal and quiet, showing only small grey text: "next MV00043 · 10:15 · Kuehne".
+
+TILE 4 (bottom-left) — STATUS ACTIVE. Camera image of a freight elevator lobby, its wide doors open, an electric pallet truck part-way in carrying a tall wooden crate. Top bar reads "FREIGHT LIFT 1" and "ACTIVE". Bottom panel: "MV00041 · CRATE-9 → BOOTH 508" in white, and under it in grey "S. Whitfield · Electric Forklift · due 09:47". A small amber pill in the top-right corner of the image area contains the tiny uppercase word "SHARED", indicating it is a resource the venue does not solely control.
+
+TILE 5 (bottom-centre) — STATUS EXCEPTION, CAMERA DOWN. There is NO photographic image in this tile. Instead the image area is a flat dark grey #1C2128 field containing a simple thin-stroke outline icon of a camera with a diagonal line through it, centred, in mid-grey, and beneath it the small uppercase grey text "NO SIGNAL — 4 MIN". The tile still carries its red-orange border and its top bar reads "STAGING LANE A" and "CAMERA DOWN". The bottom panel still shows real schedule information in white: "MV00044 · CRATE-2 → BOOTH 233", proving the tile remains useful without a picture.
+
+TILE 6 (bottom-right) — STATUS CLEAR. Camera image of a wide empty marshalling yard seen from above the dock, with painted lane markings on asphalt and one truck waiting at the far end. Top bar reads "YARD GATE" and "CLEAR". Bottom panel in small grey text: "3 waiting · next called 10:05".
+
+STYLE AND TREATMENT:
+Authentic industrial operations software. Dense, calm, utilitarian, and legible from across a room. Type is a clean grotesque sans-serif; all identifiers, times and codes are in a monospace face and are precisely column-aligned. Panel corners are square or very slightly rounded — no pill shapes, no soft cards. The only saturated colours anywhere are the warm amber #E0A458 used sparingly for accents and the red-orange #D7503A used exclusively for exceptions. Everything else is neutral grey and near-black. The camera photography looks like genuine fixed security-camera stills — slightly wide-angle, flat lighting, mild noise, not polished stock photography.
+
+Crucially, the two exception tiles should be the first thing the eye lands on, while the four normal tiles read as quiet and ambient.
+
+DO NOT RENDER: any web browser, browser tabs, an address bar, a URL, a phone or laptop or tablet device frame, a photograph of a room or a wall or a person, hands, rounded consumer-app cards, glassmorphism, frosted blur, neon glow, drop shadows on panels, purple-to-blue or any gradient background, a large hero heading, marketing copy, a sidebar navigation menu, a hamburger icon, emoji, cartoon or flat-illustration icons, pie charts, donut charts, line graphs, sparklines, a light or white background, or any dashboard-template aesthetic. This is a live operational display, not a product landing page and not an analytics dashboard.
+A photorealistic screenshot of a wall-mounted operations display in the loading-dock office of a convention centre — the "Marshal" freight scheduling board, shown in a CALM state with nothing wrong. 16:9, dead-on, pixel-sharp, no browser chrome, no device frame, no room visible. Flat screen capture only.
+
+This variant exists to prove the board is quiet when the floor is running well. There must be NO red anywhere on screen.
+
+Dark interface, background #0E1116.
+
+HEADER, slim, on #161B22: "MARSHAL" in condensed letter-spaced uppercase in warm amber #E0A458, a thin divider, then smaller grey "Hall C · Move-in Day 2". Right side, three status blocks divided by hairlines: a large "0" in soft green #5FB37E above tiny grey uppercase "EXCEPTIONS"; "11" in white above "MOVEMENTS"; "09:12:04" in monospace above "UPDATED" with a small solid green dot.
+
+SIX CAMERA TILES, 3 across by 2 down, generous dark gutters. Each is a fixed security-camera still of a loading dock with information overlaid.
+
+Four tiles are ACTIVE: each shows a genuine dock scene — a box truck reversed into a bay with its roller door up; a pallet jack crossing polished concrete with a shrink-wrapped pallet; an open freight elevator with a wooden crate part-way in; a worker in hi-vis guiding a load. Each has a dark slate top bar with a monospace dock label on the left ("DOCK 1", "DOCK 2", "FREIGHT LIFT 1", "DOCK 3") and the quiet uppercase word "ACTIVE" on the right. Each has a semi-opaque black bottom panel with two lines: a white line like "MV00051 · CRATE-4 → BOOTH 306" and a smaller grey line like "P. Novak · Electric Forklift · due 09:35". A thin amber vertical accent sits on the far-left edge of each bottom panel.
+
+Two tiles are CLEAR: an empty swept dock bay with the shutter up and daylight beyond, and a wide marshalling yard with painted lane markings and two trucks waiting in the distance. Their top bars read "DOCK 4 / CLEAR" and "YARD GATE / CLEAR". Their bottom panels are deliberately sparse — only small grey text such as "next MV00052 · 09:55 · Ryder" and "2 waiting · next called 10:10". These tiles should read as visibly calmer and lower-contrast than the active ones.
+
+STYLE: authentic industrial operations software. Clean grotesque sans for labels, monospace for all codes and times, precisely column-aligned. Square or barely-rounded corners. The only saturated colour is the warm amber accent, used sparingly, plus one soft green for the zero-exception count. Everything else neutral grey and near-black. Camera images look like real fixed CCTV stills — slightly wide-angle, flat lighting, mild sensor noise — not polished stock photography.
+
+The overall impression must be UNEVENTFUL and easy to ignore. Nothing competes for attention. This is what the board looks like 95% of the time, and it is the reason an exception stands out when one appears.
+
+DO NOT RENDER: any browser, tabs, address bar, URL, device frame, room, wall, person at a desk, hands, rounded consumer cards, glassmorphism, blur, neon glow, panel drop shadows, gradient backgrounds, hero headings, marketing copy, sidebar nav, hamburger menu, emoji, cartoon icons, pie or donut charts, line graphs, sparklines, light or white background, or any dashboard-template look. No red, orange or warning colour of any kind.
+A photorealistic screenshot of the "Marshal" freight board rendered on a rugged TABLET held in portrait orientation, as used by a dock supervisor walking the floor of a convention centre. Show ONLY the screen content, filling the frame edge to edge — no tablet bezel, no hands, no room, no browser chrome. 3:4 portrait aspect ratio, dead-on, pixel-sharp.
+
+Dark interface, background #0E1116, tuned for glare and for gloved hands: everything is large, high-contrast and generously spaced.
+
+HEADER: "MARSHAL" in condensed letter-spaced uppercase amber #E0A458 on the left; on the right a large "1" in red-orange #D7503A above the tiny grey uppercase label "EXCEPTION", and beside it "09:41" in monospace above "UPDATED" with a small green dot.
+
+BELOW: camera tiles stacked in a SINGLE COLUMN, three visible with the fourth cropped by the bottom edge — this is a scrolling view. Each tile is noticeably taller than a desktop tile so the camera image and the text both stay readable at arm's length.
+
+TILE 1 — EXCEPTION, at the top because exceptions sort first. A hard 4px red-orange border. Camera still of a dock bay where a forklift sits stationary with a raised pallet. Top bar in red-orange: monospace "DOCK 2" left, uppercase "LATE" right. Bottom panel over the image: white line "MV00039 · CRATE-3 → BOOTH 118", then a red-orange line "18 MIN OVER · apron 2/2 FULL". Below the panel, spanning the full tile width, a single large flat touch button at least 56 pixels tall with a 2px red-orange outline, transparent fill, and the centred uppercase text "ACKNOWLEDGE". No icon in the button.
+
+TILE 2 — ACTIVE. Camera still of a white box truck reversed into a bay, rear doors open, shrink-wrapped pallets inside. Dark slate top bar: "DOCK 1" and "ACTIVE". Bottom panel: white "MV00042 · CRATE-7 → BOOTH 412", grey "P. Novak · Pump Truck #2 · due 09:50". Thin amber accent line down the left edge of the panel.
+
+TILE 3 — CLEAR. Camera still of an empty swept dock bay, shutter up, daylight beyond. Top bar "DOCK 3" and "CLEAR". Sparse bottom panel, small grey text only: "next MV00043 · 10:15".
+
+TILE 4 — partially cut off by the bottom edge of the screen, showing only its top bar reading "FREIGHT LIFT 1" and the top sliver of a camera image, making it obvious the view scrolls.
+
+STYLE: authentic industrial field software built for a noisy, bright, gloved environment. Clean grotesque sans for labels, monospace for every code and time. Square or barely-rounded corners. Touch targets visibly generous. The only saturated colours are the amber accent and the red-orange exception treatment. Camera images look like genuine fixed CCTV stills, slightly wide-angle with flat lighting and mild noise.
+
+DO NOT RENDER: a tablet bezel or device frame, hands or fingers, a person, a room or warehouse background behind the screen, any browser or address bar, rounded consumer-app cards, glassmorphism, blur, neon glow, drop shadows, gradients, a hero heading, marketing copy, a sidebar or hamburger menu, emoji, cartoon icons, charts or graphs of any kind, a light or white background, or a generic mobile-app aesthetic.

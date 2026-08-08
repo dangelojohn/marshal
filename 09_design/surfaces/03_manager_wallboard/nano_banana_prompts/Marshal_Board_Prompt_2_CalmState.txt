@@ -1,0 +1,19 @@
+A photorealistic screenshot of a wall-mounted operations display in the loading-dock office of a convention centre — the "Marshal" freight scheduling board, shown in a CALM state with nothing wrong. 16:9, dead-on, pixel-sharp, no browser chrome, no device frame, no room visible. Flat screen capture only.
+
+This variant exists to prove the board is quiet when the floor is running well. There must be NO red anywhere on screen.
+
+Dark interface, background #0E1116.
+
+HEADER, slim, on #161B22: "MARSHAL" in condensed letter-spaced uppercase in warm amber #E0A458, a thin divider, then smaller grey "Hall C · Move-in Day 2". Right side, three status blocks divided by hairlines: a large "0" in soft green #5FB37E above tiny grey uppercase "EXCEPTIONS"; "11" in white above "MOVEMENTS"; "09:12:04" in monospace above "UPDATED" with a small solid green dot.
+
+SIX CAMERA TILES, 3 across by 2 down, generous dark gutters. Each is a fixed security-camera still of a loading dock with information overlaid.
+
+Four tiles are ACTIVE: each shows a genuine dock scene — a box truck reversed into a bay with its roller door up; a pallet jack crossing polished concrete with a shrink-wrapped pallet; an open freight elevator with a wooden crate part-way in; a worker in hi-vis guiding a load. Each has a dark slate top bar with a monospace dock label on the left ("DOCK 1", "DOCK 2", "FREIGHT LIFT 1", "DOCK 3") and the quiet uppercase word "ACTIVE" on the right. Each has a semi-opaque black bottom panel with two lines: a white line like "MV00051 · CRATE-4 → BOOTH 306" and a smaller grey line like "P. Novak · Electric Forklift · due 09:35". A thin amber vertical accent sits on the far-left edge of each bottom panel.
+
+Two tiles are CLEAR: an empty swept dock bay with the shutter up and daylight beyond, and a wide marshalling yard with painted lane markings and two trucks waiting in the distance. Their top bars read "DOCK 4 / CLEAR" and "YARD GATE / CLEAR". Their bottom panels are deliberately sparse — only small grey text such as "next MV00052 · 09:55 · Ryder" and "2 waiting · next called 10:10". These tiles should read as visibly calmer and lower-contrast than the active ones.
+
+STYLE: authentic industrial operations software. Clean grotesque sans for labels, monospace for all codes and times, precisely column-aligned. Square or barely-rounded corners. The only saturated colour is the warm amber accent, used sparingly, plus one soft green for the zero-exception count. Everything else neutral grey and near-black. Camera images look like real fixed CCTV stills — slightly wide-angle, flat lighting, mild sensor noise — not polished stock photography.
+
+The overall impression must be UNEVENTFUL and easy to ignore. Nothing competes for attention. This is what the board looks like 95% of the time, and it is the reason an exception stands out when one appears.
+
+DO NOT RENDER: any browser, tabs, address bar, URL, device frame, room, wall, person at a desk, hands, rounded consumer cards, glassmorphism, blur, neon glow, panel drop shadows, gradient backgrounds, hero headings, marketing copy, sidebar nav, hamburger menu, emoji, cartoon icons, pie or donut charts, line graphs, sparklines, light or white background, or any dashboard-template look. No red, orange or warning colour of any kind.
