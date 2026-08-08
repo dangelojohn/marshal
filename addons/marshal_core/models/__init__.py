@@ -7,3 +7,4 @@ from . import marshal_contention
 from . import marshal_camera
 from . import marshal_event
 from . import marshal_dlq
+from . import marshal_sms

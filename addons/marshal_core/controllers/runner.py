@@ -1,4 +1,5 @@
 import logging
+import os
 
 from odoo import http, fields
 from odoo.http import request
@@ -53,6 +54,25 @@ class MarshalRunner(http.Controller):
         }
 
     # ------------------------------------------------------------------
+    # The mobile-web front end for this API. A real watchOS app is a
+    # separate, platform-specific build this environment can't produce or
+    # ship — this is the same two-tap contract served as a page any phone or
+    # watch browser can open today, so the API isn't just tested, it's used.
+    @http.route("/marshal/runner/app", type="http", auth="user", website=False)
+    def app(self, **kw):
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                            "static", "src", "runner_app.html")
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                html = fh.read()
+        except OSError:
+            return request.make_response(
+                "<h1>Marshal runner asset missing</h1>", [("Content-Type", "text/html")])
+        return request.make_response(html, [
+            ("Content-Type", "text/html; charset=utf-8"),
+            ("Cache-Control", "no-store"),
+        ])
+
     @http.route("/marshal/runner/next", type="json", auth="user", methods=["POST"])
     def next_job(self, **kw):
         """The ONE job this runner should be doing. Never a list.
@@ -149,13 +169,24 @@ class MarshalRunner(http.Controller):
                 suggested="Coordinator to assess: obstruction, equipment fault "
                           "or access refused.")
             mv.variance_reason = "other"
+            # "blocked" IS a valid marshal.event type and carries detail (which
+            # chokepoint, which claim) the generic "state" event from the write
+            # above doesn't — worth logging explicitly, unlike arrived/delivered.
+            request.env["marshal.event"].record(mv, "blocked", {
+                "chokepoint": claim.chokepoint_id.code,
+                "claim_seq": claim.sequence, "by": request.env.user.name,
+            })
 
-        event = request.env["marshal.event"].record(mv, action if action != "blocked" else "blocked", {
-            "chokepoint": claim.chokepoint_id.code,
-            "claim_seq": claim.sequence,
-            "by": request.env.user.name,
-        })
-        Idem.remember(idempotency_key, scope, event, {"claim_id": claim_id})
+        # No explicit event for arrived/delivered: action_occupy()/
+        # action_release() above already logged valid "occupied"/"released"
+        # events, and the mv.state write (when it changes) logs a "state"
+        # event via marshal.movement.write()'s own override. A trailing
+        # event here was both redundant AND invalid — 'arrived'/'delivered'
+        # were never valid marshal.event.event_type values, a bug this
+        # session's first real (non-error-path) test of these two actions
+        # caught; the earlier "verified" pass only exercised the unknown-
+        # claim error path, never a real successful transition.
+        Idem.remember(idempotency_key, scope, claim, {"claim_id": claim_id})
 
         return {"ok": True, "replayed": False,
                 "recorded_at": now.strftime("%H:%M:%S"),

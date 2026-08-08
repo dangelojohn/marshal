@@ -1,3 +1,5 @@
+import secrets
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -62,6 +64,37 @@ class MarshalMovement(models.Model):
              "obstruction — a crate in a fire lane, an aisle blocked. "
              "Clearing an obstruction outranks starting new work.")
 
+    # ------------------------------------------------------------------
+    # Customer-facing (D-012 surface "customer SMS + portal"): a movement can
+    # originate from an exhibitor declaring a shipment rather than a staff
+    # member scheduling one. These fields are additive and optional — an
+    # internally-created movement leaves them empty.
+    # ------------------------------------------------------------------
+    partner_id = fields.Many2one("res.partner", string="Exhibitor",
+                                 help="Who declared this shipment, if it came "
+                                      "through the exhibitor portal rather "
+                                      "than staff scheduling.")
+    carrier = fields.Char(string="Carrier")
+    driver_phone = fields.Char(
+        string="Driver phone",
+        help="E.164 format, e.g. +14165550123. SMS notifications go here — "
+             "never to the exhibitor's own number, per D-005: the driver is "
+             "the one who needs to know where and when.")
+    sms_opt_in = fields.Boolean(default=True, string="SMS notifications")
+    declare_token = fields.Char(
+        copy=False, index=True,
+        help="Opaque, unguessable token for the public tracking link "
+             "(/marshal/exhibitor/track/<token>). Not the record ID — an "
+             "exhibitor must not be able to enumerate other exhibitors' "
+             "shipments by walking sequential IDs.")
+    sms_log_ids = fields.One2many("marshal.sms.log", "movement_id",
+                                  string="SMS Log")
+
+    _sql_constraints = [
+        ("declare_token_uniq", "unique(declare_token)",
+         "Tracking token must be globally unique — it is a public lookup key."),
+    ]
+
     claim_ids = fields.One2many("marshal.claim", "movement_id", string="Claims")
     dlq_ids = fields.One2many("marshal.dlq", "movement_id", string="Blockages")
     event_ids = fields.One2many("marshal.event", "movement_id", string="Custody Log")
@@ -104,6 +137,8 @@ class MarshalMovement(models.Model):
         for vals in vals_list:
             if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = seq.next_by_code("marshal.movement") or _("New")
+            if not vals.get("declare_token"):
+                vals["declare_token"] = secrets.token_urlsafe(18)
         records = super().create(vals_list)
         for rec in records:
             self.env["marshal.event"].record(rec, "created", {

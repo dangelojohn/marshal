@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marshal — Track shipment</title>
+<style>
+:root{
+  --bg:#FAF8F4; --ink:#1C1F26; --blue:#2A5FA3; --amber:#C98A2C; --green:#3E7A5C;
+  --hair:#E5E0D6; --dim:#6B6558;
+  --serif:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+  --sans:"Public Sans","Work Sans",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body{min-height:100vh;display:flex;justify-content:center;padding:2.5rem 1.25rem}
+.card{width:100%;max-width:480px}
+.tracking{font-family:var(--serif);font-size:2.1rem;font-weight:600}
+.sub{color:var(--dim);font-size:.95rem;margin-top:.25rem;margin-bottom:2rem}
+
+.stepper{display:flex;flex-direction:column;gap:0;margin-bottom:1.75rem}
+.step{display:flex;gap:.9rem;position:relative}
+.step .rail{display:flex;flex-direction:column;align-items:center}
+.dot{width:1.1rem;height:1.1rem;border-radius:50%;border:2px solid var(--hair);
+  background:#fff;flex-shrink:0;margin-top:.15rem}
+.dot.done{background:var(--blue);border-color:var(--blue)}
+.dot.current{background:var(--amber);border-color:var(--amber)}
+.line{flex:1;width:2px;background:var(--hair);min-height:2.4rem}
+.line.done{background:var(--blue)}
+.step:last-child .line{display:none}
+.step-body{padding-bottom:1.6rem}
+.step-label{font-weight:700;font-size:1.02rem}
+.step-at{font-size:.85rem;color:var(--dim);margin-top:.15rem}
+
+.detail{background:#fff;border:1px solid var(--hair);border-radius:12px;
+  padding:1.1rem 1.2rem;margin-bottom:1.25rem}
+.detail div{display:flex;justify-content:space-between;padding:.35rem 0;
+  font-size:.92rem}
+.detail div span:first-child{color:var(--dim)}
+.loc{margin-top:1rem;font-size:.85rem;color:var(--dim)}
+.loc b{color:var(--ink)}
+.err{color:#B23A2E;text-align:center;margin-top:3rem}
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="app">Loading…</div>
+</div>
+
+<script>
+const token = window.location.pathname.split('/').pop();
+
+async function poll(){
+  try{
+    const res = await fetch('/marshal/exhibitor/track/state', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({jsonrpc:'2.0', method:'call', params: {token}}),
+    });
+    const data = (await res.json()).result;
+    if(!data || !data.ok){
+      document.getElementById('app').innerHTML = '<div class="err">Shipment not found.</div>';
+      return;
+    }
+    render(data);
+  } catch(e){
+    document.getElementById('app').innerHTML = '<div class="err">Could not load status. Retrying…</div>';
+  }
+}
+
+function render(data){
+  const steps = data.steps.map((s, i) => {
+    const isCurrent = !s.done && (i === 0 || data.steps[i-1].done);
+    const dotClass = s.done ? 'done' : (isCurrent ? 'current' : '');
+    const lineClass = s.done ? 'done' : '';
+    return `<div class="step">
+      <div class="rail"><div class="dot ${dotClass}"></div><div class="line ${lineClass}"></div></div>
+      <div class="step-body">
+        <div class="step-label">${s.label}</div>
+        ${s.at ? `<div class="step-at">${s.at}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="tracking">${data.movement}</div>
+    <div class="sub">Booth ${data.booth || '—'}</div>
+    <div class="stepper">${steps}</div>
+    <div class="detail">
+      <div><span>Carrier</span><span>${data.carrier || '—'}</span></div>
+      <div><span>Status</span><span>${data.state}</span></div>
+    </div>
+    ${data.current_location ? `<div class="loc">Currently at <b>${data.current_location}</b></div>` : ''}
+  `;
+}
+
+poll();
+setInterval(poll, 10000);
+</script>
+</body>
+</html>

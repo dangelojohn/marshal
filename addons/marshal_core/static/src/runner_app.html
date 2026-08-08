@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Marshal — Runner</title>
+<style>
+/* ===========================================================================
+   MARSHAL RUNNER APP
+   The two-tap contract (13_wearable_operator_surface.md) served as a page any
+   phone or watch browser can open. One job, never a list. Gloves, low light.
+   =========================================================================== */
+:root{
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1C2128;
+  --hair:#242B33;
+  --text:#E6EDF3; --text-dim:#9BA7B4; --text-faint:#6B7681;
+  --amber:#E0A458; --red:#D7503A; --green:#5FB37E;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;height:100%}
+body{display:flex;flex-direction:column;min-height:100vh;padding:1rem;
+  padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
+
+.top{display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:.75rem;border-bottom:1px solid var(--hair);margin-bottom:1rem}
+.op{font-size:.8rem;color:var(--text-dim)}
+.clock{font-family:var(--mono);font-size:.85rem;color:var(--text-faint)}
+
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;gap:.4rem}
+.idle-msg{color:var(--text-dim);font-size:1.1rem;line-height:1.5}
+.err-msg{color:var(--red);font-size:1rem}
+
+.booth-label{font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-faint)}
+.booth{font-size:3.2rem;font-weight:800;line-height:1.05;color:var(--text)}
+.crate{font-family:var(--mono);font-size:1.1rem;color:var(--text-dim);
+  margin-top:.25rem}
+.meta{display:flex;gap:1.25rem;margin-top:.9rem;font-size:.9rem;
+  color:var(--text-dim)}
+.meta b{color:var(--amber);font-family:var(--mono)}
+.chip{margin-top:1rem;padding:.35rem .9rem;border-radius:999px;
+  border:1px solid var(--hair);font-size:.78rem;color:var(--text-dim)}
+
+.next{margin-top:1.4rem;font-size:.85rem;color:var(--text-faint)}
+.next b{color:var(--text-dim)}
+
+.actions{display:flex;flex-direction:column;gap:.75rem;margin-top:1.75rem}
+button{font-family:var(--sans);font-size:1.3rem;font-weight:700;
+  padding:1.1rem 1rem;border-radius:14px;border:none;cursor:pointer;
+  min-height:64px}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.5}
+.btn-primary{background:var(--amber);color:#1a1206}
+.btn-primary.deliver{background:var(--green);color:#0d1f14}
+.btn-blocked{background:transparent;color:var(--red);border:2px solid var(--red);
+  font-size:1rem;padding:.75rem 1rem;min-height:52px}
+
+.toast{position:fixed;left:1rem;right:1rem;bottom:1rem;padding:.9rem 1rem;
+  border-radius:10px;background:var(--surface-2);border:1px solid var(--hair);
+  font-size:.95rem;text-align:center;opacity:0;pointer-events:none;
+  transition:opacity .2s}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.fail{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="op" id="op">—</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="idle-msg">Loading…</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+function tickClock(){
+  $('clock').textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
+}
+setInterval(tickClock, 1000); tickClock();
+
+function idemKey(claimId, action){
+  const k = `marshal_idem_${claimId}_${action}`;
+  let v = localStorage.getItem(k);
+  if(!v){ v = crypto.randomUUID(); localStorage.setItem(k, v); }
+  return v;
+}
+function clearIdemKey(claimId, action){
+  localStorage.removeItem(`marshal_idem_${claimId}_${action}`);
+}
+
+function toast(msg, ok){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (ok ? 'ok' : 'fail');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function callJson(route, params){
+  const res = await fetch(route, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({jsonrpc:'2.0', method:'call', params: params || {}}),
+  });
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.data && data.error.data.message || 'request failed');
+  return data.result;
+}
+
+let current = null; // the job payload currently on screen
+
+function render(data){
+  $('op').textContent = data.operator || 'Unassigned';
+  const stage = $('stage');
+  current = data.job;
+
+  if(!current){
+    stage.innerHTML = `<div class="idle-msg">No job right now.<br>Nice work.</div>`;
+    if(data.next){
+      stage.innerHTML += `<div class="next"><b>Next:</b> ${data.next.booth || '—'}${data.next.at ? ' at ' + data.next.at : ''}</div>`;
+    }
+    return;
+  }
+
+  const isOccupied = current.state === 'occupied';
+  const primaryLabel = isOccupied ? 'DELIVERED' : 'ARRIVED';
+  const primaryAction = isOccupied ? 'delivered' : 'arrived';
+
+  stage.innerHTML = `
+    <div class="booth-label">${current.chokepoint || 'Destination'}</div>
+    <div class="booth">${current.booth || '—'}</div>
+    <div class="crate">${current.crate || current.movement}</div>
+    <div class="meta">${current.due ? `<span>Due <b>${current.due}</b></span>` : ''}
+      ${current.equipment ? `<span>${current.equipment}</span>` : ''}</div>
+    <div class="chip">${isOccupied ? 'In progress' : 'Waiting'}</div>
+    ${data.next ? `<div class="next"><b>Next:</b> ${data.next.booth || '—'}${data.next.at ? ' at ' + data.next.at : ''}</div>` : ''}
+    <div class="actions">
+      <button class="btn-primary ${isOccupied ? 'deliver' : ''}" id="btn-primary">${primaryLabel}</button>
+      <button class="btn-blocked" id="btn-blocked">Report blocked</button>
+    </div>
+  `;
+
+  $('btn-primary').onclick = () => act(primaryAction);
+  $('btn-blocked').onclick = () => act('blocked');
+}
+
+async function act(action){
+  if(!current) return;
+  const claimId = current.claim_id;
+  const key = idemKey(claimId, action);
+  const btn = action === 'blocked' ? $('btn-blocked') : $('btn-primary');
+  btn.disabled = true;
+  try{
+    const result = await callJson(`/marshal/runner/${action}`, {claim_id: claimId, idempotency_key: key});
+    if(result.ok){
+      clearIdemKey(claimId, action);
+      toast(action === 'blocked' ? 'Reported to coordinator' : 'Recorded — ' + (result.recorded_at || ''), true);
+    } else {
+      toast(result.detail || result.error || 'Could not record that', false);
+    }
+  } catch(e){
+    toast('Network error — will retry safely on next tap', false);
+  } finally {
+    btn.disabled = false;
+    await refresh();
+  }
+}
+
+async function refresh(){
+  try{
+    const data = await callJson('/marshal/runner/next', {});
+    render(data);
+  } catch(e){
+    $('stage').innerHTML = `<div class="err-msg">Can't reach Marshal.<br>Retrying…</div>`;
+  }
+}
+
+refresh();
+setInterval(refresh, 8000);
+</script>
+</body>
+</html>

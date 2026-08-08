@@ -498,3 +498,87 @@ pattern); re-ran clean, 30 tests, 0.61s, exit=0. **This script lives only on
 the NAS** (`scripts/` isn't tracked in the `john/marshal` git repo — it's
 covered by the off-box backup puller instead), so this fix has no git commit
 of its own; recorded here so it isn't silently lost or re-broken.
+
+---
+
+## Wave 3 — the customer-facing surfaces, live and proven end-to-end (2026-08-08)
+
+**`marshal_core` 16.0.1.5.0.** Built the three pieces that turn the Wave 0-2
+backend into something a real exhibitor, receiver, and runner can actually
+use, not just an API a Python test calls:
+
+| Surface | Route | What it does |
+|---|---|---|
+| Exhibitor declare | `GET /marshal/exhibitor/declare` | Public form — name, booth, carrier, driver phone, expected window |
+| Exhibitor track | `GET /marshal/exhibitor/track/<token>` | Public status stepper (Declared → In transit → Arrived → Placed), no login — identity is an unguessable token, not a session |
+| Receiver capture | `GET /marshal/receiver/app` (staff login) | Lists unclaimed planned movements, captures arrival = acquire + occupy the intake dock, optional photo |
+| Runner app | `GET /marshal/runner/app` (staff login) | Mobile-web front end for the Wave 2 REST API — the two-tap contract as an actual page, not just a tested endpoint |
+| Driver SMS | `marshal.sms.log` model + `POST /marshal/sms/inbound` | D-005 templates, keyword-only reply parsing (Y/N), Twilio webhook with signature verification |
+
+**Proven end-to-end over real HTTP, twice, with a fresh movement the second
+time** (`MV00382`): declare → receiver capture → runner deliver → exhibitor
+tracker shows all four steps done with real timestamps, custody chain
+intact. Not a demo script — the actual controllers, hit with curl the way a
+browser would hit them.
+
+### Honest boundaries — what this is not
+
+- **No native watchOS app.** `runner_app.html` is the same two-tap contract
+  served as a page any phone or watch browser can open — building and
+  shipping an actual watchOS binary needs Xcode, an Apple Developer account,
+  and provisioning this environment doesn't have. If a real watch app is
+  wanted later, the REST API underneath (`/marshal/runner/*`) is already
+  built and tested; only the native shell would be new work.
+- **SMS ships safely OFF by default.** No Twilio account is configured on
+  this box. Without one, `marshal.sms.log.send()` never pretends to send —
+  it writes a `state='simulated'` log entry and logs at INFO what *would*
+  have gone out, so the flow is fully testable without a real account and
+  never silently no-ops. **To go live**, set three `ir.config_parameter`
+  values (Settings → Technical → Parameters → System Parameters, or via
+  shell): `marshal.sms_enabled` = `True`, `marshal.twilio_account_sid`,
+  `marshal.twilio_auth_token`, `marshal.twilio_from_number` — then point the
+  Twilio number's inbound webhook at
+  `https://<public-host>/marshal/sms/inbound`. **The inbound webhook
+  fails closed (403) with no auth token configured** — it will not accept
+  or act on any inbound message until a real Twilio auth token is set,
+  since without one there's no way to tell a genuine Twilio callback from
+  anyone else's POST to a public URL.
+- **No billing.** Stripe Connect and the 22%/18% dock-fee model (D-016) have
+  zero code — a real payment processor account is needed before that's
+  buildable, and none is configured.
+- **Still runs against the fictional seed venue** (`DOCK1-3`, `AISLE-A`,
+  `LIFT1`) — nothing here required or assumed a real venue's topology, but
+  nothing here provides one either. Swapping in a real venue is a data
+  change (`marshal.chokepoint`/`marshal.buffer` records), not a code change.
+
+### Three real bugs the end-to-end proving pass caught (not just written, verified)
+
+1. **`declare_submit` crashed on ISO 8601 datetimes** — the browser's
+   `datetime-local` input sends `2026-08-08T14:00:00.000Z`; Odoo's Datetime
+   fields need `%Y-%m-%d %H:%M:%S`. Fixed by parsing with `dateutil`
+   (already an Odoo core dependency) and normalizing to UTC server-side, so
+   the controller is robust to whatever ISO variant a client sends.
+2. **`runner._transition` tried to log invalid event types.** `'arrived'`
+   and `'delivered'` were never valid `marshal.event.event_type` values —
+   this is a **Wave 2 bug**, not a Wave 3 one, and it survived the previous
+   session's "verification" because that pass only exercised the
+   unknown-claim error path, never a real successful transition. This
+   session's first real end-to-end delivery caught it immediately.
+   `action_occupy()`/`action_release()` already log valid `occupied`/
+   `released` events and the movement's own `write()` override logs a
+   `state` event — the trailing call was redundant as well as broken.
+3. **Receiver's pending-list filter silently matched everything.**
+   `claim_count` is a non-stored computed field with no `search()` defined;
+   Odoo drops that domain leaf rather than erroring, so
+   `[("claim_count", "=", 0)]` filtered nothing. Fixed to filter on the real
+   relational field, `[("claim_ids", "=", False)]`. Caught by comparing the
+   controller's actual output against what it should have returned, not by
+   trusting that "no exception" meant "correct" — a search returning 200
+   with the wrong rows is exactly the "something failing while reporting
+   success" pattern worth staying suspicious of.
+
+**45/45 tests pass** (`test_contention.py` + new `test_surfaces.py` — 12 new
+tests: token generation/uniqueness, the SMS keyword parser including the
+"yeah be there in 10" case the design doc itself flags as the hard one,
+send-when-unconfigured is simulated not silent, Twilio signature
+round-trips and rejects tampering, the `claim_ids` regression above).

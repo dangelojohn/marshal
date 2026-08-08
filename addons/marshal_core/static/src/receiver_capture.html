@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Marshal — Receiver</title>
+<style>
+:root{
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1C2128;
+  --hair:#242B33;
+  --text:#E6EDF3; --text-dim:#9BA7B4; --text-faint:#6B7681;
+  --amber:#E0A458; --red:#D7503A; --green:#5FB37E;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{min-height:100vh;padding:1rem}
+h1{font-size:1.1rem;letter-spacing:.04em;color:var(--amber);margin-bottom:1rem}
+.list{display:flex;flex-direction:column;gap:.6rem}
+.row{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+  padding:.9rem 1rem;display:flex;justify-content:space-between;
+  align-items:center;gap:1rem}
+.row .info b{font-size:1.05rem}
+.row .info div{font-size:.82rem;color:var(--text-dim);margin-top:.2rem}
+.row .due{font-family:var(--mono);color:var(--amber);font-size:.85rem}
+button.capture{background:var(--amber);color:#1a1206;border:none;
+  border-radius:10px;padding:.7rem 1.1rem;font-weight:700;font-size:.95rem}
+.empty{color:var(--text-dim);text-align:center;margin-top:3rem}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;
+  align-items:flex-end;justify-content:center;z-index:10}
+.overlay.show{display:flex}
+.sheet{background:var(--surface);border-radius:16px 16px 0 0;padding:1.25rem;
+  width:100%;max-width:480px}
+.sheet h2{font-size:1.15rem;margin-bottom:1rem}
+.sheet label{display:block;font-size:.8rem;color:var(--text-dim);
+  margin:.8rem 0 .3rem}
+.sheet input[type=file]{width:100%;color:var(--text-dim)}
+.sheet .actions{display:flex;gap:.75rem;margin-top:1.4rem}
+.sheet button{flex:1;padding:.85rem;border-radius:10px;border:none;
+  font-weight:700;font-size:1rem}
+.btn-go{background:var(--green);color:#0d1f14}
+.btn-cancel{background:transparent;color:var(--text-dim);border:1px solid var(--hair)}
+.toast{position:fixed;left:1rem;right:1rem;bottom:1rem;padding:.9rem 1rem;
+  border-radius:10px;background:var(--surface-2);border:1px solid var(--hair);
+  text-align:center;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.fail{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<h1>ARRIVED TODAY</h1>
+<div class="list" id="list"><div class="empty">Loading…</div></div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <h2 id="sheetTitle">Capture arrival</h2>
+    <label>Photo (optional)</label>
+    <input type="file" id="photo" accept="image/*" capture="environment">
+    <div class="actions">
+      <button class="btn-cancel" id="cancel">Cancel</button>
+      <button class="btn-go" id="go">Mark arrived</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let activeId = null;
+
+function toast(msg, ok){
+  const t = $('toast');
+  t.textContent = msg; t.className = 'toast show ' + (ok ? 'ok' : 'fail');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+async function callJson(route, params){
+  const res = await fetch(route, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({jsonrpc:'2.0', method:'call', params: params || {}}),
+  });
+  const data = await res.json();
+  if(data.error) throw new Error('request failed');
+  return data.result;
+}
+
+async function loadList(){
+  try{
+    const data = await callJson('/marshal/receiver/pending', {});
+    const list = $('list');
+    if(!data.movements.length){
+      list.innerHTML = '<div class="empty">Nothing waiting. Nice.</div>';
+      return;
+    }
+    list.innerHTML = data.movements.map(m => `
+      <div class="row">
+        <div class="info">
+          <b>${m.crate_ref || m.name}</b>
+          <div>Booth ${m.booth || '—'}${m.carrier ? ' · ' + m.carrier : ''}</div>
+        </div>
+        <div class="due">${m.due || ''}</div>
+        <button class="capture" data-id="${m.id}">Capture</button>
+      </div>`).join('');
+    list.querySelectorAll('button.capture').forEach(btn => {
+      btn.onclick = () => openSheet(btn.dataset.id);
+    });
+  } catch(e){
+    $('list').innerHTML = '<div class="empty">Can\'t reach Marshal. Retrying…</div>';
+  }
+}
+
+function openSheet(id){
+  activeId = id;
+  $('photo').value = '';
+  $('overlay').classList.add('show');
+}
+$('cancel').onclick = () => { $('overlay').classList.remove('show'); activeId = null; };
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+$('go').onclick = async () => {
+  if(!activeId) return;
+  const goBtn = $('go');
+  goBtn.disabled = true;
+  const key = `marshal_recv_idem_${activeId}`;
+  let idempotency_key = localStorage.getItem(key);
+  if(!idempotency_key){ idempotency_key = crypto.randomUUID(); localStorage.setItem(key, idempotency_key); }
+
+  let photo = null;
+  const file = $('photo').files[0];
+  if(file){ photo = await fileToBase64(file); }
+
+  try{
+    const result = await callJson('/marshal/receiver/capture', {
+      movement_id: activeId, photo, idempotency_key,
+    });
+    if(result.ok){
+      localStorage.removeItem(key);
+      toast('Captured at ' + (result.chokepoint || 'dock'), true);
+      $('overlay').classList.remove('show');
+      activeId = null;
+      loadList();
+    } else {
+      toast(result.detail || result.error || 'Could not capture', false);
+    }
+  } catch(e){
+    toast('Network error — try again', false);
+  } finally {
+    goBtn.disabled = false;
+  }
+};
+
+loadList();
+setInterval(loadList, 15000);
+</script>
+</body>
+</html>
