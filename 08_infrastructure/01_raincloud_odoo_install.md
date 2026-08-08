@@ -465,3 +465,36 @@ The board returned 404 until `docker-compose restart odoo`, and the fix is not
 obvious from the upgrade log, which exits 0.
 
 **Deploy rule: data and view changes are hot; new Python is not.**
+
+---
+
+## Wave 2 — the runner API, live and verified (2026-08-08)
+
+**`marshal_core` 16.0.1.4.0.** `controllers/runner.py` — the Apple-Watch-facing
+REST surface — was committed to git 2026-08-06 (`89ddc37`) but never actually
+deployed; the live instance was still running 16.0.1.3.0 with no `runner.py`
+on the NAS at all. Deployed 2026-08-08: copied the controller + manifest +
+`controllers/__init__.py`, `chown 101:101`, `-u` upgrade, container restart
+(new Python needs one, per the deploy rule above), 30/30 tests still pass.
+
+**End-to-end verified over real HTTP, not just "the upgrade log said 0":**
+authenticated as admin against `/web/session/authenticate`, then called
+`/marshal/runner/next` (returned well-formed JSON, `job: null` because no
+claim is currently `held`/`occupied` in the seed data — a legitimate empty
+state) and `/marshal/runner/arrived` with a bogus `claim_id` (clean
+`{"ok": false, "error": "unknown_claim"}`, no 500, no idempotency record
+written for a claim that never existed).
+
+**Found and fixed a real bug while verifying:** `scripts/run-tests.sh`'s own
+comment claimed `--no-http avoids the 8069 bind, so the live server stays
+up` — but the actual `docker exec` command was missing the `--no-http` flag
+entirely (unlike `install-module.sh`, which has it correctly). Running tests
+crashed with `OSError: [Errno 98] Address already in use` because the test
+run tried to bind 8069 against the already-running production container.
+**The comment and the code had drifted apart** — exactly the kind of
+NAS-local script that isn't in git and has no CI catching it. Fixed on the
+box (`--no-http --max-cron-threads=0` added, matching `install-module.sh`'s
+pattern); re-ran clean, 30 tests, 0.61s, exit=0. **This script lives only on
+the NAS** (`scripts/` isn't tracked in the `john/marshal` git repo — it's
+covered by the off-box backup puller instead), so this fix has no git commit
+of its own; recorded here so it isn't silently lost or re-broken.
