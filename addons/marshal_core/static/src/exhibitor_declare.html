@@ -81,6 +81,12 @@ button:disabled{opacity:.6}
 </div>
 
 <script>
+// Generated once per page load, reused for every retry of THIS submission —
+// a double-click or a dropped-response retry must not create two shipments.
+// A genuinely new declaration only happens after a page reload, which gets
+// a fresh key naturally.
+const idempotencyKey = crypto.randomUUID();
+
 document.getElementById('f').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submit');
@@ -97,6 +103,7 @@ document.getElementById('f').addEventListener('submit', async (e) => {
     driver_phone: document.getElementById('driver_phone').value.trim() || null,
     window_start: toIso(document.getElementById('window_start').value),
     window_end: toIso(document.getElementById('window_end').value),
+    idempotency_key: idempotencyKey,
   };
 
   try{

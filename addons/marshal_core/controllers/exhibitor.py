@@ -60,9 +60,24 @@ class MarshalExhibitor(http.Controller):
 
     @http.route("/marshal/exhibitor/declare/submit", type="json", auth="public", methods=["POST"])
     def declare_submit(self, exhibitor_name=None, booth=None, carrier=None,
-                       driver_phone=None, window_start=None, window_end=None, **kw):
+                       driver_phone=None, window_start=None, window_end=None,
+                       idempotency_key=None, **kw):
         if not (exhibitor_name and booth):
             return {"ok": False, "error": "missing_required_field"}
+
+        # A public form is exactly where a double-click or a network retry
+        # is likeliest — no session, no client-side disable-on-submit
+        # guarantee. Every other write in this system (runner, receiver)
+        # already goes through marshal.idempotency; this endpoint originally
+        # didn't, and a same-session evaluation pass proved it: two
+        # identical submits produced two separate movements.
+        Idem = request.env["marshal.idempotency"].sudo()
+        prior = Idem.replay(idempotency_key, "marshal.exhibitor.declare", {
+            "exhibitor_name": exhibitor_name, "booth": booth,
+        })
+        if prior:
+            return {"ok": True, "replayed": True, "token": prior.declare_token,
+                   "track_url": f"/marshal/exhibitor/track/{prior.declare_token}"}
 
         Movement = request.env["marshal.movement"].sudo()
         partner = request.env["res.partner"].sudo().search(
@@ -93,7 +108,11 @@ class MarshalExhibitor(http.Controller):
                 time=movement.planned_start.strftime("%H:%M"),
                 crate=movement.name)
 
-        return {"ok": True, "token": movement.declare_token,
+        Idem.remember(idempotency_key, "marshal.exhibitor.declare", movement, {
+            "exhibitor_name": exhibitor_name, "booth": booth,
+        })
+
+        return {"ok": True, "replayed": False, "token": movement.declare_token,
                "track_url": f"/marshal/exhibitor/track/{movement.declare_token}"}
 
     # ------------------------------------------------------------------

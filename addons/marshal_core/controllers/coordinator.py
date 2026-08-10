@@ -58,14 +58,19 @@ class MarshalCoordinator(http.Controller):
         Claim = request.env["marshal.claim"]
 
         dlq_entries = Dlq.search([("state", "=", "open")], order="id desc", limit=50)
-        # A claim a human needs to look at: lost a contention (yielded) or
-        # could not enter (proposed, having already failed acquire once —
-        # a fresh proposed claim that simply hasn't been tried yet is normal,
-        # so this only flags ones on a movement the DLQ has ALSO flagged).
+        # A claim a human needs to look at: lost a contention (yielded),
+        # could not enter (proposed, on a DLQ-flagged movement), or WON a
+        # contention but never occupied (claimed) — that last one is the
+        # sneaky one: it keeps winning every future tie-break by sequence,
+        # silently blocking the chokepoint for everyone behind it, and an
+        # end-to-end pass through the real receiver/runner/DLQ pipeline is
+        # what actually surfaced it — a claim can win action_acquire() and
+        # still fail action_occupy() (e.g. capacity filled between the two
+        # calls), leaving it parked in 'claimed' with nothing to advance it.
         stuck_movement_ids = dlq_entries.mapped("movement_id").ids
         stuck_claims = Claim.search([
             ("movement_id", "in", stuck_movement_ids),
-            ("state", "in", ("proposed", "yielded")),
+            ("state", "in", ("proposed", "yielded", "claimed")),
         ]) if stuck_movement_ids else Claim.browse()
 
         return {

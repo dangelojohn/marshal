@@ -104,6 +104,20 @@ class MarshalReceiver(http.Controller):
         try:
             claim.action_occupy()
         except UserError as exc:
+            # Matches runner.py's "arrived" handling of the identical
+            # failure mode. Without this, a claim that WINS action_acquire()
+            # but then fails action_occupy() (e.g. capacity filled between
+            # the two calls) sits in 'claimed' state with no DLQ entry —
+            # invisible to the coordinator queue, and it keeps winning every
+            # future contention tie-break by sequence, silently blocking the
+            # chokepoint for everyone behind it. An end-to-end pass through
+            # the real pipeline is what surfaced this gap.
+            request.env["marshal.dlq"].raise_entry(
+                movement, "chokepoint_busy", detail=str(exc)[:300],
+                chokepoint=cp,
+                suggested="This claim already won its contention but could "
+                          "not occupy the chokepoint — release it so the "
+                          "movement can be re-planned once there is room.")
             return {"ok": False, "error": "blocked", "detail": str(exc)}
 
         # This is the crate's first physical touch — the same "actuals"
